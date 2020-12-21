@@ -1,4 +1,4 @@
-An time O(n), space O(1) solution of the Leetcode question Increasing Triplet Subsequence.
+A time O(n), space O(1) solution to the Leetcode question Increasing Triplet Subsequence.
 
 The tricky thing of this question is that the indices you are looking for are not necessarily continuous.
 
