@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 public class SolutionTest {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     static TreeNode array2tree(Integer[] values) {
         return array2tree(values, 0, 0, 1);
