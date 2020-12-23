@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SolutionTest {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void nextGreaterElement_min() {
@@ -66,5 +66,33 @@ public class SolutionTest {
     @Test
     void nextGreaterElement_1999999999() {
         Assertions.assertEquals(-1, solution.nextGreaterElement(1999999999));
+    }
+
+    @Test
+    void reverse_empty() {
+        int[] a = new int[]{0,1,2,3,4,5,6,7,8,9};
+        Solution2.reverse(a, 0, 1);
+        Assertions.assertArrayEquals(new int[]{0,1,2,3,4,5,6,7,8,9}, a);
+    }
+
+    @Test
+    void reverse_range_0_2() {
+        int[] a = new int[]{0,1,2,3,4,5,6,7,8,9};
+        Solution2.reverse(a, 0, 2);
+        Assertions.assertArrayEquals(new int[]{1,0,2,3,4,5,6,7,8,9}, a);
+    }
+
+    @Test
+    void reverse_range_2_4() {
+        int[] a = new int[]{0,1,2,3,4,5,6,7,8,9};
+        Solution2.reverse(a, 2, 4);
+        Assertions.assertArrayEquals(new int[]{0,1,3,2,4,5,6,7,8,9}, a);
+    }
+
+    @Test
+    void reverse_range_somewhere_to_end() {
+        int[] a = new int[]{0,1,2,3,4,5,6,7,8,9};
+        Solution2.reverse(a, 5, a.length);
+        Assertions.assertArrayEquals(new int[]{0,1,2,3,4,9,8,7,6,5}, a);
     }
 }

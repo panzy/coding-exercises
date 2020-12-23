@@ -39,7 +39,7 @@ public class Solution {
                 digits[i] = digits[bestJ];
                 digits[bestJ] = t;
                 // sort digits in range [i+1, LEN-1].
-                Arrays.sort(digits, i + 1, LEN);
+                Arrays.sort(digits, i + 1, LEN); // can be optimized, see Solution #2.
                 // done
                 found = true;
                 break;
