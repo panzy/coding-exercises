@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class SolutionTest {
 
-    Solution0 solution = new Solution0();
+    Solution solution = new Solution();
 
     @Test
     void N1_K0() {
