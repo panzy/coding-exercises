@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 public class SolutionTest {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void longestSubstring_single_K1() {
@@ -85,10 +85,13 @@ public class SolutionTest {
         }
 
         String s = new String(chars);
-        int expected = 0;
 
         long startTime = System.nanoTime();
-        Assertions.assertEquals(expected, solution.longestSubstring(s, k));
+        Assertions.assertEquals(0, solution.longestSubstring(s, k));
+        System.out.printf("Elapsed time while processing N=%d: %d ms%n", N,
+                (System.nanoTime() - startTime) / 1000000);
+        startTime = System.nanoTime();
+
         Assertions.assertEquals(k - 1, solution.longestSubstring(s, k - 1));
         System.out.printf("Elapsed time while processing N=%d: %d ms%n", N,
                 (System.nanoTime() - startTime) / 1000000);
