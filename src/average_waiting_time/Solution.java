@@ -1,5 +1,8 @@
 package average_waiting_time;
 
+/**
+ * Zhiyong Pan, 2020-12-26
+ */
 class Solution {
     public double averageWaitingTime(int[][] customers) {
         double sum = 0;

@@ -3,6 +3,30 @@ package maximum_binary_string_after_change;
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A correct but slow solution, utilizing these rules:
+ *
+ * 1. A sequence of continuous zeros can change to all ones with a tailing zero. For e.g.,
+ *    00 -> 10
+ *    000 -> 110
+ *    0000 -> 1110
+ *
+ * 2. A sequence of continuous ones with a heading zero and followed by one or more zeros
+ *    can change to some ones followed by some zeros and followed by "01".
+ *
+ *    Examples group A: the number of tailing zero is one.
+ *    010 -> 101
+ *    0110 -> 1011
+ *    01110 -> 10111
+ *    011110 -> 101111
+ *
+ *    Examples group A: the number of tailing zero is more than one.
+ *    0100 -> 1101
+ *    01000 -> 11101
+ *
+ * --
+ * Zhiyong Pan, 2020-12-26
+ */
 public class Solution0 {
     public String maximumBinaryString(String binary) {
         final int n = binary.length();

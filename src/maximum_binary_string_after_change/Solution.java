@@ -3,6 +3,17 @@ package maximum_binary_string_after_change;
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Improved solution #0 by generalize the 2nd rule: the sequence of ones does not have to continuous.
+ *
+ * For e.g., the original rule does not apply to 0110100 as a whole because the [i] is not one.
+ *
+ * The enhanced rule applies to any string starting with "01" and ending with "0". So this solution is
+ * acceptable in terms of performance.
+ *
+ * --
+ * Zhiyong Pan, 2020-12-26
+ */
 public class Solution {
     public String maximumBinaryString(String binary) {
         final int n = binary.length();
