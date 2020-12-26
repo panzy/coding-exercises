@@ -19,6 +19,12 @@ import java.util.BitSet;
  * O(26 * N) = O(N).
  * Time complexity in worst case: O(n^2) when k is very small and the result is 0.
  * This solution is somewhat faster than solution #1 (403 ms vs 686 ms).
+ *
+ * Performance (it's amazing compared to solution #2):
+ * iterations: 29001
+ * Elapsed time while processing N=10000: 3 ms
+ * iterations: 29001
+ * Elapsed time while processing N=10000: 2 ms
  */
 public class Solution4 {
     /**
@@ -38,6 +44,7 @@ public class Solution4 {
         int[] chars = new int[26];
 
         int ans = 0;
+        int iterations = 0;
 
         for (int targetUnique= countDistinctChars(s); targetUnique > 0; --targetUnique) {
 
@@ -49,6 +56,7 @@ public class Solution4 {
             Arrays.fill(chars, 0);
 
             while (windowEnd < N) {
+                ++iterations;
                 if (unique <= targetUnique) {
                     // increase window end
                     int i = s.charAt(windowEnd) - 'a';
@@ -71,6 +79,7 @@ public class Solution4 {
             }
         }
 
+        System.out.printf("iterations: %d%n", iterations);
         return ans;
     }
 

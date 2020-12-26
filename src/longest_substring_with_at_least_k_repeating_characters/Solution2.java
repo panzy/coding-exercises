@@ -11,6 +11,12 @@ import java.util.Arrays;
  * Core feature: the sliding window's size is fixed for each iteration.
  * Time complexity in worst case: O(n^2) when k is very small and the result is 0.
  * This solution is somewhat faster than solution #1 (403 ms vs 686 ms).
+ *
+ * Performance:
+ * iterations: 40504500
+ * Elapsed time while processing N=10000: 234 ms
+ * iterations: 40504501
+ * Elapsed time while processing N=10000: 208 ms
  */
 public class Solution2 {
     /**
@@ -28,6 +34,7 @@ public class Solution2 {
 
         // record how many times each char is contained in the current substring
         int[] chars = new int[26];
+        int iterations = 0;
 
         // for each window size, slide it from left to right.
         for (int w = N; w >= k; --w) {
@@ -42,10 +49,14 @@ public class Solution2 {
 
             // slide the window
             for (int i = 0; i <= N - w; ++i) {
-                if (check(chars, k)) return w;
+                if (check(chars, k)) {
+                    System.out.printf("iterations: %d%n", iterations);
+                    return w;
+                }
 
                 // keep sliding the window until it might have arrived at an answer
                 while (i + w < N) {
+                    ++iterations;
                     char exitChar = s.charAt(i);
                     char enterChar = s.charAt(i + w);
                     --chars[exitChar - 'a'];
@@ -56,6 +67,7 @@ public class Solution2 {
             }
         }
 
+        System.out.printf("iterations: %d%n", iterations);
         return 0;
     }
 
