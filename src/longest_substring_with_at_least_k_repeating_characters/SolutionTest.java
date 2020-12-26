@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 public class SolutionTest {
-    Solution3 solution = new Solution3();
+    Solution4 solution = new Solution4();
 
     @Test
     void longestSubstring_single_K1() {
