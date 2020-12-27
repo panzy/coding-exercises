@@ -3,10 +3,7 @@ package jump_game_iv;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -17,7 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class Solution {
 
     private int n;
-    private HashMap<Integer, LinkedList<Integer>> shortcuts;
+    // record the shortcuts for each node
+    private LinkedList<Integer>[] shortcuts;
 
     public int minJumps(int[] arr) {
         n = arr.length;
@@ -26,9 +24,9 @@ class Solution {
     }
 
     void collectShortcuts(int[] arr) {
-        shortcuts = new HashMap<>();
+        shortcuts = new LinkedList[arr.length];
         // for querying node indices by its value
-        HashMap<Integer, LinkedList<Integer>> valuePositions = new HashMap<>();
+        HashMap<Integer, LinkedList<Integer>> valuePositions = new HashMap<>(arr.length);
 
         for (int i = 0; i < arr.length; ++i) {
 
@@ -54,23 +52,23 @@ class Solution {
 
     void recordShortcut(Integer i, Integer j) {
         // record i -> j
-        LinkedList<Integer> steps = shortcuts.get(i);
+        LinkedList<Integer> steps = shortcuts[i];
         if (steps != null) {
             steps.add(j);
         } else {
             steps = new LinkedList<>();
             steps.add(j);
-            shortcuts.put(i, steps);
+            shortcuts[i] = steps;
         }
 
         // record j -> i
-        steps = shortcuts.get(j);
+        steps = shortcuts[j];
         if (steps != null) {
             steps.add(i);
         } else {
             steps = new LinkedList<>();
             steps.add(i);
-            shortcuts.put(j, steps);
+            shortcuts[j] = steps;
         }
     }
 
@@ -85,7 +83,7 @@ class Solution {
         steps.add(0);
 
         // never revisit a node
-        HashSet<Integer> visitedNodes = new HashSet<>();
+        BitSet visited = new BitSet();
 
         while (!found.get()) {
             ++depth;
@@ -98,8 +96,8 @@ class Solution {
                 LinkedList<Integer> ns = getNextSteps(curr, found);
                 if (found.get()) break;
                 for (Integer next : ns) {
-                    if (!visitedNodes.contains(next)) {
-                        visitedNodes.add(next);
+                    if (!visited.get(next)) {
+                        visited.set(next);
                         nextSteps.push(next);
                     }
                 }
@@ -127,8 +125,8 @@ class Solution {
         if (startIndex > 0) {
             steps.push(startIndex - 1);
         }
-        if (shortcuts.containsKey(startIndex)) {
-            for (Integer i : shortcuts.get(startIndex)) {
+        if (shortcuts[startIndex] != null) {
+            for (Integer i : shortcuts[startIndex]) {
                 steps.push(i);
                 if (i == n - 1)
                     found.set(true);
@@ -141,103 +139,99 @@ class Solution {
     void test_collectShortcuts_singleNode() {
         int[] arr = new int[]{1};
         collectShortcuts(arr);
-        Assertions.assertEquals(0, shortcuts.size());
+        Assertions.assertNull(shortcuts[0]);
     }
 
     @Test
     void test_collectShortcuts_none() {
         int[] arr = new int[]{1,2};
         collectShortcuts(arr);
-        Assertions.assertEquals(0, shortcuts.size());
+        Assertions.assertNull(shortcuts[0]);
     }
 
     @Test
     void test_collectShortcuts_twoMuture() {
         int[] arr = new int[]{1,1};
         collectShortcuts(arr);
-        Assertions.assertEquals(2, shortcuts.size());
-        Assertions.assertEquals(1, shortcuts.get(0).getFirst());
-        Assertions.assertEquals(0, shortcuts.get(1).getFirst());
+        Assertions.assertEquals(1, shortcuts[0].getFirst());
+        Assertions.assertEquals(0, shortcuts[1].getFirst());
     }
 
     @Test
     void test_collectShortcuts_moreThanOneShortcutsFromOnePoint() {
         int[] arr = new int[]{1,1,0,1};
         collectShortcuts(arr);
-        Assertions.assertEquals(3, shortcuts.size());
-        Assertions.assertEquals(2, shortcuts.get(0).size());
-        Assertions.assertEquals(2, shortcuts.get(1).size());
-        Assertions.assertEquals(2, shortcuts.get(3).size());
+        Assertions.assertEquals(2, shortcuts[0].size());
+        Assertions.assertEquals(2, shortcuts[1].size());
+        Assertions.assertEquals(2, shortcuts[3].size());
     }
 
     @Test
     void test_collectShortcuts_moreThanOneShortcutsFromMultiplePoints() {
         int[] arr = new int[]{1,1,0,1,0};
         collectShortcuts(arr);
-        Assertions.assertEquals(5, shortcuts.size());
 
-        Assertions.assertEquals(2, shortcuts.get(0).size());
-        Assertions.assertTrue(shortcuts.get(0).contains(1));
-        Assertions.assertTrue(shortcuts.get(0).contains(3));
+        Assertions.assertEquals(2, shortcuts[0].size());
+        Assertions.assertTrue(shortcuts[0].contains(1));
+        Assertions.assertTrue(shortcuts[0].contains(3));
 
-        Assertions.assertEquals(2, shortcuts.get(1).size());
-        Assertions.assertTrue(shortcuts.get(1).contains(0));
-        Assertions.assertTrue(shortcuts.get(1).contains(3));
+        Assertions.assertEquals(2, shortcuts[1].size());
+        Assertions.assertTrue(shortcuts[1].contains(0));
+        Assertions.assertTrue(shortcuts[1].contains(3));
 
-        Assertions.assertEquals(1, shortcuts.get(2).size());
-        Assertions.assertTrue(shortcuts.get(2).contains(4));
+        Assertions.assertEquals(1, shortcuts[2].size());
+        Assertions.assertTrue(shortcuts[2].contains(4));
 
-        Assertions.assertEquals(2, shortcuts.get(3).size());
-        Assertions.assertTrue(shortcuts.get(3).contains(0));
-        Assertions.assertTrue(shortcuts.get(3).contains(1));
+        Assertions.assertEquals(2, shortcuts[3].size());
+        Assertions.assertTrue(shortcuts[3].contains(0));
+        Assertions.assertTrue(shortcuts[3].contains(1));
 
-        Assertions.assertEquals(1, shortcuts.get(4).size());
-        Assertions.assertTrue(shortcuts.get(4).contains(2));
+        Assertions.assertEquals(1, shortcuts[4].size());
+        Assertions.assertTrue(shortcuts[4].contains(2));
     }
 
     @Test
     void test_collectShortcuts_example1() {
         int[] arr = new int[]{100,-23,-23,404,100,23,23,23,3,404};
         collectShortcuts(arr);
-        Assertions.assertEquals(8, shortcuts.size());
 
         // 0 -> 4
-        Assertions.assertEquals(1, shortcuts.get(0).size());
-        Assertions.assertTrue(shortcuts.get(0).contains(4));
+        Assertions.assertEquals(1, shortcuts[0].size());
+        Assertions.assertTrue(shortcuts[0].contains(4));
 
         // 1 -> 2
-        Assertions.assertEquals(1, shortcuts.get(1).size());
-        Assertions.assertTrue(shortcuts.get(1).contains(2));
+        Assertions.assertEquals(1, shortcuts[1].size());
+        Assertions.assertTrue(shortcuts[1].contains(2));
 
         // 2 -> 1
-        Assertions.assertEquals(1, shortcuts.get(2).size());
-        Assertions.assertTrue(shortcuts.get(2).contains(1));
+        Assertions.assertEquals(1, shortcuts[2].size());
+        Assertions.assertTrue(shortcuts[2].contains(1));
 
         // 3 -> 9
-        Assertions.assertEquals(1, shortcuts.get(3).size());
-        Assertions.assertTrue(shortcuts.get(3).contains(9));
+        Assertions.assertEquals(1, shortcuts[3].size());
+        Assertions.assertTrue(shortcuts[3].contains(9));
 
         // 4 -> 0
-        Assertions.assertEquals(1, shortcuts.get(4).size());
-        Assertions.assertTrue(shortcuts.get(4).contains(0));
+        Assertions.assertEquals(1, shortcuts[4].size());
+        Assertions.assertTrue(shortcuts[4].contains(0));
 
         // 5 -> 7
-        Assertions.assertEquals(1, shortcuts.get(5).size());
-        Assertions.assertTrue(shortcuts.get(5).contains(7));
+        Assertions.assertEquals(1, shortcuts[5].size());
+        Assertions.assertTrue(shortcuts[5].contains(7));
 
         // 6 -> x
-        Assertions.assertNull(shortcuts.get(6));
+        Assertions.assertNull(shortcuts[6]);
 
         // 7 -> 5
-        Assertions.assertEquals(1, shortcuts.get(7).size());
-        Assertions.assertTrue(shortcuts.get(7).contains(5));
+        Assertions.assertEquals(1, shortcuts[7].size());
+        Assertions.assertTrue(shortcuts[7].contains(5));
 
         // 8 -> x
-        Assertions.assertNull(shortcuts.get(8));
+        Assertions.assertNull(shortcuts[8]);
 
         // 9 -> 3
-        Assertions.assertEquals(1, shortcuts.get(9).size());
-        Assertions.assertTrue(shortcuts.get(9).contains(3));
+        Assertions.assertEquals(1, shortcuts[9].size());
+        Assertions.assertTrue(shortcuts[9].contains(3));
     }
 
     /**
@@ -249,18 +243,18 @@ class Solution {
         collectShortcuts(arr);
 
         // 0 -> 7
-        Assertions.assertEquals(1, shortcuts.get(0).size());
-        Assertions.assertTrue(shortcuts.get(0).contains(7));
+        Assertions.assertEquals(1, shortcuts[0].size());
+        Assertions.assertTrue(shortcuts[0].contains(7));
         // 1..6 -> x
-        Assertions.assertNull(shortcuts.get(1));
-        Assertions.assertNull(shortcuts.get(2));
-        Assertions.assertNull(shortcuts.get(3));
-        Assertions.assertNull(shortcuts.get(4));
-        Assertions.assertNull(shortcuts.get(5));
-        Assertions.assertNull(shortcuts.get(6));
+        Assertions.assertNull(shortcuts[1]);
+        Assertions.assertNull(shortcuts[2]);
+        Assertions.assertNull(shortcuts[3]);
+        Assertions.assertNull(shortcuts[4]);
+        Assertions.assertNull(shortcuts[5]);
+        Assertions.assertNull(shortcuts[6]);
         // 7 -> 0
-        Assertions.assertEquals(1, shortcuts.get(7).size());
-        Assertions.assertTrue(shortcuts.get(7).contains(0));
+        Assertions.assertEquals(1, shortcuts[7].size());
+        Assertions.assertTrue(shortcuts[7].contains(0));
     }
 
     @Test
