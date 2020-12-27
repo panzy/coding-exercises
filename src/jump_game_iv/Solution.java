@@ -33,14 +33,7 @@ class Solution {
             if (i > 0 && i + 1 < arr.length && arr[i] == arr[i - 1] && arr[i] == arr[i + 1])
                 continue;
 
-            LinkedList<Integer> positions = valuePositions.get(arr[i]);
-            if (positions == null) {
-                positions = new LinkedList<>();
-                positions.push(i);
-                valuePositions.put(arr[i], positions);
-            } else {
-                positions.push(i);
-            }
+            valuePositions.computeIfAbsent(arr[i], v -> new LinkedList<>()).add(i);
         }
         return valuePositions;
     }
