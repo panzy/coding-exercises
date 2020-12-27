@@ -13,24 +13,22 @@ import java.util.*;
 class Solution {
 
     public int minJumps(int[] arr) {
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
-        return breadthFirstSearch(arr.length, shortcuts);
+        return breadthFirstSearch(arr, buildGraph(arr));
     }
 
     /**
-     * record the shortcuts for each node
+     * record the shortcuts for each node.
      * @param arr
      * @return
      */
-    LinkedList<Integer>[] collectShortcuts(int[] arr) {
-        LinkedList<Integer>[] shortcuts = new LinkedList[arr.length];
+    HashMap<Integer, LinkedList<Integer>> buildGraph(int[] arr) {
         // for querying node indices by its value
         HashMap<Integer, LinkedList<Integer>> valuePositions = new HashMap<>(arr.length);
 
         for (int i = 0; i < arr.length; ++i) {
 
             // if [i] equals to [i-1] and [i+1], we should never jump to it during BFS.
-            // this optimization is important to successfully handle this example:
+            // this optimization is important to efficiently handle this situation:
             // 7, 7, 7, 7, ... 7, 11
             if (i > 0 && i + 1 < arr.length && arr[i] == arr[i - 1] && arr[i] == arr[i + 1])
                 continue;
@@ -41,39 +39,16 @@ class Solution {
                 positions.push(i);
                 valuePositions.put(arr[i], positions);
             } else {
-                for (int j : positions) {
-                    recordShortcut(i, j, shortcuts);
-                }
                 positions.push(i);
             }
         }
-        return shortcuts;
+        return valuePositions;
     }
 
-    void recordShortcut(Integer i, Integer j, LinkedList<Integer>[] shortcuts) {
-        // record i -> j
-        LinkedList<Integer> steps = shortcuts[i];
-        if (steps != null) {
-            steps.add(j);
-        } else {
-            steps = new LinkedList<>();
-            steps.add(j);
-            shortcuts[i] = steps;
-        }
+    int breadthFirstSearch(int[] arr, HashMap<Integer, LinkedList<Integer>> graph) {
+        if (arr.length == 1) return 0;
 
-        // record j -> i
-        steps = shortcuts[j];
-        if (steps != null) {
-            steps.add(i);
-        } else {
-            steps = new LinkedList<>();
-            steps.add(i);
-            shortcuts[j] = steps;
-        }
-    }
-
-    int breadthFirstSearch(int n, LinkedList<Integer>[] shortcuts) {
-        if (n == 1) return 0;
+        int n = arr.length;
 
         // current layer of nodes
         LinkedList<Integer> steps = new LinkedList<>();
@@ -113,8 +88,9 @@ class Solution {
                 }
 
                 // move to any shortcut?
-                if (shortcuts[curr] != null) {
-                    for (Integer i : shortcuts[curr]) {
+                LinkedList<Integer> shortcuts = graph.get(arr[curr]);
+                if (shortcuts != null) {
+                    for (Integer i : shortcuts) {
                         if (!visited.get(i)) {
                             if (i == n - 1) {
                                 found = true;
@@ -137,133 +113,117 @@ class Solution {
     }
 
     @Test
-    void test_collectShortcuts_singleNode() {
+    void test_buildGraph_singleNode() {
         int[] arr = new int[]{1};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
-        Assertions.assertNull(shortcuts[0]);
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
+        Assertions.assertNull(graph.get(0));
     }
 
     @Test
-    void test_collectShortcuts_none() {
+    void test_buildGraph_none() {
         int[] arr = new int[]{1,2};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
-        Assertions.assertNull(shortcuts[0]);
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
+        Assertions.assertNull(graph.get(0));
     }
 
     @Test
-    void test_collectShortcuts_twoMuture() {
+    void test_buildGraph_twoMuture() {
         int[] arr = new int[]{1,1};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
-        Assertions.assertEquals(1, shortcuts[0].getFirst());
-        Assertions.assertEquals(0, shortcuts[1].getFirst());
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
+        Assertions.assertEquals(2, graph.get(1).size());
+        Assertions.assertTrue(graph.get(1).contains(0));
+        Assertions.assertTrue(graph.get(1).contains(1));
     }
 
     @Test
-    void test_collectShortcuts_moreThanOneShortcutsFromOnePoint() {
+    void test_buildGraph_moreThanOneShortcutsFromOnePoint() {
         int[] arr = new int[]{1,1,0,1};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
-        Assertions.assertEquals(2, shortcuts[0].size());
-        Assertions.assertEquals(2, shortcuts[1].size());
-        Assertions.assertEquals(2, shortcuts[3].size());
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
+        Assertions.assertEquals(3, graph.get(1).size());
+        Assertions.assertTrue(graph.get(1).contains(0));
+        Assertions.assertTrue(graph.get(1).contains(1));
+        Assertions.assertTrue(graph.get(1).contains(3));
+        Assertions.assertEquals(1, graph.get(0).size());
+        Assertions.assertTrue(graph.get(0).contains(2));
     }
 
     @Test
-    void test_collectShortcuts_moreThanOneShortcutsFromMultiplePoints() {
+    void test_buildGraph_moreThanOneShortcutsFromMultiplePoints() {
         int[] arr = new int[]{1,1,0,1,0};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
 
-        Assertions.assertEquals(2, shortcuts[0].size());
-        Assertions.assertTrue(shortcuts[0].contains(1));
-        Assertions.assertTrue(shortcuts[0].contains(3));
+        // 1 @ 0, 1, 3
+        Assertions.assertEquals(3, graph.get(1).size());
+        Assertions.assertTrue(graph.get(1).contains(0));
+        Assertions.assertTrue(graph.get(1).contains(1));
+        Assertions.assertTrue(graph.get(1).contains(3));
 
-        Assertions.assertEquals(2, shortcuts[1].size());
-        Assertions.assertTrue(shortcuts[1].contains(0));
-        Assertions.assertTrue(shortcuts[1].contains(3));
-
-        Assertions.assertEquals(1, shortcuts[2].size());
-        Assertions.assertTrue(shortcuts[2].contains(4));
-
-        Assertions.assertEquals(2, shortcuts[3].size());
-        Assertions.assertTrue(shortcuts[3].contains(0));
-        Assertions.assertTrue(shortcuts[3].contains(1));
-
-        Assertions.assertEquals(1, shortcuts[4].size());
-        Assertions.assertTrue(shortcuts[4].contains(2));
+        // 0 @ 2, 4
+        Assertions.assertEquals(2, graph.get(0).size());
+        Assertions.assertTrue(graph.get(0).contains(2));
+        Assertions.assertTrue(graph.get(0).contains(4));
     }
 
     @Test
-    void test_collectShortcuts_example1() {
+    void test_buildGraph_example1() {
         int[] arr = new int[]{100,-23,-23,404,100,23,23,23,3,404};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
 
-        // 0 -> 4
-        Assertions.assertEquals(1, shortcuts[0].size());
-        Assertions.assertTrue(shortcuts[0].contains(4));
+        // 100 @ 0, 4
+        Assertions.assertEquals(2, graph.get(100).size());
+        Assertions.assertTrue(graph.get(100).contains(0));
+        Assertions.assertTrue(graph.get(100).contains(4));
 
-        // 1 -> 2
-        Assertions.assertEquals(1, shortcuts[1].size());
-        Assertions.assertTrue(shortcuts[1].contains(2));
+        // -23 @ 1, 2
+        Assertions.assertEquals(2, graph.get(-23).size());
+        Assertions.assertTrue(graph.get(-23).contains(1));
+        Assertions.assertTrue(graph.get(-23).contains(2));
 
-        // 2 -> 1
-        Assertions.assertEquals(1, shortcuts[2].size());
-        Assertions.assertTrue(shortcuts[2].contains(1));
+        // 404 @ 3, 9
+        Assertions.assertEquals(2, graph.get(404).size());
+        Assertions.assertTrue(graph.get(404).contains(3));
+        Assertions.assertTrue(graph.get(404).contains(9));
 
-        // 3 -> 9
-        Assertions.assertEquals(1, shortcuts[3].size());
-        Assertions.assertTrue(shortcuts[3].contains(9));
+        // 23 @ 5, 7
+        Assertions.assertEquals(2, graph.get(23).size());
+        Assertions.assertTrue(graph.get(23).contains(5));
+        Assertions.assertTrue(graph.get(23).contains(7));
 
-        // 4 -> 0
-        Assertions.assertEquals(1, shortcuts[4].size());
-        Assertions.assertTrue(shortcuts[4].contains(0));
-
-        // 5 -> 7
-        Assertions.assertEquals(1, shortcuts[5].size());
-        Assertions.assertTrue(shortcuts[5].contains(7));
-
-        // 6 -> x
-        Assertions.assertNull(shortcuts[6]);
-
-        // 7 -> 5
-        Assertions.assertEquals(1, shortcuts[7].size());
-        Assertions.assertTrue(shortcuts[7].contains(5));
-
-        // 8 -> x
-        Assertions.assertNull(shortcuts[8]);
-
-        // 9 -> 3
-        Assertions.assertEquals(1, shortcuts[9].size());
-        Assertions.assertTrue(shortcuts[9].contains(3));
+        // 3 @ 8
+        Assertions.assertEquals(1, graph.get(3).size());
+        Assertions.assertTrue(graph.get(3).contains(8));
     }
 
     /**
      * If there is a sequence of duplicate number, ignore them except the head and the tail.
      */
     @Test
-    void test_collectShortcuts_ignoreStreakBody() {
+    void test_buildGraph_ignoreStreakBody() {
         int[] arr = new int[]{7,7,7,7,7,7,7,7,9};
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
 
-        // 0 -> 7
-        Assertions.assertEquals(1, shortcuts[0].size());
-        Assertions.assertTrue(shortcuts[0].contains(7));
-        // 1..6 -> x
-        Assertions.assertNull(shortcuts[1]);
-        Assertions.assertNull(shortcuts[2]);
-        Assertions.assertNull(shortcuts[3]);
-        Assertions.assertNull(shortcuts[4]);
-        Assertions.assertNull(shortcuts[5]);
-        Assertions.assertNull(shortcuts[6]);
-        // 7 -> 0
-        Assertions.assertEquals(1, shortcuts[7].size());
-        Assertions.assertTrue(shortcuts[7].contains(0));
+        // 7 @ 0,7
+        Assertions.assertEquals(2, graph.get(7).size());
+        Assertions.assertTrue(graph.get(7).contains(0));
+        Assertions.assertFalse(graph.get(7).contains(1));
+        Assertions.assertFalse(graph.get(7).contains(2));
+        Assertions.assertFalse(graph.get(7).contains(3));
+        Assertions.assertFalse(graph.get(7).contains(4));
+        Assertions.assertFalse(graph.get(7).contains(5));
+        Assertions.assertFalse(graph.get(7).contains(6));
+        Assertions.assertTrue(graph.get(7).contains(7));
+
+        // 9 @ 8
+        Assertions.assertEquals(1, graph.get(9).size());
+        Assertions.assertTrue(graph.get(9).contains(8));
     }
 
     @Test
-    void test_collectShortcuts_hugeN_worstCase() {
+    void test_buildGraph_hugeN_worstCase() {
         int[] arr = new int[10000];
         Arrays.fill(arr, 7);
         arr[arr.length - 1] = 11;
-        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
+        HashMap<Integer, LinkedList<Integer>> graph = buildGraph(arr);
     }
 
     @Test
