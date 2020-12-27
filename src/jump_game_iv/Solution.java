@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Breadth First Search.
@@ -13,18 +12,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 class Solution {
 
-    private int n;
-    // record the shortcuts for each node
-    private LinkedList<Integer>[] shortcuts;
-
     public int minJumps(int[] arr) {
-        n = arr.length;
-        collectShortcuts(arr);
-        return breadthFirstSearch(0);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
+        return breadthFirstSearch(arr.length, shortcuts);
     }
 
-    void collectShortcuts(int[] arr) {
-        shortcuts = new LinkedList[arr.length];
+    /**
+     * record the shortcuts for each node
+     * @param arr
+     * @return
+     */
+    LinkedList<Integer>[] collectShortcuts(int[] arr) {
+        LinkedList<Integer>[] shortcuts = new LinkedList[arr.length];
         // for querying node indices by its value
         HashMap<Integer, LinkedList<Integer>> valuePositions = new HashMap<>(arr.length);
 
@@ -43,14 +42,15 @@ class Solution {
                 valuePositions.put(arr[i], positions);
             } else {
                 for (int j : positions) {
-                    recordShortcut(i, j);
+                    recordShortcut(i, j, shortcuts);
                 }
                 positions.push(i);
             }
         }
+        return shortcuts;
     }
 
-    void recordShortcut(Integer i, Integer j) {
+    void recordShortcut(Integer i, Integer j, LinkedList<Integer>[] shortcuts) {
         // record i -> j
         LinkedList<Integer> steps = shortcuts[i];
         if (steps != null) {
@@ -72,11 +72,14 @@ class Solution {
         }
     }
 
-    int breadthFirstSearch(int startIndex) {
-        if (startIndex == n - 1) return 0;
+    int breadthFirstSearch(int n, LinkedList<Integer>[] shortcuts) {
+        if (n == 1) return 0;
 
+        // current layer of nodes
         LinkedList<Integer> steps = new LinkedList<>();
-        AtomicBoolean found = new AtomicBoolean(false);
+        // next layer of nodes
+        LinkedList<Integer> nextSteps = new LinkedList<>();
+        boolean found = false;
         int depth = 0;
 
         // start from [0]
@@ -85,74 +88,72 @@ class Solution {
         // never revisit a node
         BitSet visited = new BitSet();
 
-        while (!found.get()) {
+        while (!found) {
             ++depth;
-
-            LinkedList<Integer> nextSteps = new LinkedList<>();
 //            System.out.printf("Searching... depth %d, breadth %d%n", depth, steps.size());
 
             // collect all next steps
+            nextSteps.clear();
             for (Integer curr : steps) {
-                LinkedList<Integer> ns = getNextSteps(curr, found);
-                if (found.get()) break;
-                for (Integer next : ns) {
-                    if (!visited.get(next)) {
-                        visited.set(next);
-                        nextSteps.push(next);
+                // move to right?
+                if (curr + 1 < n && !visited.get(curr + 1)) {
+                    if (curr + 1 == n - 1) {
+                        found = true;
+                        break;
+                    } else {
+                        nextSteps.push(curr + 1);
+                        visited.set(curr + 1);
                     }
                 }
+
+                // move to left?
+                if (curr > 0 && !visited.get(curr - 1)) {
+                    nextSteps.push(curr - 1);
+                    visited.set(curr - 1);
+                }
+
+                // move to any shortcut?
+                if (shortcuts[curr] != null) {
+                    for (Integer i : shortcuts[curr]) {
+                        if (!visited.get(i)) {
+                            if (i == n - 1) {
+                                found = true;
+                                break;
+                            }
+                            nextSteps.push(i);
+                            visited.set(i);
+                        }
+                    }
+                    if (found) break;
+                }
             }
-            if (found.get()) break;
+
+            LinkedList<Integer> t = steps;
             steps = nextSteps;
+            nextSteps = t;
         }
 
         return depth;
     }
 
-    /**
-     * Get the indices of all nodes that can be reached in one jump.
-     * @param startIndex
-     * @param found output true if [n-1] is one of those indices.
-     * @return A list of indices.
-     */
-    private LinkedList<Integer> getNextSteps(int startIndex, AtomicBoolean found) {
-        LinkedList<Integer> steps = new LinkedList<>();
-        if (startIndex + 1 < n) {
-            steps.push(startIndex + 1);
-            if (startIndex + 1 == n - 1)
-                found.set(true);
-        }
-        if (startIndex > 0) {
-            steps.push(startIndex - 1);
-        }
-        if (shortcuts[startIndex] != null) {
-            for (Integer i : shortcuts[startIndex]) {
-                steps.push(i);
-                if (i == n - 1)
-                    found.set(true);
-            }
-        }
-        return steps;
-    }
-
     @Test
     void test_collectShortcuts_singleNode() {
         int[] arr = new int[]{1};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
         Assertions.assertNull(shortcuts[0]);
     }
 
     @Test
     void test_collectShortcuts_none() {
         int[] arr = new int[]{1,2};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
         Assertions.assertNull(shortcuts[0]);
     }
 
     @Test
     void test_collectShortcuts_twoMuture() {
         int[] arr = new int[]{1,1};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
         Assertions.assertEquals(1, shortcuts[0].getFirst());
         Assertions.assertEquals(0, shortcuts[1].getFirst());
     }
@@ -160,7 +161,7 @@ class Solution {
     @Test
     void test_collectShortcuts_moreThanOneShortcutsFromOnePoint() {
         int[] arr = new int[]{1,1,0,1};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
         Assertions.assertEquals(2, shortcuts[0].size());
         Assertions.assertEquals(2, shortcuts[1].size());
         Assertions.assertEquals(2, shortcuts[3].size());
@@ -169,7 +170,7 @@ class Solution {
     @Test
     void test_collectShortcuts_moreThanOneShortcutsFromMultiplePoints() {
         int[] arr = new int[]{1,1,0,1,0};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
 
         Assertions.assertEquals(2, shortcuts[0].size());
         Assertions.assertTrue(shortcuts[0].contains(1));
@@ -193,7 +194,7 @@ class Solution {
     @Test
     void test_collectShortcuts_example1() {
         int[] arr = new int[]{100,-23,-23,404,100,23,23,23,3,404};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
 
         // 0 -> 4
         Assertions.assertEquals(1, shortcuts[0].size());
@@ -240,7 +241,7 @@ class Solution {
     @Test
     void test_collectShortcuts_ignoreStreakBody() {
         int[] arr = new int[]{7,7,7,7,7,7,7,7,9};
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
 
         // 0 -> 7
         Assertions.assertEquals(1, shortcuts[0].size());
@@ -262,7 +263,7 @@ class Solution {
         int[] arr = new int[10000];
         Arrays.fill(arr, 7);
         arr[arr.length - 1] = 11;
-        collectShortcuts(arr);
+        LinkedList<Integer>[] shortcuts = collectShortcuts(arr);
     }
 
     @Test
