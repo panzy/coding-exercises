@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 
 /**
@@ -26,53 +25,37 @@ class Solution_dfs_postorder {
         // The most recently popped node.
         // Init it to a random so we won't confuse it with an absent child node.
         TreeNode poppedNode = new TreeNode();
-        // the frequency of each digit in the current path
-        int[] digits = new int[10];
-        Arrays.fill(digits, 0);
+        // The odd/even flag of the frequency of each digit in the current path.
+        // If the n-th bit is 1, then n has occurred an odd times.
+        // The bit index starts from the right end of the int.
+        int digits = 0;
 
         // push the root
         path.push(root);
-        digits[root.val] = 1;
+        digits |= (1 << root.val);
 
         TreeNode top = path.peek();
         while (top != null) {
             if (top.left != null && top.left != poppedNode && top.right != poppedNode) {
                 // go left
                 path.push(top.left);
-                ++digits[top.left.val];
+                digits ^= (1 << top.left.val);
                 top = top.left;
             } else if (top.right != null && top.right != poppedNode) {
                 // go right
                 path.push(top.right);
-                ++digits[top.right.val];
+                digits ^= (1 << top.right.val);
                 top = top.right;
             } else {
-                if (top.left == null && top.right == null && hasPalindromicPermutation(digits))
+                if (top.left == null && top.right == null && (digits & (digits - 1)) == 0)
                     ++cnt;
                 // go back
                 poppedNode = path.pop();
-                --digits[top.val];
+                digits ^= (1 << top.val);
                 top = path.peek();
             }
         }
         return cnt;
-    }
-
-    /**
-     * Judge whether a set of digits can be arranged in a palindromic way.
-     */
-    private boolean hasPalindromicPermutation(int[] digitFrequencies) {
-        // found a digit with an odd frequency?
-        boolean foundOdd = false;
-        for (int i : digitFrequencies) {
-            if ((i & 1) == 1) {
-                if (foundOdd)
-                    return false;
-                else
-                    foundOdd = true;
-            }
-        }
-        return true;
     }
 
     @Test
