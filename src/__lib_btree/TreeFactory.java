@@ -6,26 +6,38 @@ package __lib_btree;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class TreeFactory {
 
     /**
      * Build a binary tree from its breadth-first traverse result.
-     * @param values The values of ALL nodes. A value of null means the node is absent.
+     * @param values The values of all nodes except those whose parent is absent or
+     *               who would be one of the tailing nulls in the array.
+     *               A value of null means the node is absent.
      * @return the root.
      */
     public static TreeNode fromArray(Integer[] values) {
-        return fromArray(values, 0, 0, 1);
-    }
+        if (values.length == 0) return null;
 
-    static TreeNode fromArray(Integer[] values, int nodePosition, int currLayerPosition, int currLayerSize) {
-        if (nodePosition >= values.length) return null;
-        if (values[nodePosition] == null) return null;
-        int leftChildPosition = currLayerPosition + currLayerSize + 2 * (nodePosition - currLayerPosition);
-        return new TreeNode(values[nodePosition],
-                fromArray(values, leftChildPosition,
-                        currLayerPosition + currLayerSize, currLayerSize * 2),
-                fromArray(values, leftChildPosition + 1,
-                        currLayerPosition + currLayerSize, currLayerSize * 2));
+        TreeNode root = new TreeNode(values[0]);
+        Queue<TreeNode> layer = new ArrayDeque<>();
+        layer.add(root);
+
+        for (int i = 1; i < values.length; i += 2) {
+            TreeNode parent = layer.remove();
+            if (values[i] != null) {
+                parent.left = new TreeNode(values[i]);
+                layer.add(parent.left);
+            }
+            if (i + 1 < values.length && values[i + 1] != null) {
+                parent.right = new TreeNode(values[i + 1]);
+                layer.add(parent.right);
+            }
+        }
+
+        return root;
     }
 
     @Test
@@ -109,7 +121,7 @@ public class TreeFactory {
 
     @Test
     void fromArray_4layersNotFull() {
-        TreeNode root = fromArray(new Integer[]{0, 1, 2, null, 4, 5, 6, 7, 8, 9, 10, 11, null, 13, 14});
+        TreeNode root = fromArray(new Integer[]{0, 1, 2, null, 4, 5, 6, 9, 10, 11, null, 13, 14});
         Assertions.assertNotNull(root);
         Assertions.assertEquals(0, root.val);
         Assertions.assertEquals(1, root.left.val);
@@ -128,7 +140,7 @@ public class TreeFactory {
 
     @Test
     void fromArray_4layersNotBalanced() {
-        TreeNode root = fromArray(new Integer[]{0, 1, 2, 3, null, null, 6, 7, 8, 9, 10, 11, 12, 13, 14});
+        TreeNode root = fromArray(new Integer[]{0, 1, 2, 3, null, null, 6, 7, 8, 13, 14});
         Assertions.assertNotNull(root);
         Assertions.assertEquals(0, root.val);
         Assertions.assertEquals(1, root.left.val);
@@ -141,5 +153,28 @@ public class TreeFactory {
         Assertions.assertEquals(8, root.left.left.right.val);
         Assertions.assertEquals(13, root.right.right.left.val);
         Assertions.assertEquals(14, root.right.right.right.val);
+    }
+
+    @Test
+    void fromArray_6layersNotBalanced() {
+        TreeNode root = fromArray(new Integer[]{8,8,null,7,7,null,null,2,4,null,8,null,7,null,1});
+        Assertions.assertNotNull(root);
+        Assertions.assertEquals(8, root.val);
+
+        Assertions.assertEquals(8, root.val);
+
+        Assertions.assertEquals(8, root.left.val);
+        Assertions.assertNull(root.right);
+
+        Assertions.assertEquals(7, root.left.left.val);
+        Assertions.assertEquals(7, root.left.right.val);
+
+        Assertions.assertEquals(2, root.left.right.left.val);
+        Assertions.assertEquals(4, root.left.right.right.val);
+
+        Assertions.assertEquals(8, root.left.right.left.right.val);
+        Assertions.assertEquals(7, root.left.right.right.right.val);
+
+        Assertions.assertEquals(1, root.left.right.left.right.right.val);
     }
 }

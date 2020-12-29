@@ -78,15 +78,7 @@ class Solution_dfs_postorder {
 
     @Test
     void pseudoPalindromicPaths_case1() {
-        Integer[] treeValues = new Integer[]{
-                8,
-                8,null,
-                7,7,null,null,
-                null,null,2,4,null,null,null,null,
-                null,null,null,null,null,8,null,7,null,null,null,null,null,null,null,null,
-                null,null,null,null,null,null,null,null,null,null,null,1
-        };
-        // TODO simplify the treeValues to [8,8,null,7,7,null,null,2,4,null,8,null,7,null,1]
+        Integer[] treeValues = new Integer[]{8,8,null,7,7,null,null,2,4,null,8,null,7,null,1};
         Assertions.assertEquals(2, pseudoPalindromicPaths(TreeFactory.fromArray(treeValues)));
     }
 }

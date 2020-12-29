@@ -15,7 +15,7 @@ public class SolutionTest {
 
     @Test
     void getHeight() {
-        TreeNode root = TreeFactory.fromArray(new Integer[]{0, 1, 2, 3, null, null, 6, 7, 8, 9, 10, 11, 12, 13, 14});
+        TreeNode root = TreeFactory.fromArray(new Integer[]{0, 1, 2, 3, null, null, 6, 7, 8, 13, 14});
         Assertions.assertEquals(4, Solution.getHeight(root));
         Assertions.assertEquals(3, Solution.getHeight(root.left));
         Assertions.assertEquals(3, Solution.getHeight(root.right));
