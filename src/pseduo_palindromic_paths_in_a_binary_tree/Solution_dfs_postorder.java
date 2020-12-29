@@ -47,6 +47,12 @@ class Solution_dfs_postorder {
                 digits ^= (1 << top.right.val);
                 top = top.right;
             } else {
+                // Explanation of why express (digits & (digits - 1)) == 0 determines whether there is
+                // at least one palindromic permutation:
+                // (1) If there's at most one bit set to one, then there can be palindromic permutations.
+                // (2) If the bits is a power of two, then there's at most one bit set to one.
+                // (3) If x & (x - 1) == 0, then x is a power of two.
+                // See also https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/solution/
                 if (top.left == null && top.right == null && (digits & (digits - 1)) == 0)
                     ++cnt;
                 // go back
