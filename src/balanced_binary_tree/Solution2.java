@@ -10,6 +10,8 @@
  */
 package balanced_binary_tree;
 
+import __lib_btree.TreeNode;
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
