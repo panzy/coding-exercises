@@ -10,41 +10,68 @@ import java.util.stream.Collectors;
 /**
  * Implement a binary-tree traversal API with various algorithms: DFS(with 3 orders), BFS and Backtracking.
  *
+ * Some of the traversal methods have an generic API and are designed to be able to solve problems. See
+ * {@link pseduo_palindromic_paths_in_a_binary_tree.Solution_dfs_preorder_api} and
+ * {@link pseduo_palindromic_paths_in_a_binary_tree.Solution_dfs_postorder_api} for examples.
  * --
  * Zhiyong Pan, 2020-12-30
  */
 public class Traversal {
 
     /**
-     * Listen for node events during traversal.
-     * @param <Result>
+     * Used to receive nodes in traversal.
+     * @param <R>
      */
-    public interface Listener<Result> {
+    public interface SimpleListener<R> {
         /** A node is outputted. */
         void onNode(TreeNode node);
-        default Result onDone() { return null; };
+        default R onDone() { return null; };
+    }
+
+    /**
+     * As well as receiving nodes, the client is allowed to attach extra data to a node.
+     *
+     * The extra-data idea is similar to a reduce procedure. The client provides the extra data for the root node
+     * then for each other nodes, he calculates its extra data based on the node itself and the parent node's extra data.
+     *
+     * @param <X> User data attached to tree nodes.
+     * @param <R> Return type of onDone().
+     */
+    public interface XDataListener<X, R> {
+        /**
+         * A node is outputted.
+         * @param node the node been output.
+         * @param parentXData this node's parent's extra data.
+         * @return this node's extra data.
+         */
+        X onNode(TreeNode node, X parentXData);
+        default R onDone() { return null; };
     }
 
     /**
      * For backtracking traversal, it's also possible to get every nodes on the path towards a leaf.
-     * @param <Result>
+     * @param <R> Return type of onDone().
      */
-    public interface BacktrackingListener<Result> extends Listener<Result> {
+    public interface BacktrackingListener<R> {
+        void onNode(TreeNode node);
+
         /** Current path grows: a non-leaf node is appended to it. */
         default void onPathNodeEnter(TreeNode node) {};
 
         /** Current path backtracks: a non-leaf node is removed from it. */
         default void onPathNodeExit(TreeNode node) {};
+
+        default R onDone() { return null; };
     }
 
     /**
      * Traverse a tree.
      * @param root root of the tree to traverse.
      * @param listener callbacks for node events.
-     * @param <ResultType> type of the return value.
+     * @param <R> type of the return value.
      * @return the value returned by {@link BacktrackingListener#onDone()}.
      */
-    public static <ResultType> ResultType backtrack(TreeNode root, BacktrackingListener<ResultType> listener) {
+    public static <R> R backtrack(TreeNode root, BacktrackingListener<R> listener) {
 
         Deque<TreeNode> path = new ArrayDeque<>();
         // The most recently popped node.
@@ -87,28 +114,28 @@ public class Traversal {
         return listener.onDone();
     }
 
-    public static <Result> Result preorder(TreeNode root, Listener<Result> listener) {
+    public static <X, R> R preorder(TreeNode root, X rootXData, XDataListener<X, R> listener) {
 
-        Deque<TreeNode> stack = new ArrayDeque<>();
-
-        stack.push(root);
+        Deque<Pair<TreeNode, X>> stack = new ArrayDeque<>();
+        stack.push(new Pair<>(root, rootXData));
 
         while (!stack.isEmpty()) {
-            root = stack.pop();
-            listener.onNode(root);
+            Pair<TreeNode, X> top = stack.pop();
+            TreeNode node = top.getKey();
+            X xData = listener.onNode(node, top.getValue());
 
-            if (root.right != null) {
-                stack.push(root.right);
+            if (node.right != null) {
+                stack.push(new Pair<>(node.right, xData));
             }
-            if (root.left != null) {
-                stack.push(root.left);
+            if (node.left != null) {
+                stack.push(new Pair<>(node.left, xData));
             }
         }
 
         return listener.onDone();
     }
 
-    public static <Result> Result inorder(TreeNode root, Listener<Result> listener) {
+    public static <R> R inorder(TreeNode root, SimpleListener<R> listener) {
 
         Deque<TreeNode> stack = new ArrayDeque<>();
         stack.push(root);
@@ -129,13 +156,14 @@ public class Traversal {
 
             if (root.left != null) {
                 stack.push(root.left);
+
             }
         }
 
         return listener.onDone();
     }
 
-    public static <Result> Result postorder(TreeNode root, Listener<Result> listener) {
+    public static <R> R postorder(TreeNode root, SimpleListener<R> listener) {
 
         Deque<TreeNode> stack = new ArrayDeque<>();
 
@@ -170,7 +198,7 @@ public class Traversal {
         return listener.onDone();
     }
 
-    public static <Result> Result bfs(TreeNode root, Listener<Result> listener) {
+    public static <R> R bfs(TreeNode root, SimpleListener<R> listener) {
 
         Queue<TreeNode> layer = new ArrayDeque<>();
         layer.add(root);
@@ -191,19 +219,35 @@ public class Traversal {
     // Unit tests below
     ////////////////////////////////////////////////////////////////////////////////
 
-    Listener<int[]> listener = new Listener() {
-        int[] output = new int[5];
-        int i = 0;
+    SimpleListener<int[]> listener = new SimpleListener<>() {
+        ArrayList<Integer> output = new ArrayList<>();
 
         @Override
         public void onNode(TreeNode node) {
-            output[i] = node.val;
-            ++i;
+            output.add(node.val);
         }
 
         @Override
         public int[] onDone() {
-            return output;
+            return output.stream().mapToInt(v -> v).toArray();
+        }
+    };
+
+    XDataListener<String, Pair<int[], String[]>> xDataListener = new XDataListener<>() {
+        ArrayList<Integer> output = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>();
+
+        @Override
+        public String onNode(TreeNode node, String parentXData) {
+            output.add(node.val);
+            if (node.left == null && node.right == null)
+                paths.add(parentXData + "-" + node.val);
+            return parentXData + "-" + node.val;
+        }
+
+        @Override
+        public Pair<int[], String[]> onDone() {
+            return new Pair(output.stream().mapToInt(v -> v).toArray(), paths.toArray(new String[paths.size()]));
         }
     };
 
@@ -272,15 +316,17 @@ public class Traversal {
     @Test
     void preorder_example1() {
         Integer[] treeValues = new Integer[]{1, 2, 5, 3, 4};
-        int[] output = preorder(TreeFactory.fromArray(treeValues), listener);
-        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, output);
+        Pair<int[], String[]> r = preorder(TreeFactory.fromArray(treeValues), "", xDataListener);
+        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, r.getKey());
+        Assertions.assertArrayEquals(new String[]{ "-1-2-3", "-1-2-4", "-1-5", }, r.getValue());
     }
 
     @Test
     void preorder_example2() {
         Integer[] treeValues = new Integer[]{1, 2, 3, null, null, 4, 5};
-        int[] output = preorder(TreeFactory.fromArray(treeValues), listener);
-        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, output);
+        Pair<int[], String[]> r = preorder(TreeFactory.fromArray(treeValues), "", xDataListener);
+        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, r.getKey());
+        Assertions.assertArrayEquals(new String[]{ "-1-2", "-1-3-4", "-1-3-5", }, r.getValue());
     }
 
     @Test

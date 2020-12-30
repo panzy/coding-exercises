@@ -7,46 +7,24 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Refactor {@link Solution_dfs_postorder} using {@link Traversal#backtrack(TreeNode, Traversal.BacktrackingListener)}.
+ * Refactor {@link Solution_dfs_postorder} using {@link Traversal#preorder}.
  *
  * --
  * Zhiyong Pan, 2020-12-30
  */
-public class Solution_dfs_postorder_api {
+public class Solution_dfs_preorder_api {
     public int pseudoPalindromicPaths (TreeNode root) {
-        return Traversal.backtrack(root, new Traversal.BacktrackingListener<>() {
+        return Traversal.preorder(root, 0, new Traversal.XDataListener<>() {
             int cnt = 0;
 
-            // The odd/even flag of the frequency of each digit in the current path.
-            // If the n-th bit is 1, then n has occurred an odd times.
-            // The bit index starts from the right end of the int.
-            int digits = 0;
-
             @Override
-            public void onPathNodeEnter(TreeNode node) {
-                digits ^= (1 << node.val);
-            }
-
-            @Override
-            public void onPathNodeExit(TreeNode node) {
-                digits ^= (1 << node.val);
-            }
-
-            @Override
-            public void onNode(TreeNode node) {
-                // Explanation of why express (digits & (digits - 1)) == 0 determines whether there is
-                // at least one palindromic permutation:
-                // (1) If there's at most one bit set to one, then there can be palindromic permutations.
-                // (2) If the bits is a power of two, then there's at most one bit set to one.
-                // (3) If x & (x - 1) == 0, then x is a power of two.
-                // See also https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/solution/
+            public Integer onNode(TreeNode node, Integer parentXData) {
                 if (node.left == null && node.right == null) {
-                    // Notice that Traversal.backtrack() doesn't put leaves into their paths.
-                    digits ^= (1 << node.val);
+                    int digits = parentXData ^ (1 << node.val);
                     if ((digits & (digits - 1)) == 0)
                         ++cnt;
-                    digits ^= (1 << node.val);
                 }
+                return parentXData ^ (1 << node.val);
             }
 
             @Override
