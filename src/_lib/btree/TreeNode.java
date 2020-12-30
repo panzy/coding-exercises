@@ -1,4 +1,4 @@
-package __lib_btree;
+package _lib.btree;
 
  public class TreeNode {
      public int val;

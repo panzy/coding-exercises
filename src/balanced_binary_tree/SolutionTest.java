@@ -3,8 +3,8 @@
  */
 package balanced_binary_tree;
 
-import __lib_btree.TreeFactory;
-import __lib_btree.TreeNode;
+import _lib.btree.TreeFactory;
+import _lib.btree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
