@@ -23,7 +23,12 @@ class Solution_dfs_postorder_api {
             int digits = 0;
 
             @Override
-            public void onPathNode(TreeNode node) {
+            public void onPathNodeEnter(TreeNode node) {
+                digits ^= (1 << node.val);
+            }
+
+            @Override
+            public void onPathNodeExit(TreeNode node) {
                 digits ^= (1 << node.val);
             }
 
@@ -35,9 +40,13 @@ class Solution_dfs_postorder_api {
                 // (2) If the bits is a power of two, then there's at most one bit set to one.
                 // (3) If x & (x - 1) == 0, then x is a power of two.
                 // See also https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/solution/
-                if (node.left == null && node.right == null && (digits & (digits - 1)) == 0)
-                    ++cnt;
-                digits ^= (1 << node.val);
+                if (node.left == null && node.right == null) {
+                    // Notice that Traversal.backtrack() doesn't put leaves into their paths.
+                    digits ^= (1 << node.val);
+                    if ((digits & (digits - 1)) == 0)
+                        ++cnt;
+                    digits ^= (1 << node.val);
+                }
             }
 
             @Override

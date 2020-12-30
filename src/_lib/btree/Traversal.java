@@ -1,11 +1,11 @@
 package _lib.btree;
 
+import _lib.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Queue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implement a binary-tree traversal API with various algorithms: DFS(with 3 orders), BFS and Backtracking.
@@ -30,7 +30,11 @@ public class Traversal {
      * @param <Result>
      */
     public interface BacktrackingListener<Result> extends Listener<Result> {
-        default void onPathNode(TreeNode node) {};
+        /** Current path grows: a non-leaf node is appended to it. */
+        default void onPathNodeEnter(TreeNode node) {};
+
+        /** Current path backtracks: a non-leaf node is removed from it. */
+        default void onPathNodeExit(TreeNode node) {};
     }
 
     /**
@@ -48,24 +52,33 @@ public class Traversal {
         TreeNode poppedNode = new TreeNode();
 
         // push the root
-        listener.onPathNode(root);
         path.push(root);
 
         TreeNode top = path.peek();
         while (top != null) {
+
             if (top.left != null && top.left != poppedNode && top.right != poppedNode) {
                 // go left
-                listener.onPathNode(top.left);
+                listener.onPathNodeEnter(top);
                 path.push(top.left);
                 top = top.left;
             } else if (top.right != null && top.right != poppedNode) {
                 // go right
-                listener.onPathNode(top.right);
+
+                // Notice that if the left child is present then the current node should have entered its path
+                // already.
+                if (top.left == null) listener.onPathNodeEnter(top);
+
                 path.push(top.right);
                 top = top.right;
             } else {
                 // go back
                 listener.onNode(top);
+
+                // If a node isn't a leaf nor the root then it should have entered its path when we backtrack from it.
+                if (top != root && (top.left != null || top.right != null))
+                    listener.onPathNodeExit(top);
+
                 poppedNode = path.pop();
                 top = path.peek();
             }
@@ -194,34 +207,66 @@ public class Traversal {
         }
     };
 
-    BacktrackingListener<int[]> backtrackingListener = new BacktrackingListener() {
-        int i = 0;
-        int[] output = new int[5];
+    BacktrackingListener<Pair<int[], int[][]>> backtrackingListener =
+            new BacktrackingListener<>() {
+                ArrayList<Integer> output = new ArrayList<>();
+                ArrayList<int[]> paths = new ArrayList<>();
+                Stack<Integer> path = new Stack<>();
 
-        @Override
-        public void onNode(TreeNode node) {
-            output[i] = node.val;
-            ++i;
-        }
+                @Override
+                public void onPathNodeEnter(TreeNode node) {
+                    path.push(node.val);
+                }
 
-        @Override
-        public int[] onDone() {
-            return output;
-        }
-    };
+                @Override
+                public void onPathNodeExit(TreeNode node) {
+                    path.pop();
+                }
+
+                @Override
+                public void onNode(TreeNode node) {
+                    output.add(node.val);
+
+                    if (node.left == null && node.right == null) {
+                        paths.add(path.stream().mapToInt(v -> v).toArray());
+                    }
+                }
+
+                @Override
+                public Pair onDone() {
+                    int[][] arr = paths.stream().collect(Collectors.toList()).toArray(new int[paths.size()][]);
+                    return new Pair(output.stream().mapToInt(v -> v).toArray(), arr);
+                }
+            };
 
     @Test
     void backtrack_example1() {
         Integer[] treeValues = new Integer[]{5, 3, 4, 1, 2};
-        int[] output = backtrack(TreeFactory.fromArray(treeValues), backtrackingListener);
-        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, output);
+        Pair<int[], int[][]> r = backtrack(TreeFactory.fromArray(treeValues), backtrackingListener);
+        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, r.getKey());
+        Assertions.assertArrayEquals(new int[]{5, 3}, r.getValue()[0]);
+        Assertions.assertArrayEquals(new int[]{5, 3}, r.getValue()[1]);
+        Assertions.assertArrayEquals(new int[]{5}, r.getValue()[2]);
     }
 
     @Test
     void backtrack_example2() {
         Integer[] treeValues = new Integer[]{5, 1, 4, null, null, 2, 3};
-        int[] output = backtrack(TreeFactory.fromArray(treeValues), backtrackingListener);
-        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, output);
+        Pair<int[], int[][]> r = backtrack(TreeFactory.fromArray(treeValues), backtrackingListener);
+        Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, r.getKey());
+        Assertions.assertArrayEquals(new int[]{5}, r.getValue()[0]);
+        Assertions.assertArrayEquals(new int[]{5, 4}, r.getValue()[1]);
+        Assertions.assertArrayEquals(new int[]{5, 4}, r.getValue()[2]);
+    }
+
+    @Test
+    void backtrack_example3() {
+        Integer[] treeValues = new Integer[]{2, 1, 1, 1, 3, null, null, null, null, null, 1};
+        Pair<int[], int[][]> r = backtrack(TreeFactory.fromArray(treeValues), backtrackingListener);
+        Assertions.assertArrayEquals(new int[]{1, 1, 3, 1, 1, 2}, r.getKey());
+        Assertions.assertArrayEquals(new int[]{2, 1}, r.getValue()[0]);
+        Assertions.assertArrayEquals(new int[]{2, 1, 3}, r.getValue()[1]);
+        Assertions.assertArrayEquals(new int[]{2}, r.getValue()[2]);
     }
 
     @Test
