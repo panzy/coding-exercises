@@ -1,67 +1,59 @@
 package pseduo_palindromic_paths_in_a_binary_tree;
 
+import _lib.btree.Traversal;
 import _lib.btree.TreeFactory;
 import _lib.btree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 /**
- * Implement postorder depth-first search with backtracking.
+ * Refactor {@link Solution_backtracking} using {@link Traversal#backtrack(TreeNode, Traversal.BacktrackingListener)}.
  *
- * Here, backtracking is easier to use than inorder DFS because the stack is also the path.
  * --
- * Zhiyong Pan, 2020-12-29
+ * Zhiyong Pan, 2020-12-30
  */
-class Solution_dfs_postorder {
+public class Solution_backtracking_api {
     public int pseudoPalindromicPaths (TreeNode root) {
-        int cnt = 0;
+        return Traversal.backtrack(root, new Traversal.BacktrackingListener<>() {
+            int cnt = 0;
 
-        // depth-first traverse the tree
+            // The odd/even flag of the frequency of each digit in the current path.
+            // If the n-th bit is 1, then n has occurred an odd times.
+            // The bit index starts from the right end of the int.
+            int digits = 0;
 
-        Deque<TreeNode> path = new ArrayDeque<>();
-        // The most recently popped node.
-        // Init it to a random so we won't confuse it with an absent child node.
-        TreeNode poppedNode = new TreeNode();
-        // The odd/even flag of the frequency of each digit in the current path.
-        // If the n-th bit is 1, then n has occurred an odd times.
-        // The bit index starts from the right end of the int.
-        int digits = 0;
+            @Override
+            public void onPathNodeEnter(TreeNode node) {
+                digits ^= (1 << node.val);
+            }
 
-        // push the root
-        path.push(root);
-        digits |= (1 << root.val);
+            @Override
+            public void onPathNodeExit(TreeNode node) {
+                digits ^= (1 << node.val);
+            }
 
-        TreeNode top = path.peek();
-        while (top != null) {
-            if (top.left != null && top.left != poppedNode && top.right != poppedNode) {
-                // go left
-                path.push(top.left);
-                digits ^= (1 << top.left.val);
-                top = top.left;
-            } else if (top.right != null && top.right != poppedNode) {
-                // go right
-                path.push(top.right);
-                digits ^= (1 << top.right.val);
-                top = top.right;
-            } else {
+            @Override
+            public void onNode(TreeNode node) {
                 // Explanation of why express (digits & (digits - 1)) == 0 determines whether there is
                 // at least one palindromic permutation:
                 // (1) If there's at most one bit set to one, then there can be palindromic permutations.
                 // (2) If the bits is a power of two, then there's at most one bit set to one.
                 // (3) If x & (x - 1) == 0, then x is a power of two.
                 // See also https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/solution/
-                if (top.left == null && top.right == null && (digits & (digits - 1)) == 0)
-                    ++cnt;
-                // go back
-                poppedNode = path.pop();
-                digits ^= (1 << top.val);
-                top = path.peek();
+                if (node.left == null && node.right == null) {
+                    // Notice that Traversal.backtrack() doesn't put leaves into their paths.
+                    digits ^= (1 << node.val);
+                    if ((digits & (digits - 1)) == 0)
+                        ++cnt;
+                    digits ^= (1 << node.val);
+                }
             }
-        }
-        return cnt;
+
+            @Override
+            public Integer onDone() {
+                return cnt;
+            }
+        });
     }
 
     @Test

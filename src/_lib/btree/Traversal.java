@@ -3,6 +3,7 @@ package _lib.btree;
 import _lib.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pseduo_palindromic_paths_in_a_binary_tree.Solution_backtracking_api;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
  *
  * Some of the traversal methods have an generic API and are designed to be able to solve problems. See
  * {@link pseduo_palindromic_paths_in_a_binary_tree.Solution_dfs_preorder_api} and
- * {@link pseduo_palindromic_paths_in_a_binary_tree.Solution_dfs_postorder_api} for examples.
+ * {@link Solution_backtracking_api} for examples.
  * --
  * Zhiyong Pan, 2020-12-30
  */

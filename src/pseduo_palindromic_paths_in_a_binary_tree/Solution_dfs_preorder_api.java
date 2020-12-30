@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Refactor {@link Solution_dfs_postorder} using {@link Traversal#preorder}.
+ * Refactor {@link Solution_backtracking} using {@link Traversal#preorder}.
  *
  * --
  * Zhiyong Pan, 2020-12-30
