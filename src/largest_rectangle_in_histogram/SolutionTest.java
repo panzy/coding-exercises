@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 class SolutionTest {
-    Solution2 solution = new Solution2();
+    Solution3 solution = new Solution3();
 
     @Test
     void largestRectangleArea_empty() {
@@ -44,6 +44,16 @@ class SolutionTest {
     }
 
     @Test
+    void largestRectangleArea_example4() {
+        Assertions.assertEquals(4, solution.largestRectangleArea(new int[]{1, 2, 2}));
+    }
+
+    @Test
+    void largestRectangleArea_example5() {
+        Assertions.assertEquals(14, solution.largestRectangleArea(new int[]{7,0,0,4,2,3,3,1,8,3,0,2,1,4,7,8}));
+    }
+
+    @Test
     void largestRectangleArea_largeN_allZero() {
         int[] hist = new int[1_000_000];
         Arrays.fill(hist, 0);
@@ -59,6 +69,12 @@ class SolutionTest {
 
     @Test
     void largestRectangleArea_monoIncreasing() {
+        int[] hist = new int[]{1, 2, 3};
+        Assertions.assertEquals(4, solution.largestRectangleArea(hist));
+    }
+
+    @Test
+    void largestRectangleArea_monoIncreasing2() {
         int[] hist = new int[10000];
         for (int i = 0; i < hist.length; ++i)
             hist[i] = i;
@@ -69,7 +85,7 @@ class SolutionTest {
 
     @Test
     void largestRectangleArea_largeN_monoIncreasing() {
-        int[] hist = new int[100_000];
+        int[] hist = new int[1_000_000];
         for (int i = 0; i < hist.length; ++i)
             hist[i] = i;
         solution.largestRectangleArea(hist);
@@ -85,11 +101,21 @@ class SolutionTest {
 
     @Test
     void largestRectangleArea_largeN_zig() {
-        int[] hist = new int[100_000];
+        int[] hist = new int[1_000_000];
+        int min = 2;
         for (int i = 0; i < hist.length; i += 2) {
             hist[i] = 5;
-            hist[i + 1] = 1;
+            hist[i + 1] = min;
         }
-        Assertions.assertEquals(100_000, solution.largestRectangleArea(hist));
+        Assertions.assertEquals(hist.length * min, solution.largestRectangleArea(hist));
+    }
+
+    @Test
+    void largestRectangleArea_largeN_random() {
+        int[] hist = new int[10_000_000];
+        for (int i = 0; i < hist.length; ++i) {
+            hist[i] = (int) (Math.random() * 1_000_000);
+        }
+        solution.largestRectangleArea(hist);
     }
 }
