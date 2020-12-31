@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 class SolutionTest {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void largestRectangleArea_empty() {
@@ -69,7 +69,7 @@ class SolutionTest {
 
     @Test
     void largestRectangleArea_largeN_monoIncreasing() {
-        int[] hist = new int[10_000];
+        int[] hist = new int[100_000];
         for (int i = 0; i < hist.length; ++i)
             hist[i] = i;
         solution.largestRectangleArea(hist);
@@ -77,9 +77,19 @@ class SolutionTest {
 
     @Test
     void largestRectangleArea_largeN_monoDecreasing() {
-        int[] hist = new int[10_000];
+        int[] hist = new int[1_000_000];
         for (int i = 0; i < hist.length; ++i)
             hist[hist.length - i - 1] = i;
         solution.largestRectangleArea(hist);
+    }
+
+    @Test
+    void largestRectangleArea_largeN_zig() {
+        int[] hist = new int[100_000];
+        for (int i = 0; i < hist.length; i += 2) {
+            hist[i] = 5;
+            hist[i + 1] = 1;
+        }
+        Assertions.assertEquals(100_000, solution.largestRectangleArea(hist));
     }
 }
