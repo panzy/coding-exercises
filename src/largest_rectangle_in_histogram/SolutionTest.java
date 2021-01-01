@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 class SolutionTest {
     Solution3 solution = new Solution3();
@@ -117,5 +118,26 @@ class SolutionTest {
             hist[i] = (int) (Math.random() * 1_000_000);
         }
         solution.largestRectangleArea(hist);
+    }
+
+    @Test
+    void crossValidate() {
+        // It is believed Solution #1 is correct so we use it to validate #3, which is much more complicated.
+        Solution solution1 = new Solution();
+        Solution3 solution3 = new Solution3();
+
+        int[] hist = new int[20];
+        for (int round = 0; round < 100; ++round) {
+            for (int i = 0; i < hist.length; ++i) {
+                hist[i] = (int) (Math.random() * 10);
+            }
+            int expected = solution1.largestRectangleArea(hist);
+            int actual = solution3.largestRectangleArea(hist);
+            System.out.printf("Validate solution #3 with solution #1, input %s, expect %d, got %d%n",
+                    Arrays.stream(hist).mapToObj(h -> Integer.toString(h)).collect(Collectors.joining(",")),
+                    expected, actual);
+
+            Assertions.assertEquals(expected, actual);
+        }
     }
 }
