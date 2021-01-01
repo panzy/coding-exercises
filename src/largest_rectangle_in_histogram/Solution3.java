@@ -27,39 +27,44 @@ public class Solution3 {
         return largestRectangleArea(heights, 0, heights.length, 0, 0);
     }
 
-    private int largestRectangleArea(int[] heights, int begin, int end, int base, int bestAnswer) {
+    /**
+     * Find the largest rectangle area between [begin, end).
+     * @param heights
+     * @param begin the first bar (inclusive).
+     * @param end the ending bar (exclusive).
+     * @param baseHeight the height of the rectangle which was laying at the bottom of this histogram and has been
+     *                  subtracted from it.
+     * @param bestAnswer the largest rectangle area that has been found in other parts so far.
+     * @return only accurate if it's not less than |bestAnswer|.
+     */
+    private int largestRectangleArea(int[] heights, int begin, int end, int baseHeight, int bestAnswer) {
 
         // trim zero bars
         while (begin + 1 < end && heights[begin] == 0) ++begin;
         while (end - 1 > begin && heights[end - 1] == 0) --end;
 
-        if (begin == end) return base;
-        if (begin + 1 == end) return base + heights[begin];
-        if (begin + 2 == end) return 2 * (base + Math.min(heights[begin], heights[begin + 1]));
+        if (begin == end) return baseHeight;
+        if (begin + 1 == end) return baseHeight + heights[begin];
+        if (begin + 2 == end) return 2 * (baseHeight + Math.min(heights[begin], heights[begin + 1]));
 
         // inspect the bars
         int minPos = begin;
         int maxPos = begin;
-        boolean incOrder = true;
-        boolean decOrder = true;
+        boolean ascOrder = true;
+        boolean descOrder = true;
         for (int i = begin + 1; i < end; ++i) {
-            if (heights[i] < heights[minPos]) {
-                minPos = i;
-            } else if (heights[i] > heights[maxPos]) {
-                maxPos = i;
-            }
-            if (heights[i - 1] < heights[i]) {
-                decOrder = false;
-            } else if (heights[i - 1] > heights[i]) {
-                incOrder = false;
-            }
+            if (heights[i] < heights[minPos]) minPos = i;
+            else if (heights[i] > heights[maxPos]) maxPos = i;
+            if (heights[i - 1] < heights[i]) descOrder = false;
+            else if (heights[i - 1] > heights[i]) ascOrder = false;
         }
 
         // shortcuts
-        if (minPos == maxPos) return (base + heights[minPos]) * (end - begin);
-        if (decOrder) return searchInOrderedBars(heights, begin, end, 1, base);
-        if (incOrder) return searchInOrderedBars(heights, end - 1, begin - 1, -1, base);
-        if ((base + heights[maxPos]) * (end - begin) < bestAnswer) return bestAnswer;
+        if (minPos == maxPos) return (baseHeight + heights[minPos]) * (end - begin);
+        if (descOrder) return searchInOrderedBars(heights, begin, end, 1, baseHeight);
+        if (ascOrder) return searchInOrderedBars(heights, end - 1, begin - 1, -1, baseHeight);
+        // don't bother calculating the accurate area if it never exceeds the best answer.
+        if ((baseHeight + heights[maxPos]) * (end - begin) < bestAnswer) return bestAnswer;
 
         int ans = bestAnswer;
         int currBase = heights[minPos];
@@ -69,7 +74,7 @@ public class Solution3 {
             for (int i = begin; i < end; ++i) {
                 heights[i] -= currBase;
             }
-            ans = Math.max(ans, (base + currBase) * (end - begin));
+            ans = Math.max(ans, (baseHeight + currBase) * (end - begin));
         }
 
         // divide & conquer
@@ -78,7 +83,7 @@ public class Solution3 {
             int j = i + 1;
             while (j < end && heights[j] != 0) ++j;
             if (j > i)
-                ans = Math.max(ans, largestRectangleArea(heights, i, j, base + currBase, ans));
+                ans = Math.max(ans, largestRectangleArea(heights, i, j, baseHeight + currBase, ans));
             i = j;
         }
 
@@ -91,13 +96,13 @@ public class Solution3 {
      * @param begin index of the highest bar
      * @param end index of the lowest bar plus |step|
      * @param step 1 if end > begin, -1 if otherwise.
-     * @param base indicates that all heights have been subtracted by |base|.
+     * @param baseHeight indicates that all heights have been subtracted by |baseHeight|.
      * @return the largest area.
      */
-    private int searchInOrderedBars(int[] heights, int begin, int end, int step, int base) {
+    private int searchInOrderedBars(int[] heights, int begin, int end, int step, int baseHeight) {
         int ans = 0;
         for (int i = begin; i != end; i += step) {
-            ans = Math.max(ans, (i + step - begin) * step * (base + heights[i]));
+            ans = Math.max(ans, (i + step - begin) * step * (baseHeight + heights[i]));
         }
         return ans;
     }
