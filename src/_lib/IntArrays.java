@@ -23,6 +23,18 @@ public abstract class IntArrays {
         return -1;
     }
 
+    public static int indexOfMax(int[] arr, int begin, int end) {
+        int m = begin;
+        for (int i = begin + 1; i < end; ++i) {
+            if (arr[i] > arr[m]) m = i;
+        }
+        return m;
+    }
+
+    public static int indexOfMax(int[] arr) {
+        return indexOfMax(arr, 0, arr.length);
+    }
+
     public static void fillRandom(int[] arr, int begin, int end, int min, int max) {
         for (int i = begin; i < end; ++i) {
             arr[i] = (int) (Math.random() * (max - min) + min);

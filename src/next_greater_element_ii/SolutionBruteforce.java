@@ -42,6 +42,13 @@ class SolutionTest {
     SolutionBruteforce solution = new SolutionBruteforce();
 
     @Test
+    void empty() {
+        int[] nums = new int[0];
+        int[] expected = new int[0];
+        Assertions.assertArrayEquals(expected, solution.nextGreaterElements(nums));
+    }
+
+    @Test
     void example1() {
         int[] nums = new int[]{1, 2, 1};
         int[] expected = new int[]{2, -1, 2};
