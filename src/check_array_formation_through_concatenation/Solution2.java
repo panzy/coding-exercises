@@ -1,5 +1,7 @@
 package check_array_formation_through_concatenation;
 
+import _lib.IntArrays;
+
 import java.util.Arrays;
 
 /**
@@ -10,7 +12,7 @@ import java.util.Arrays;
 public class Solution2 {
     public boolean canFormArray(int[] arr, int[][] pieces) {
         for (int p = 0; p < pieces.length; ++p) {
-            int i = indexOf(arr, pieces[p][0]);
+            int i = IntArrays.indexOf(arr, pieces[p][0]);
             if (i < 0 || i + pieces[p].length > arr.length)
                 return false;
             if (Arrays.compare(
@@ -19,13 +21,6 @@ public class Solution2 {
                 return false;
         }
         return true;
-    }
-
-    static int indexOf(int[] arr, int e) {
-        for (int i = 0; i < arr.length; ++i) {
-            if (arr[i] == e) return i;
-        }
-        return -1;
     }
 }
 
