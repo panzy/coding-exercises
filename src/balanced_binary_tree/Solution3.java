@@ -18,6 +18,8 @@
  *
  * Or, let isBalanced() return a structure containing a boolean and an int.
  *
+ * Another application of this idea can be seen in {@link house_robber_iii.Solution2}.
+ *
  * Performance:
  * Elapsed time when processing 5000 nodes: 1913800 nanosecond(s).
  * Elapsed time when processing 5000 nodes: 2872300 nanosecond(s).
@@ -45,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *     }
  * }
  */
-class Solution3 {
+public class Solution3 {
     public boolean isBalanced(TreeNode root) {
         return isBalanced(root, new AtomicInteger());
     }

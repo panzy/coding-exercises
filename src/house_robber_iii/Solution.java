@@ -1,9 +1,6 @@
 package house_robber_iii;
 
-import _lib.btree.TreeFactory;
 import _lib.btree.TreeNode;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
@@ -31,6 +28,12 @@ public class Solution {
             planA += rob(root.left.left);
             planA += rob(root.left.right);
             planB += rob(root.left);
+            // TODO: optimizable code.
+            //      rob(root.left) will call rob(root.left.*) again in its own recursion.
+            //      So, normally, a node will be passed to the rob() function more than once.
+            //      That's why we have used a cache.
+            //      If we can eliminate the redundant callings, then a cache of O(N) memory usage is not necessary.
+            //      The optimized code is provided in the next solution.
         }
 
         if (root.right != null) {
@@ -41,24 +44,7 @@ public class Solution {
 
         int ans = Math.max(planA, planB);
         cache.put(root, ans);
+        // TODO: it's a waste of computation to discard one of the plan's result.
         return ans;
-    }
-}
-
-class HouseRobberIII {
-    Solution solution = new Solution();
-
-    @Test
-    void example1() {
-        TreeNode root = TreeFactory.fromList(3, 2, 3, null, 3, null, 1);
-        int expected = 7;
-        Assertions.assertEquals(expected, solution.rob(root));
-    }
-
-    @Test
-    void example2() {
-        TreeNode root = TreeFactory.fromList(3, 4, 5, 1, 3, null, 1);
-        int expected = 9;
-        Assertions.assertEquals(expected, solution.rob(root));
     }
 }
