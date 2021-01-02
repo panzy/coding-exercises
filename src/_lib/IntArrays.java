@@ -1,8 +1,15 @@
 package _lib;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -75,6 +82,32 @@ public abstract class IntArrays {
 
     public static String join(int[] arr) {
         return join(arr, 0, arr.length, ",");
+    }
+
+    public static int[][] load2DFromJsonFile(String filename) throws IOException, ParseException {
+        return load2DFromJson(new FileReader(filename));
+    }
+
+    private static int[][] load2DFromJson(String text) throws IOException, ParseException {
+        return load2DFromJson(new StringReader(text));
+    }
+
+    private static int[][] load2DFromJson(Reader fileReader) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(fileReader);
+        // A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
+        JSONArray ja = (JSONArray) obj;
+        int n = ja.size();
+        int[][] a = new int[n][];
+        for (int i = 0; i < n; ++i) {
+            JSONArray jaa = (JSONArray) ja.get(i);
+            int nn = jaa.size();
+            int[] aa = new int[nn];
+            for (int j = 0; j < nn; ++j)
+                aa[j] = Integer.parseInt(jaa.get(j).toString());
+            a[i] = aa;
+        }
+        return a;
     }
 }
 
