@@ -88,7 +88,7 @@ public abstract class IntArrays {
         return load2DFromJson(new FileReader(filename));
     }
 
-    private static int[][] load2DFromJson(String text) throws IOException, ParseException {
+    public static int[][] load2DFromJson(String text) throws IOException, ParseException {
         return load2DFromJson(new StringReader(text));
     }
 
