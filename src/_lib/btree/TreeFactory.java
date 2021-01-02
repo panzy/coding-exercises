@@ -40,6 +40,10 @@ public class TreeFactory {
         return root;
     }
 
+    public static TreeNode fromList(Integer... values) {
+        return fromArray(values);
+    }
+
     @Test
     void fromArray_empty() {
         Assertions.assertNull(fromArray(new Integer[0]));
@@ -176,5 +180,14 @@ public class TreeFactory {
         Assertions.assertEquals(7, root.left.right.right.right.val);
 
         Assertions.assertEquals(1, root.left.right.left.right.right.val);
+    }
+
+    @Test
+    void fromList_example() {
+        TreeNode root = fromList(1, null, 3);
+        Assertions.assertNotNull(root);
+        Assertions.assertEquals(1, root.val);
+        Assertions.assertNull(root.left);
+        Assertions.assertEquals(3, root.right.val);
     }
 }
