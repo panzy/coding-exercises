@@ -24,8 +24,12 @@ public class Traversal {
      * @param <R>
      */
     public interface SimpleListener<R> {
-        /** A node is outputted. */
-        void onNode(TreeNode node);
+        /**
+         * A node is outputted.
+         * @param node
+         * @return true if you want to terminate the traversal.
+         */
+        boolean onNode(TreeNode node);
         default R onDone() { return null; };
     }
 
@@ -54,7 +58,7 @@ public class Traversal {
      * @param <R> Return type of onDone().
      */
     public interface BacktrackingListener<R> {
-        void onNode(TreeNode node);
+        boolean onNode(TreeNode node);
 
         /** Current path grows: a non-leaf node is appended to it. */
         default void onPathNodeEnter(TreeNode node) {};
@@ -206,7 +210,8 @@ public class Traversal {
 
         while (!layer.isEmpty()) {
             root = layer.remove();
-            listener.onNode(root);
+            if (listener.onNode(root))
+                break;
             if (root.left != null)
                 layer.add(root.left);
             if (root.right != null)
@@ -224,8 +229,9 @@ public class Traversal {
         ArrayList<Integer> output = new ArrayList<>();
 
         @Override
-        public void onNode(TreeNode node) {
+        public boolean onNode(TreeNode node) {
             output.add(node.val);
+            return false;
         }
 
         @Override
@@ -269,12 +275,13 @@ public class Traversal {
                 }
 
                 @Override
-                public void onNode(TreeNode node) {
+                public boolean onNode(TreeNode node) {
                     output.add(node.val);
 
                     if (node.left == null && node.right == null) {
                         paths.add(path.stream().mapToInt(v -> v).toArray());
                     }
+                    return false;
                 }
 
                 @Override

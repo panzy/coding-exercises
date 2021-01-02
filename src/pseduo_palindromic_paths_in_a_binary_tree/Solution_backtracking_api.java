@@ -33,7 +33,7 @@ public class Solution_backtracking_api {
             }
 
             @Override
-            public void onNode(TreeNode node) {
+            public boolean onNode(TreeNode node) {
                 // Explanation of why express (digits & (digits - 1)) == 0 determines whether there is
                 // at least one palindromic permutation:
                 // (1) If there's at most one bit set to one, then there can be palindromic permutations.
@@ -47,6 +47,7 @@ public class Solution_backtracking_api {
                         ++cnt;
                     digits ^= (1 << node.val);
                 }
+                return false;
             }
 
             @Override
