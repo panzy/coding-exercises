@@ -6,9 +6,12 @@ import java.util.Comparator;
 /**
  * Merge adjacent rectangles until it's no longer possible to do so. Slow in worst cases.
  *
+ * It doesn't work because in some cases, you can't merge any two rectangles yet the whole of them is a perfect one.
+ * For an example, so image file impossible-to-merge.png, which was taken from https://www.geogebra.org/m/z3skhnf6 .
+ *
  * Created by Zhiyong Pan on 2021-01-02.
  */
-public class Solution {
+public class SolutionFailure1 {
     public boolean isRectangleCover(int[][] rectangles) {
         // A customized comparator for rectangles.
         // Two rectangles equal if their bottom-left corners are the same.

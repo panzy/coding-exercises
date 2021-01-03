@@ -7,11 +7,15 @@ import java.util.Comparator;
 import java.util.LinkedList;
 
 /**
- * Merge adjacent rectangles until it's no longer possible to do so. Slow in worst cases.
+ * Tackle the worst scenario faced by solution (failure) #1 with a to-do list.
+ *
+ * The improvement itself somewhat works, reducing the runtime from ~6s to ~200ms.
+ * But the previous solution has been proven wrong due to a fundamental flaw in its core idea,
+ * so this improved one is incorrect anyway.
  *
  * Created by Zhiyong Pan on 2021-01-02.
  */
-public class Solution2 {
+public class SolutionFailure2 {
     // A customized comparator for rectangles.
     // Two rectangles equal if their bottom-left corners are the same.
     Comparator<int[]> compBottomAndLeft = (a, b) -> a[1] == b[1] ? a[0] - b[0] : a[1] - b[1];
