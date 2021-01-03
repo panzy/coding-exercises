@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by Zhiyong Pan on 2021-01-02.
  */
 public class PerfectRectangle {
-    SolutionFailure2 solution = new SolutionFailure2();
+    Solution solution = new Solution();
 
     @Test
     void example1() {
@@ -77,9 +77,77 @@ public class PerfectRectangle {
     }
 
     @Test
+    void example7() {
+        int[][] rectangles = new int[][]{
+                {0, 0, 3, 1},
+                {0, 1, 1, 2},
+                {0, 2, 3, 3}, // exit earlier
+                {1, 2, 3, 3}  // pretends to fill where the previous rect has left, but it's at the wrong vertical position
+        };
+        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+    }
+
+    // clone
+    @Test
+    void example8() {
+        int[][] rectangles = new int[][]{
+                {0, 0, 1, 1},
+                {0, 0, 1, 1},
+        };
+        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+    }
+
+    // inside
+    @Test
+    void example9() {
+        int[][] rectangles = new int[][]{
+                {0, 0, 5, 5},
+                {1, 1, 3, 3},
+        };
+        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+    }
+
+    // separate
+    @Test
+    void example10() {
+        int[][] rectangles = new int[][]{
+                {0, 0, 1, 1},
+                {2, 0, 3, 1},
+        };
+        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+    }
+
+    @Test
+    void example11() {
+        int[][] rectangles = new int[][]{
+                {1, 1, 2, 2}, {0, 1, 1, 2}, {1, 0, 2, 1}, {0, 2, 3, 3}, {2, 0, 3, 3}
+        };
+        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+    }
+
+    @Test
+    void example12() {
+        int[][] rectangles = new int[][]{
+                {0,0,4,1},
+                {7,0,8,2},
+                {5,1,6,3},
+                {6,0,7,2},
+                {4,0,5,1},
+                {4,2,5,3},
+                {2,1,4,3},
+                {-1,2,2,3},
+                {0,1,2,2},
+                {6,2,8,3},
+                {5,0,6,1},
+                {4,1,5,2}
+        };
+        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+    }
+
+    @Test
     void largeN_3982() throws IOException, ParseException {
         int[][] rectangles = IntArrays.load2DFromJsonFile("src/perfect_rectangle/huge-test-case.json");
-        Assertions.assertFalse(solution.isRectangleCover(rectangles));
+        Assertions.assertTrue(solution.isRectangleCover(rectangles));
     }
 
     @Test
