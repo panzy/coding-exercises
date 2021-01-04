@@ -72,10 +72,9 @@ public class Solution {
                 Rect newRect = null;
 
                 // grow existing rectangles
-                ListIterator<Rect> itr = rects.listIterator();
                 boolean exactMatched = false;
-                while (itr.hasNext()) {
-                    Rect r = itr.next();
+
+                for (Rect r : rects) {
                     if (r.bottom < y) // this rect is no longer relevant
                         continue;
                     if (left <= r.left && right >= r.right) { // widen
