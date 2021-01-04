@@ -1,6 +1,6 @@
 package maximal_rectangle;
 
-import java.util.HashMap;
+import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -39,9 +39,9 @@ public class Solution {
         LinkedList<Rect> rects = new LinkedList<>();
         int maxArea = 0;
 
+        // Use a bit set to keep track of alive rectangles.
         // key = rect vertical positions = (left << 16) | right
-        // value = rect bottom
-        HashMap<Integer, Integer> rectMap = new HashMap<>();
+        BitSet aliveRects = new BitSet(cols * cols);
 
         // scan top-down
         for (int y = 0; y < rows; ++y) {
@@ -77,7 +77,6 @@ public class Solution {
                         continue;
                     if (left <= r.left && right >= r.right) { // this rect will grow to this row
                         r.bottom = y + 1;
-                        rectMap.put((r.left << 16) | r.right, r.bottom); // update bottom in the map
                         if (left == r.left && right == r.right) {
                             assert !exactMatched;
                             exactMatched = true;
@@ -107,6 +106,7 @@ public class Solution {
                 if (r.bottom < y) {
                     maxArea = Math.max(maxArea, r.area());
                     itr.remove();
+                    aliveRects.clear((r.left << 16) | r.right);
                 }
             }
 
@@ -114,11 +114,11 @@ public class Solution {
             if (newRects.size() > 0) {
                 for (Rect r2 : newRects) {
                     int key = (r2.left << 16) | r2.right;
-                    if (!rectMap.containsKey(key) || rectMap.get(key) < r2.bottom) {
+                    if (!aliveRects.get(key)) {
                         // but wait, the actual top of this new rect might be hidden above
                         while (r2.top > 0 && allSet(matrix[r2.top - 1], r2.left, r2.right)) --r2.top;
                         rects.add(r2);
-                        rectMap.put(key, r2.bottom);
+                        aliveRects.set(key);
                     }
                 }
                 newRects.clear();
