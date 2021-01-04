@@ -47,7 +47,8 @@ public class Solution {
         for (int y = 0; y < rows; ++y) {
             char[] row = matrix[y];
 
-            LinkedList<Rect> newRects = new LinkedList<>(); // collect new rects during the iterating
+            // new rectangles created for this matrix row
+            LinkedList<Rect> newRowRects = new LinkedList<>();
 
             //
             // for each line-segment in this row
@@ -69,9 +70,8 @@ public class Solution {
                 // now we have a segment between [left, right).
 
                 // a rect with its top edge being [left, right) may or may not need to create.
-                Rect newRect = null;
+                Rect newSegmentRect = null;
 
-                // grow existing rectangles
                 boolean exactMatched = false;
 
                 for (Rect r : rects) {
@@ -87,11 +87,11 @@ public class Solution {
                         // notice that:
                         // (1) the new rect might have already been created in previous iterations,
                         // (2) the new rect top is no lower than the current one, which is wider.
-                        if (newRect == null) {
-                            newRect = new Rect(left, right, r.top, y + 1);
-                            aliveRects.put((newRect.left << 16) | newRect.right, newRect);
+                        if (newSegmentRect == null) {
+                            newSegmentRect = new Rect(left, right, r.top, y + 1);
+                            aliveRects.put((newSegmentRect.left << 16) | newSegmentRect.right, newSegmentRect);
                         } else {
-                            newRect.top = Math.min(newRect.top, r.top);
+                            newSegmentRect.top = Math.min(newSegmentRect.top, r.top);
                         }
                     } else if ((left - r.left) * (r.right - left) > 0 || (r.left - left) * (right - r.left) > 0) {
                         // where partial overlapping of two edges happens, a new rect is hidden there.
@@ -105,7 +105,7 @@ public class Solution {
                         Rect r2 = aliveRects.get(key);
                         if (r2 == null) {
                             r2 = new Rect(left2, right2, r.top, y + 1);
-                            newRects.add(r2);
+                            newRowRects.add(r2);
                             aliveRects.put(key, r2);
                         } else {
                             r2.top = Math.min(r2.top, r.top);
@@ -114,11 +114,11 @@ public class Solution {
                 }
 
                 if (!exactMatched) { // a new rect started
-                    if (newRect == null) {
-                        newRect = new Rect(left, right, y, y + 1);
-                        aliveRects.put((newRect.left << 16) | newRect.right, newRect);
+                    if (newSegmentRect == null) {
+                        newSegmentRect = new Rect(left, right, y, y + 1);
+                        aliveRects.put((newSegmentRect.left << 16) | newSegmentRect.right, newSegmentRect);
                     }
-                    newRects.add(newRect);
+                    newRowRects.add(newSegmentRect);
                 }
 
                 // move to next segment
@@ -138,9 +138,9 @@ public class Solution {
             }
 
             // append new rects
-            if (newRects.size() > 0) {
-                rects.addAll(newRects);
-                newRects.clear();
+            if (newRowRects.size() > 0) {
+                rects.addAll(newRowRects);
+                newRowRects.clear();
             }
         }
 
