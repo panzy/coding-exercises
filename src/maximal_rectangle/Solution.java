@@ -114,7 +114,7 @@ public class Solution {
             ListIterator<Rect> itr = rects.listIterator();
             while (itr.hasNext()) {
                 Rect r = itr.next();
-                if (r.bottom < y) {
+                if (r.bottom <= y) {
                     maxArea = Math.max(maxArea, r.area());
                     itr.remove();
                     aliveRects.clear((r.left << 16) | r.right);
