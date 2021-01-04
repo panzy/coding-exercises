@@ -86,7 +86,8 @@ public class Solution {
                         //      |##########| <- old rect
                         //   |%%%%%%%%%|     <- new rect
                         //      ^------^     <- another new rect
-                        newRects.add(new Rect(Math.max(left, r.left), Math.min(right, r.right), y, y + 1));
+                        // the new rect top is no lower than the old rect
+                        newRects.add(new Rect(Math.max(left, r.left), Math.min(right, r.right), r.top, y + 1));
                     }
                 }
 
