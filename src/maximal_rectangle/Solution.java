@@ -1,5 +1,6 @@
 package maximal_rectangle;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -38,6 +39,10 @@ public class Solution {
         LinkedList<Rect> rects = new LinkedList<>();
         int maxArea = 0;
 
+        // key = rect vertical positions = (left << 16) | right
+        // value = rect bottom
+        HashMap<Integer, Integer> rectMap = new HashMap<>();
+
         // scan top-down
         for (int y = 0; y < rows; ++y) {
             char[] row = matrix[y];
@@ -72,6 +77,7 @@ public class Solution {
                         continue;
                     if (left <= r.left && right >= r.right) { // this rect will grow to this row
                         r.bottom = y + 1;
+                        rectMap.put((r.left << 16) | r.right, r.bottom); // update bottom in the map
                         if (left == r.left && right == r.right) {
                             assert !exactMatched;
                             exactMatched = true;
@@ -107,10 +113,12 @@ public class Solution {
             // append new rects
             if (newRects.size() > 0) {
                 for (Rect r2 : newRects) {
-                    if (!contains(rects, r2)) {
+                    int key = (r2.left << 16) | r2.right;
+                    if (!rectMap.containsKey(key) || rectMap.get(key) < r2.bottom) {
                         // but wait, the actual top of this new rect might be hidden above
                         while (r2.top > 0 && allSet(matrix[r2.top - 1], r2.left, r2.right)) --r2.top;
                         rects.add(r2);
+                        rectMap.put(key, r2.bottom);
                     }
                 }
                 newRects.clear();
@@ -119,15 +127,6 @@ public class Solution {
 
         // reduce the rectangles to their maximal area
         return rects.stream().reduce(maxArea, (a, r) -> Math.max(a, r.area()), (a1, a2) -> Math.max(a1, a2));
-    }
-
-    private boolean contains(LinkedList<Rect> rects, Rect r) {
-        for (Rect r2 : rects) {
-            if (r2.left == r.left && r2.right == r.right && r2.bottom == r.bottom) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean allSet(char[] row, int begin, int end) {
