@@ -70,16 +70,17 @@ public class Solution {
                     Rect r = itr.next();
                     if (r.bottom < y) // this rect is no longer relevant
                         continue;
-                    if (y == r.bottom && left <= r.left && right >= r.right) { // this rect will grow to this row
+                    if (left <= r.left && right >= r.right) { // this rect will grow to this row
                         r.bottom = y + 1;
                         if (left == r.left && right == r.right) {
                             assert !exactMatched;
                             exactMatched = true;
                         }
-                    } else if (y == r.bottom && (
-                            (left - r.left) * (r.right - left) > 0)
-                            || (r.left - left) * (right - r.left) > 0) {
+                    } else if ((left - r.left) * (r.right - left) > 0 || (r.left - left) * (right - r.left) > 0) {
                         // where partial overlapping of two edges happens, a new rect is hidden there.
+                        //      |##########| <- old rect
+                        //   |%%%%%%%%%|     <- new rect
+                        //      ^------^     <- another new rect
                         newRects.add(new Rect(Math.max(left, r.left), Math.min(right, r.right), y, y + 1));
                     }
                 }
