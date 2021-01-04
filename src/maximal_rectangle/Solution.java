@@ -129,7 +129,7 @@ public class Solution {
                 while (left < cols && row[left] == '0') ++left;
             }
 
-            // remove unuseful rects
+            // remove rectangles that end by this row
             ListIterator<Rect> itr = rects.listIterator();
             while (itr.hasNext()) {
                 Rect r = itr.next();
@@ -140,7 +140,18 @@ public class Solution {
                 }
             }
 
-            // append new rects
+            // If a rect will not exceed the maximal area even when if reaches the bottom of the matrix,
+            // then it's safe to remove it.
+            itr = rects.listIterator();
+            while (itr.hasNext()) {
+                Rect r = itr.next();
+                if ((rows - r.top) * (r.right - r.left) < maxArea) {
+                    itr.remove();
+                    aliveRects.remove((r.left << 16) | r.right);
+                }
+            }
+
+            // add new rectangles to the list
             if (newRowRects.size() > 0) {
                 rects.addAll(newRowRects);
                 newRowRects.clear();
@@ -148,6 +159,8 @@ public class Solution {
         }
 
         // reduce the rectangles to their maximal area
-        return rects.stream().reduce(maxArea, (a, r) -> Math.max(a, r.area()), (a1, a2) -> Math.max(a1, a2));
+        return rects.stream().reduce(maxArea,
+                (a, r) -> Math.max(a, r.area()),
+                (a1, a2) -> Math.max(a1, a2));
     }
 }
