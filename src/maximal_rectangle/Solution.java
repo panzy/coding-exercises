@@ -4,6 +4,10 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 /**
+ * Scan rows top-down, collecting rectangles on the way.
+ *
+ * This solution was accepted but it's slow. There are too many searching in lists.
+ *
  * Created by Zhiyong Pan on 2021-01-03.
  */
 public class Solution {
@@ -31,106 +35,101 @@ public class Solution {
         int cols = matrix[0].length;
         if (cols == 0) return 0;
 
-        int ans = scanTopDown(matrix);
-
-        // flip the matrix and try again
-        flipMatrix(matrix);
-        ans = Math.max(ans, scanTopDown(matrix));
-
-        // rotate the matrix 90 degree and try again
-        char[][] mat2 = rotate90(matrix);
-        ans = Math.max(ans, scanTopDown(mat2));
-
-        // flip the rotated matrix and try again
-        flipMatrix(mat2);
-        ans = Math.max(ans, scanTopDown(mat2));
-
-        return ans;
-    }
-
-    /**
-     * Flip a matrix upside-down.
-     * @param matrix
-     */
-    private void flipMatrix(char[][] matrix) {
-        int rows = matrix.length;
-        for (int y1 = 0, y2 = rows - 1; y1 < y2; ++y1, --y2) {
-            char[] t = matrix[y1];
-            matrix[y1] = matrix[y2];
-            matrix[y2] = t;
-        }
-    }
-
-    /**
-     * Rotate a matrix by 90 degrees.
-     * @param matrix
-     * @return
-     */
-    private char[][] rotate90(char[][] matrix) {
-        int rows = matrix.length;
-        int cols = matrix[0].length;
-        char[][] m = new char[cols][rows];
-        for (int r = 0; r < rows; ++r) {
-            for (int c = 0; c < cols; ++c) {
-                m[c][r] = matrix[r][c];
-            }
-        }
-        return m;
-    }
-
-    private int scanTopDown(char[][] matrix) {
-        int rows = matrix.length;
-        int cols = matrix[0].length;
-
         LinkedList<Rect> rects = new LinkedList<>();
+        int maxArea = 0;
 
+        // scan top-down
         for (int y = 0; y < rows; ++y) {
             char[] row = matrix[y];
+
+            LinkedList<Rect> newRects = new LinkedList<>(); // collect new rects during the iterating
 
             //
             // for each line-segment in this row
             //
+            // the line-segment is defined as [left,right).
+            //
 
-            int left = 0;
+            int left = 0, right;
+
+            // search the left pos
             while (left < cols && row[left] == '0') ++left;
 
             while (left < cols) {
-                int right = left + 1;
+
+                // search the right pos
+                right = left + 1;
                 while (right < cols && row[right] == '1') ++right;
 
                 // now we have a segment between [left, right).
+
+                // grow existing rectangles
                 ListIterator<Rect> itr = rects.listIterator();
                 boolean exactMatched = false;
                 while (itr.hasNext()) {
                     Rect r = itr.next();
+                    if (r.bottom < y) // this rect is no longer relevant
+                        continue;
                     if (y == r.bottom && left <= r.left && right >= r.right) { // this rect will grow to this row
+                        r.bottom = y + 1;
                         if (left == r.left && right == r.right) {
                             assert !exactMatched;
                             exactMatched = true;
                         }
-                        r.bottom = y + 1;
+                    } else if (y == r.bottom && (
+                            (left - r.left) * (r.right - left) > 0)
+                            || (r.left - left) * (right - r.left) > 0) {
+                        // where partial overlapping of two edges happens, a new rect is hidden there.
+                        newRects.add(new Rect(Math.max(left, r.left), Math.min(right, r.right), y, y + 1));
                     }
                 }
 
                 if (!exactMatched) { // a new rect started
-                    Rect r = new Rect(left, right, y, y + 1);
-                    rects.add(r);
-                    // but wait, the actual top of this new rect might be hidden above
-                    while (r.top > 0 && allSet(matrix[r.top - 1], left, right)) --r.top;
+                    newRects.add(new Rect(left, right, y, y + 1));
                 }
 
                 // move to next segment
                 left = right + 1;
                 while (left < cols && row[left] == '0') ++left;
             }
+
+            // remove unuseful rects
+            ListIterator<Rect> itr = rects.listIterator();
+            while (itr.hasNext()) {
+                Rect r = itr.next();
+                if (r.bottom < y) {
+                    maxArea = Math.max(maxArea, r.area());
+                    itr.remove();
+                }
+            }
+
+            // append new rects
+            if (newRects.size() > 0) {
+                for (Rect r2 : newRects) {
+                    if (!contains(rects, r2)) {
+                        // but wait, the actual top of this new rect might be hidden above
+                        while (r2.top > 0 && allSet(matrix[r2.top - 1], r2.left, r2.right)) --r2.top;
+                        rects.add(r2);
+                    }
+                }
+                newRects.clear();
+            }
         }
 
-        int ans = 0;
         for (Rect r : rects) {
-            ans = Math.max(ans, r.area());
+            maxArea = Math.max(maxArea, r.area());
         }
 
-        return ans;
+        return maxArea;
+    }
+
+    private boolean contains(LinkedList<Rect> rects, Rect r) {
+        for (Rect r2 : rects) {
+            if (r2.left == r.left && r2.right == r.right && r2.bottom == r.bottom) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean allSet(char[] row, int begin, int end) {

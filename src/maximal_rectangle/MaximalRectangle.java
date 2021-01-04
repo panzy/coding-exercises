@@ -90,6 +90,15 @@ public class MaximalRectangle {
     }
 
     @Test
+    void test66_reduced() {
+        char[][] matrix = {
+                {'0','1','1','1','1','1','1','0','1','0'},
+                {'0','0','1','1','1','1','1','1','1','0'},
+        };
+        Assertions.assertEquals(10, solution.maximalRectangle(matrix));
+    }
+
+    @Test
     void test66() {
         char[][] matrix = {
                 {'0','1','1','0','0','1','0','1','0','1'},
