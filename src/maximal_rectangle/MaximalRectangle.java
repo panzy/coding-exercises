@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Created by Zhiyong Pan on 2021-01-03.
@@ -50,7 +49,22 @@ public class MaximalRectangle {
     }
 
     @Test
-    void test55() {
+    void test6() {
+        char[][] matrix = {
+                {'0','1','1','1','1','1','1','1'},
+                {'1','1','1','1','1','1','1','1'},
+                {'1','1','1','1','1','1','1','1'},
+                {'1','1','1','1','1','1','1','1'},
+                {'1','1','1','1','1','1','1','0'}
+        };
+        Assertions.assertEquals(30, solution.maximalRectangle(matrix));
+    }
+
+    /**
+     * the horizontal edges of the maximal rectangle are not standing out.
+     */
+    @Test
+    void test7() {
         char[][] matrix = {
                 {'1','1','1','1','1','1','1','1'},
                 {'1','1','1','1','1','1','1','0'},
