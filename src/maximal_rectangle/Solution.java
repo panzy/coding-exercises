@@ -96,7 +96,7 @@ public class Solution {
                         } else {
                             newSegmentRect.top = Math.min(newSegmentRect.top, r.top);
                         }
-                    } else if ((left - r.left) * (r.right - left) > 0 || (r.left - left) * (right - r.left) > 0) {
+                    } else if ((left < r.left && r.left < right) || (r.left < left && left < r.right)) {
                         // where partial overlapping of two edges happens, a new rect is hidden there.
                         //      |##########| <- old rect
                         //   |%%%%%%%%%|     <- new rect
