@@ -116,11 +116,8 @@ public class Solution {
             }
         }
 
-        for (Rect r : rects) {
-            maxArea = Math.max(maxArea, r.area());
-        }
-
-        return maxArea;
+        // reduce the rectangles to their maximal area
+        return rects.stream().reduce(maxArea, (a, r) -> Math.max(a, r.area()), (a1, a2) -> Math.max(a1, a2));
     }
 
     private boolean contains(LinkedList<Rect> rects, Rect r) {
