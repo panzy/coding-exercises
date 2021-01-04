@@ -1,6 +1,6 @@
 package maximal_rectangle;
 
-import java.util.BitSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -39,9 +39,9 @@ public class Solution {
         LinkedList<Rect> rects = new LinkedList<>();
         int maxArea = 0;
 
-        // Use a bit set to keep track of alive rectangles.
+        // Use a hash map to keep track of alive rectangles.
         // key = rect vertical positions = (left << 16) | right
-        BitSet aliveRects = new BitSet(cols * cols);
+        HashMap<Integer, Rect> aliveRects = new HashMap();
 
         // scan top-down
         for (int y = 0; y < rows; ++y) {
@@ -87,22 +87,38 @@ public class Solution {
                         // notice that:
                         // (1) the new rect might have already been created in previous iterations,
                         // (2) the new rect top is no lower than the current one, which is wider.
-                        if (newRect == null)
+                        if (newRect == null) {
                             newRect = new Rect(left, right, r.top, y + 1);
-                        else
+                            aliveRects.put((newRect.left << 16) | newRect.right, newRect);
+                        } else {
                             newRect.top = Math.min(newRect.top, r.top);
+                        }
                     } else if ((left - r.left) * (r.right - left) > 0 || (r.left - left) * (right - r.left) > 0) {
                         // where partial overlapping of two edges happens, a new rect is hidden there.
                         //      |##########| <- old rect
                         //   |%%%%%%%%%|     <- new rect
                         //      ^------^     <- another new rect
                         // the new rect top is no lower than the old rect
-                        newRects.add(new Rect(Math.max(left, r.left), Math.min(right, r.right), r.top, y + 1));
+                        int left2 = Math.max(left, r.left);
+                        int right2 = Math.min(right, r.right);
+                        int key = (left2 << 16) | right2;
+                        Rect r2 = aliveRects.get(key);
+                        if (r2 == null) {
+                            r2 = new Rect(left2, right2, r.top, y + 1);
+                            newRects.add(r2);
+                            aliveRects.put(key, r2);
+                        } else {
+                            r2.top = Math.min(r2.top, r.top);
+                        }
                     }
                 }
 
                 if (!exactMatched) { // a new rect started
-                    newRects.add(newRect == null ? new Rect(left, right, y, y + 1) : newRect);
+                    if (newRect == null) {
+                        newRect = new Rect(left, right, y, y + 1);
+                        aliveRects.put((newRect.left << 16) | newRect.right, newRect);
+                    }
+                    newRects.add(newRect);
                 }
 
                 // move to next segment
@@ -117,19 +133,13 @@ public class Solution {
                 if (r.bottom <= y) {
                     maxArea = Math.max(maxArea, r.area());
                     itr.remove();
-                    aliveRects.clear((r.left << 16) | r.right);
+                    aliveRects.remove((r.left << 16) | r.right);
                 }
             }
 
             // append new rects
             if (newRects.size() > 0) {
-                for (Rect r2 : newRects) {
-                    int key = (r2.left << 16) | r2.right;
-                    if (!aliveRects.get(key)) {
-                        rects.add(r2);
-                        aliveRects.set(key);
-                    }
-                }
+                rects.addAll(newRects);
                 newRects.clear();
             }
         }
