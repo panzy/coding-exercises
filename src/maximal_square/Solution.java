@@ -5,7 +5,13 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 /**
- * Adapted from {@link maximal_rectangle.Solution}.
+ * This solution was copied from the my solution to another question, Maximal Rectangle, and the only other modification
+ * other than renaming the member function from "maximalRectangle" to "maximalSquare" was changing the {@link Rect#area()},
+ * making it return the area of a square that the rectangle can be cropped to.
+ *
+ * Although it's not very efficient, it's fun to conquer another problem with such little modification.
+ *
+ * Adapted from {@link maximal_rectangle.Solution}, git commit 4e5d63ef7fad7542fd2c6cb9a2edeadf5bb1905c.
  *
  * Created by Zhiyong Pan on 2021-01-04.
  */
@@ -24,11 +30,12 @@ public class Solution {
         }
 
         int area() {
-            return (right - left) * (bottom - top);
+            int size = Math.min(right - left, bottom - top);
+            return size * size;
         }
     }
 
-    public int maximalRectangle(char[][] matrix) {
+    public int maximalSquare(char[][] matrix) {
         int rows = matrix.length;
         if (rows == 0) return 0;
         int cols = matrix[0].length;

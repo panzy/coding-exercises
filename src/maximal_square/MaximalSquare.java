@@ -21,31 +21,31 @@ public class MaximalSquare {
                 {'1','1','1','1','1'},
                 {'1','0','0','1','0'}
         };
-        Assertions.assertEquals(6, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(4, solution.maximalSquare(matrix));
     }
 
     @Test
     void example2() {
         char[][] matrix = { };
-        Assertions.assertEquals(0, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(0, solution.maximalSquare(matrix));
     }
 
     @Test
     void example3() {
         char[][] matrix = {{'0'}};
-        Assertions.assertEquals(0, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(0, solution.maximalSquare(matrix));
     }
 
     @Test
     void example4() {
         char[][] matrix = {{'1'}};
-        Assertions.assertEquals(1, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(1, solution.maximalSquare(matrix));
     }
 
     @Test
     void example5() {
         char[][] matrix = {{'0', '0'}};
-        Assertions.assertEquals(0, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(0, solution.maximalSquare(matrix));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class MaximalSquare {
                 {'1','1','1','1','1','1','1','1'},
                 {'1','1','1','1','1','1','1','0'}
         };
-        Assertions.assertEquals(30, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(25, solution.maximalSquare(matrix));
     }
 
     /**
@@ -72,7 +72,7 @@ public class MaximalSquare {
                 {'1','1','1','1','1','0','0','0'},
                 {'0','1','1','1','1','0','0','0'}
         };
-        Assertions.assertEquals(21, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(16, solution.maximalSquare(matrix));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class MaximalSquare {
                 {'1','1','1','1'},
                 {'1','1','1','0'}
         };
-        Assertions.assertEquals(12, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(9, solution.maximalSquare(matrix));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class MaximalSquare {
                 {'0','1','1','1','1','1','1','0','1','0'},
                 {'0','0','1','1','1','1','1','1','1','0'},
         };
-        Assertions.assertEquals(10, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(4, solution.maximalSquare(matrix));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class MaximalSquare {
                 {'1','1','0','1','1','0','0','1','1','1'},
                 {'0','1','0','1','1','0','1','0','1','1'}
         };
-        Assertions.assertEquals(10, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(4, solution.maximalSquare(matrix));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class MaximalSquare {
                 {'0','1','1','1','1','1'},
                 {'1','1','0','1','1','1'}
         };
-        Assertions.assertEquals(8, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(4, solution.maximalSquare(matrix));
     }
 
     @Test
@@ -140,6 +140,6 @@ public class MaximalSquare {
             }
         }
 
-        Assertions.assertEquals(48, solution.maximalRectangle(matrix));
+        Assertions.assertEquals(36, solution.maximalSquare(matrix));
     }
 }
