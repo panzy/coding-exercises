@@ -68,6 +68,9 @@ public class Solution {
 
                 // now we have a segment between [left, right).
 
+                // a rect with its top edge being [left, right) may or may not need to create.
+                Rect newRect = null;
+
                 // grow existing rectangles
                 ListIterator<Rect> itr = rects.listIterator();
                 boolean exactMatched = false;
@@ -75,12 +78,20 @@ public class Solution {
                     Rect r = itr.next();
                     if (r.bottom < y) // this rect is no longer relevant
                         continue;
-                    if (left <= r.left && right >= r.right) { // this rect will grow to this row
+                    if (left <= r.left && right >= r.right) { // widen
                         r.bottom = y + 1;
                         if (left == r.left && right == r.right) {
                             assert !exactMatched;
                             exactMatched = true;
                         }
+                    } else if (left >= r.left && right <= r.right) { // narrow
+                        // notice that:
+                        // (1) the new rect might have already been created in previous iterations,
+                        // (2) the new rect top is no lower than the current one, which is wider.
+                        if (newRect == null)
+                            newRect = new Rect(left, right, r.top, y + 1);
+                        else
+                            newRect.top = Math.min(newRect.top, r.top);
                     } else if ((left - r.left) * (r.right - left) > 0 || (r.left - left) * (right - r.left) > 0) {
                         // where partial overlapping of two edges happens, a new rect is hidden there.
                         //      |##########| <- old rect
@@ -92,7 +103,7 @@ public class Solution {
                 }
 
                 if (!exactMatched) { // a new rect started
-                    newRects.add(new Rect(left, right, y, y + 1));
+                    newRects.add(newRect == null ? new Rect(left, right, y, y + 1) : newRect);
                 }
 
                 // move to next segment
@@ -116,8 +127,6 @@ public class Solution {
                 for (Rect r2 : newRects) {
                     int key = (r2.left << 16) | r2.right;
                     if (!aliveRects.get(key)) {
-                        // but wait, the actual top of this new rect might be hidden above
-                        while (r2.top > 0 && allSet(matrix[r2.top - 1], r2.left, r2.right)) --r2.top;
                         rects.add(r2);
                         aliveRects.set(key);
                     }
@@ -128,13 +137,5 @@ public class Solution {
 
         // reduce the rectangles to their maximal area
         return rects.stream().reduce(maxArea, (a, r) -> Math.max(a, r.area()), (a1, a2) -> Math.max(a1, a2));
-    }
-
-    private boolean allSet(char[] row, int begin, int end) {
-        for (int i = begin; i < end; ++i) {
-            if (row[i] != '1')
-                return false;
-        }
-        return true;
     }
 }
