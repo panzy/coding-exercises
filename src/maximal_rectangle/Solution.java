@@ -72,11 +72,14 @@ public class Solution {
                 // a rect with its top edge being [left, right) may or may not need to create.
                 Rect newSegmentRect = null;
 
+                // if an existing rect sitting exactly between [left, right) has been found.
                 boolean exactMatched = false;
 
                 for (Rect r : rects) {
-                    if (r.bottom < y) // this rect is no longer relevant
-                        continue;
+
+                    // all other rectangles should have been removed from the list
+                    assert r.bottom == y || r.bottom == y + 1;
+
                     if (left <= r.left && right >= r.right) { // widen
                         r.bottom = y + 1;
                         if (left == r.left && right == r.right) {
