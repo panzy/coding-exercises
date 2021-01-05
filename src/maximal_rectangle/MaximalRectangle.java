@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by Zhiyong Pan on 2021-01-03.
  */
 public class MaximalRectangle {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
@@ -125,6 +125,22 @@ public class MaximalRectangle {
                 {'1','1','0','1','1','1'}
         };
         Assertions.assertEquals(8, solution.maximalRectangle(matrix));
+    }
+
+    @Test
+    void test66_B() throws IOException, ParseException {
+        int[][] m = IntArrays.load2DFromJsonFile("./src/maximal_rectangle/test-case-66.json");
+        int rows = m.length;
+        int cols = m[0].length;
+        char[][] matrix = new char[rows][];
+        for (int i = 0; i < rows; ++i) {
+            matrix[i] = new char[cols];
+            for (int j = 0; j < cols; ++j) {
+                matrix[i][j] = m[i][j] == 1 ? '1' : '0';
+            }
+        }
+
+        Assertions.assertEquals(114, solution.maximalRectangle(matrix));
     }
 
     @Test

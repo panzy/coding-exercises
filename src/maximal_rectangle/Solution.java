@@ -9,6 +9,12 @@ import java.util.ListIterator;
  *
  * This solution was accepted but it's slow. There are too many searching in lists.
  *
+ * (Update 2020-01-04) I chose to record rectangles in a list because I didn't realize that each point in the matrix
+ * determine only one rectangle. So it's possible to record the rectangles in an 2D array with the index being
+ * [row][col]. Of course, there may be multiple points determining a same rectangle but that's not an issue because
+ * maintaining these rectangles is very costless. On the other hand, maintaining rectangles in a linked list is
+ * expensive, even though there are no duplicates and unuseful ones are removed as soon as possible.
+ *
  * Created by Zhiyong Pan on 2021-01-03.
  */
 public class Solution {
