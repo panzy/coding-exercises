@@ -6,6 +6,8 @@ import java.util.Arrays;
  * Learned this amazing approach from this post:
  * https://leetcode.com/problems/maximal-rectangle/discuss/979263/C%2B%2B-DP-solution-99.07-faster-using-the-idea-of-Largest-Rect-in-Histogram
  *
+ * The concept that there is a m:1 relationship between point and rectangle is illustrated in point-to-rectangle.png.
+ *
  * Created by Zhiyong Pan on 2021-01-04.
  */
 public class Solution2 {
