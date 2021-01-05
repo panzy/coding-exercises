@@ -23,8 +23,9 @@ public class Solution {
         while (p != null) {
             q = p.next;
             if (q != null && q.val == p.val) {
-                while (q != null && q.val == p.val)
+                do {
                     q = q.next;
+                } while (q != null && q.val == p.val);
                 prev.next = p = q;
             } else {
                 prev = p;
