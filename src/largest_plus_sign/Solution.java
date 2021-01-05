@@ -8,6 +8,11 @@ import java.util.BitSet;
  *
  * Consider each cell as a centroid so we can iterate all the plus signs.
  *
+ * This problem requires less computation than the rectangle one does because the shape of a plus sign is for less
+ * flexible than a rectangle. For instance, during the Dynamic Planning, when we've got an answer of 5, then we know
+ * it's safe to ignore the last 5 rows, and for each other row, it's safe to ignore the heading 5 and tailing 5 cells.
+ * Improvement based on this insight helped this program beats 100% of Java submissions in runtime (was 78% before).
+ *
  * Created by Zhiyong Pan on 2021-01-05.
  */
 public class Solution {
@@ -41,7 +46,8 @@ public class Solution {
         // -- this is where this problem is simpler than the rectangle one.
         // So they will being built from scratch for each row and we don't have to init them now.
 
-        for (int r = 0; r < N; ++r) {
+        // notice that we don't bother checking the last several rows who won't have enough depth.
+        for (int r = 0; r < N - ans; ++r) {
 
             // update height and left
             for (int c = 0, segmentBegin = 0; c < N; ++c) {
@@ -65,8 +71,9 @@ public class Solution {
                 }
             }
 
-            // collect the maximal plus size produced by this row
-            for (int c = 0; c < N; ++c) {
+            // collect the maximal plus size produced by this row.
+            // notice that we don't bother checking those cells who won't have enough left arms or right arms.
+            for (int c = ans; c < N - ans; ++c) {
                 int size = height[c];
                 if (size <= ans)
                     continue;
@@ -92,6 +99,9 @@ public class Solution {
                 }
 
                 ans = Math.max(ans, size);
+
+                if (ans == r + 1) // won't get any better answer in this row
+                    break;
             }
         }
 

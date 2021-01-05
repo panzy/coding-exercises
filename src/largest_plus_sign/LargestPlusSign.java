@@ -172,10 +172,74 @@ public class LargestPlusSign {
     }
 
     @Test
-    void test45() {
+    void example4_A() {
+        int[][] mines = {{0, 0}};
+        int N = 3;
+        int expected = 2;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_B() {
         int[][] mines = {{0, 1}};
         int N = 3;
         int expected = 1;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_C() {
+        int[][] mines = {{0, 2}};
+        int N = 3;
+        int expected = 2;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_D() {
+        int[][] mines = {{1, 0}};
+        int N = 3;
+        int expected = 1;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_E() {
+        int[][] mines = {{1, 1}};
+        int N = 3;
+        int expected = 1;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_F() {
+        int[][] mines = {{2, 1}};
+        int N = 3;
+        int expected = 1;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_G() {
+        int[][] mines = {{2, 0}};
+        int N = 3;
+        int expected = 2;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_H() {
+        int[][] mines = {{2, 1}};
+        int N = 3;
+        int expected = 1;
+        Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
+    }
+
+    @Test
+    void example4_I() {
+        int[][] mines = {{2, 2}};
+        int N = 3;
+        int expected = 2;
         Assertions.assertEquals(expected, solution.orderOfLargestPlusSign(N, mines));
     }
 }
