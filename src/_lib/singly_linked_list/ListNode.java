@@ -1,4 +1,4 @@
-package _lib.sinly_linked_list;
+package _lib.singly_linked_list;
 
 /**
  * Created by Zhiyong Pan on 2021-01-04.
