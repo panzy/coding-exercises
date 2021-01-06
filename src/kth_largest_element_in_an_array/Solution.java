@@ -9,8 +9,18 @@ import java.util.PriorityQueue;
  */
 public class Solution {
     public int findKthLargest(int[] nums, int k) {
-        // a max heap
-        PriorityQueue<Integer> heap = new PriorityQueue<>(k, (a, b) -> b - a);
+        PriorityQueue<Integer> heap;
+
+        // use a min heap or a max heap depending on where is k in the array's index range.
+        if (k <= nums.length / 2) {
+            // use a max heap
+            heap = new PriorityQueue<>(k, (a, b) -> b - a);
+        } else {
+            // use a min heap
+            // Turn the problem into "find the (n-k+1)-th smallest element".
+            k = nums.length - k + 1;
+            heap = new PriorityQueue<>(k);
+        }
 
         for (int i : nums) {
             heap.add(i);
