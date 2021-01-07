@@ -3,6 +3,8 @@ package subarrays_with_k_different_integers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 /**
  * Created by Zhiyong Pan on 2021-01-07.
  */
@@ -32,5 +34,13 @@ public class SubarraysWithKDifferentIntegers {
     @Test
     void test28() {
         Assertions.assertEquals(8, solution.subarraysWithKDistinct(new int[]{2, 1, 1, 1, 2}, 1));
+    }
+
+    // large-scale worst case
+    @Test
+    void largeN() {
+        int[] A = new int[20000];
+        Arrays.fill(A, 1);
+        Assertions.assertEquals(200010000, solution.subarraysWithKDistinct(A, 1));
     }
 }
