@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Created by Zhiyong Pan on 2021-01-07.
  */
 public class SubarraysWithKDifferentIntegers {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
