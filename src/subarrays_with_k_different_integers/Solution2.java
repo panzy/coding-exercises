@@ -38,9 +38,8 @@ public class Solution2 {
         // [i, j) is the range of the sliding window;
         // cnt is the distinct count of numbers in the sliding window.
         // Init the window to [0, 1).
-        int i = 0, j = 1;
-        int ans = K == 1 ? 1 : 0;
-        win.add(A[0]);
+        int i = 0, j = 0;
+        int ans = 0;
 
         while (j < n) {
             // add [j] to the window

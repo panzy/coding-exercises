@@ -6,7 +6,7 @@ import java.util.HashMap;
  * Optimized upon the previous solution.
  *
  * Instead of using one sliding window, this time we use two: [i, j) and [i2, j),
- * with [i, j) being the longest good subarray that ends at j, and [i2, j) being the shortest.
+ * with [i, j) being the longest good subarray that ends at j, and [i2 - 1, j) being the shortest.
  *
  * By introducing another window ends at the same point, we recognize that
  * for every int p between i and i2, [p, j) is a good, nested subarray.
@@ -32,25 +32,19 @@ public class Solution3 {
             if (nums.get(x) == 0)
                 --distinctCount;
         }
-
-        int query(int x) {
-            return nums.getOrDefault(x, 0);
-        }
     }
 
     public int subarraysWithKDistinct(int[] A, int K) {
-        Window win = new Window(); // longest
-        Window win2 = new Window(); // shortest
+        Window win = new Window(); // the longest, valid window
+        Window win2 = new Window(); // the next window beside the shortest, valid window.
 
         int n = A.length;
 
         // [i, j) is the range of the sliding window;
         // cnt is the distinct count of numbers in the sliding window.
         // Init the window to [0, 1).
-        int i = 0, i2 = 0, j = 1;
-        int ans = K == 1 ? 1 : 0;
-        win.add(A[0]);
-        win2.add(A[0]);
+        int i = 0, i2 = 0, j = 0;
+        int ans = 0;
 
         while (j < n) {
             // add [j] to the window
@@ -62,16 +56,13 @@ public class Solution3 {
             while (win.distinctCount > K) {
                 win.remove(A[i++]);
             }
-            while (win2.distinctCount > K) {
-                win2.remove(A[i2++]);
-            }
-            while (win2.query(A[i2]) > 1) {
+            while (win2.distinctCount >= K) {
                 win2.remove(A[i2++]);
             }
 
             // Found a good subarray?
             if (win.distinctCount == K) {
-                ans += 1 + (i2 - i);
+                ans += (i2 - i);
             }
         }
 
