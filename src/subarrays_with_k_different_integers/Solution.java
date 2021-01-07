@@ -3,6 +3,7 @@ package subarrays_with_k_different_integers;
 import _lib.IntArrays;
 
 import java.util.HashMap;
+import java.util.function.BiFunction;
 
 /**
  * Use two pointers to define a sliding window [i, j), a hash map to record which numbers occurs how many times
@@ -29,6 +30,9 @@ public class Solution {
         nums.put(A[0], 1);
 //        if (ans == 1) dump(A, i, j, ans);
 
+        BiFunction<Integer, Integer, Integer> incCounter = (k, v) -> v + 1;
+        BiFunction<Integer, Integer, Integer> decCounter = (k, v) -> v - 1;
+
         while (j < n) {
             // add [j] to the window
             int c = A[j++];
@@ -36,13 +40,13 @@ public class Solution {
                 nums.put(c, 1);
                 ++cnt;
             } else {
-                nums.compute(c, (k, v) -> v + 1);
+                nums.compute(c, incCounter);
             }
 
             // If the window contains too many distinct numbers, increase i.
             while (cnt > K) {
                 assert nums.get(A[i]) > 0;
-                nums.compute(A[i], (k, v) -> v - 1);
+                nums.compute(A[i], decCounter);
                 if (nums.get(A[i]) == 0) {
                     --cnt;
                 }
@@ -57,14 +61,14 @@ public class Solution {
                 // temporarily increase i to find other good subarrays that ends at j, if there are any.
                 int iBak = i;
                 while (i < j && nums.get(A[i]) > 1) {
-                    nums.compute(A[i], (k, v) -> v - 1);
+                    nums.compute(A[i], decCounter);
                     ++i;
                     ++ans;
 //                    dump(A, i, j, ans);
                 }
                 // restore i
                 while (i > iBak) {
-                    nums.compute(A[--i], (k, v) -> v + 1);
+                    nums.compute(A[--i], incCounter);
                 }
                 assert i == iBak;
             }
