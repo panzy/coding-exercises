@@ -1,35 +1,45 @@
 package subarrays_with_k_different_integers;
 
-import java.util.BitSet;
+import _lib.IntArrays;
+
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
- * Use two pointers to define a sliding window [i, j), and a bit set to mark which characters present in that range.
+ * Use two pointers to define a sliding window [i, j), a hash map to record which numbers occurs how many times
+ * in that window, and a counter of the distinct numbers.
  *
- * Everytime ++j, ++i zero or any times to keep the characters between [i, j) unique.
+ * We keep the window as long as possible (with the distinct count not exceeding K).
+ *
+ * For nested good subarrays, we establish this rule to enumerate them: every subarray aligns to a window's right edge.
  *
  * Created by Zhiyong Pan on 2021-01-07.
  */
 public class Solution {
     public int subarraysWithKDistinct(int[] A, int K) {
+        // how many times does each number occurs in the sliding window?
         HashMap<Integer, Integer> nums = new HashMap<>();
+
         int n = A.length;
 
+        // [i, j) is the range of the sliding window;
+        // cnt is the distinct count of numbers in the sliding window.
+        // Init the window to [0, 1).
         int i = 0, j = 1, cnt = 1;
+        int ans = K == 1 ? 1 : 0;
         nums.put(A[0], 1);
-
-        int ans = 0;
+        if (ans == 1) dump(A, i, j, ans);
 
         while (j < n) {
+            // add [j] to the window
             int c = A[j++];
-            if (!nums.containsKey(c)) {
+            if (!nums.containsKey(c) || nums.get(c) == 0) {
                 nums.put(c, 1);
                 ++cnt;
             } else {
                 nums.compute(c, (k, v) -> v + 1);
             }
 
+            // If the window contains too many distinct numbers, increase i.
             while (cnt > K) {
                 assert nums.get(A[i]) > 0;
                 nums.compute(A[i], (k, v) -> v - 1);
@@ -39,12 +49,31 @@ public class Solution {
                 ++i;
             }
 
+            // Found a good subarray?
             if (cnt == K) {
                 ++ans;
-                System.out.printf("#%d [%d, %d)%n", ans, i, j);
+                dump(A, i, j, ans);
+
+                // temporarily increase i to find other good subarrays that ends at j, if there are any.
+                int iBak = i;
+                while (i < j && nums.get(A[i]) > 1) {
+                    nums.compute(A[i], (k, v) -> v - 1);
+                    ++i;
+                    ++ans;
+                    dump(A, i, j, ans);
+                }
+                // restore i
+                while (i > iBak) {
+                    nums.compute(A[--i], (k, v) -> v + 1);
+                }
+                assert i == iBak;
             }
         }
 
         return ans;
+    }
+
+    private static void dump(int[] A, int i, int j, int no) {
+        System.out.printf("#%d [%d, %d) {%s}%n", no, i, j, IntArrays.join(A, i, j, ", "));
     }
 }
