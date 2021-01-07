@@ -23,6 +23,8 @@ public class Solution {
 
         while (j < n) {
             char c = s.charAt(j++);
+            // TODO this inner loop could be optimized out if we knew where exactly the previous |c| was.
+            // See next solution.
             while (chars.get(c)) {
                 chars.clear(s.charAt(i++));
             }

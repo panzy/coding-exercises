@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
  * Created by Zhiyong Pan on 2021-01-07.
  */
 public class LongestSubstring {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
@@ -42,5 +42,10 @@ public class LongestSubstring {
     @Test
     void example7() {
         Assertions.assertEquals(6, solution.lengthOfLongestSubstring("ab ~@6b"));
+    }
+
+    @Test
+    void test138() {
+        Assertions.assertEquals(2, solution.lengthOfLongestSubstring("abba"));
     }
 }
