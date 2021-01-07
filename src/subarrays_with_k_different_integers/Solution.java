@@ -27,7 +27,7 @@ public class Solution {
         int i = 0, j = 1, cnt = 1;
         int ans = K == 1 ? 1 : 0;
         nums.put(A[0], 1);
-        if (ans == 1) dump(A, i, j, ans);
+//        if (ans == 1) dump(A, i, j, ans);
 
         while (j < n) {
             // add [j] to the window
@@ -52,7 +52,7 @@ public class Solution {
             // Found a good subarray?
             if (cnt == K) {
                 ++ans;
-                dump(A, i, j, ans);
+//                dump(A, i, j, ans);
 
                 // temporarily increase i to find other good subarrays that ends at j, if there are any.
                 int iBak = i;
@@ -60,7 +60,7 @@ public class Solution {
                     nums.compute(A[i], (k, v) -> v - 1);
                     ++i;
                     ++ans;
-                    dump(A, i, j, ans);
+//                    dump(A, i, j, ans);
                 }
                 // restore i
                 while (i > iBak) {
