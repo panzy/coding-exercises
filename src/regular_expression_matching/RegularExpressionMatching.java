@@ -69,17 +69,51 @@ public class RegularExpressionMatching {
 
     @Test
     void example12() {
-        Assertions.assertTrue(solution.isMatch("abc!@#", "a*b*.*..."));
-        Assertions.assertTrue(solution.isMatch("abc!@#", "a*b*.*.*..."));
+        Assertions.assertTrue(solution.isMatch("abcxyz", "a*b*.*..."));
     }
 
     @Test
-    void preprocessPattern_example1() {
-        Assertions.assertEquals("a*b", Solution.Pattern.preprocessPattern("a*ab"));
+    void example13() {
+        Assertions.assertTrue(solution.isMatch("abcxyz", "a*b*.*.*..."));
     }
 
     @Test
-    void preprocessPattern_example2() {
-        Assertions.assertEquals("a*.*.*b", Solution.Pattern.preprocessPattern("a*a.*.*b"));
+    void example14() {
+        Assertions.assertTrue(solution.isMatch("abcxyz", "a*b*.*.*..z"));
+    }
+
+    @Test
+    void example15() {
+        Assertions.assertTrue(solution.isMatch("ab!@#", "a*b*.*.*..#"));
+    }
+
+    @Test
+    void example16() {
+        Assertions.assertTrue(solution.isMatch("ab!@#y#", "a*b*.*.*..#"));
+    }
+
+    @Test
+    void example17() {
+        Assertions.assertTrue(solution.isMatch("ab", ".*"));
+    }
+
+    @Test
+    void example18() {
+        Assertions.assertFalse(solution.isMatch("aaa", "aaaa"));
+    }
+
+    @Test
+    void example19() {
+        Assertions.assertTrue(solution.isMatch("a", "ab*"));
+    }
+
+    @Test
+    void example20() {
+        Assertions.assertFalse(solution.isMatch("a", ".*..a*"));
+    }
+
+    @Test
+    void example21() {
+        Assertions.assertTrue(solution.isMatch("bbbba", ".*a*a"));
     }
 }

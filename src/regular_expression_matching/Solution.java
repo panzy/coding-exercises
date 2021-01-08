@@ -1,41 +1,74 @@
 package regular_expression_matching;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by Zhiyong Pan on 2021-01-08.
  */
 public class Solution {
     public boolean isMatch(String s, String p) {
-        Pattern pat = new Pattern(p);
+        Token[] tokens = parsePattern(p);
+        return isMatch(s, tokens);
+    }
 
-        if (!pat.hasNext())
+    public boolean isMatch(String s, Token[] tokens) {
+        if (tokens.length == 0)
             return s.isEmpty();
 
-        Token token = pat.next(), prevToken = null;
-        int i = 0;
+        int ti = 0;
 
-        while (i < s.length() && token != null) {
+        // find the first plain text token
+        while (ti < tokens.length && (tokens[ti].anyTimes || tokens[ti].target == '.'))
+            ++ti;
+
+        // if there is a plain text token, use it to divide and conquer.
+        // notice that there might be multiple dividing point in the string, in that case,
+        // we try them all until a successful match is found.
+        if (ti < tokens.length) {
+            int i = s.indexOf(tokens[ti].target);
+            if (i == -1) {
+                return false;
+            } else {
+                boolean found = false;
+                do {
+                    if (splitAndMatch(s, tokens, ti, i)) {
+                        found = true;
+                        break;
+                    }
+
+                    i = s.indexOf(tokens[ti].target, i + 1);
+                } while (i != -1);
+
+                return found;
+            }
+        }
+
+        ti = 0;
+        int i = 0;
+        while (i < s.length() && ti < tokens.length) {
+            Token token = tokens[ti];
             char c = s.charAt(i);
+
             if (token.match(c)) {
                 ++i;
                 if (!token.anyTimes) {
-                    prevToken = token;
-                    token = pat.hasNext() ? pat.next() : null;
+                    ++ti;
                 }
             } else if (token.anyTimes) {
-                prevToken = token;
                 do {
-                    token = pat.hasNext() ? pat.next() : null;
+                    ++ti;
 
                     // let the prev token eat this one
-                    if (token != null && token.target != '.'
-                            && token.target == prevToken.target && prevToken.anyTimes)
+                    if (ti < tokens.length && tokens[ti].target != '.'
+                            && tokens[ti].target == tokens[ti - 1].target && tokens[ti - 1].anyTimes)
                         continue;
                     else
                         break;
                 } while (true);
-            } else if (prevToken != null && prevToken.target == c && prevToken.anyTimes) {
+            } else if (ti > 0 && tokens[ti - 1].target == c && tokens[ti - 1].anyTimes) {
                 // drop this token (and don't touch the previous token)
-                token = pat.hasNext() ? pat.next() : null;
+                ++ti;
             } else {
                 return false;
             }
@@ -44,17 +77,46 @@ public class Solution {
         if (i < s.length())
             return false;
 
-
-        boolean patExhausted = token == null || token.anyTimes;
-        prevToken = token;
-        while (pat.hasNext()) {
-            Token t = pat.next();
-            if (t.anyTimes || (prevToken != null && t.target == prevToken.target))
-                continue;
-            prevToken = t;
+        while (ti < tokens.length) {
+            Token t = tokens[ti];
+            if (t.actualTimes < t.minTimes)
+                return false;
+            ++ti;
         }
 
-        return i == s.length() && patExhausted;
+        return true;
+    }
+
+    private boolean splitAndMatch(String s, Token[] tokens, int ti, int i) {
+        if (!isMatch(s.substring(0, i), Arrays.copyOfRange(tokens, 0, ti)))
+            return false;
+
+        if (!isMatch(s.substring(i + 1), Arrays.copyOfRange(tokens, ti + 1, tokens.length)))
+            return false;
+
+        return true;
+    }
+
+    static Token[] parsePattern(String p) {
+        ArrayList<Token> tokens = new ArrayList<>();
+        Token prev = null;
+        for (int i = 0; i < p.length(); ) {
+            Token t = new Token(p.charAt(i), i + 1 < p.length() && p.charAt(i + 1) == '*');
+            t.position = i;
+            i += t.anyTimes ? 2 : 1;
+            if (prev != null && t.target == prev.target
+                    && (t.anyTimes || prev.anyTimes)) {
+                // merge with the previous one
+                prev.anyTimes = true;
+
+                if (!t.anyTimes)
+                    ++prev.minTimes;
+            } else {
+                tokens.add(t);
+                prev = t;
+            }
+        }
+        return tokens.toArray(new Token[tokens.size()]);
     }
 
     /**
@@ -70,27 +132,36 @@ public class Solution {
          */
         boolean anyTimes;
 
-        Character lockedTo;
+        /**
+         * Actual matched times.
+         */
+        int actualTimes;
+
+        int minTimes;
+
+        /**
+         * Position in the regexp. This is for debug purpose.
+         */
+        int position;
 
         public Token(char target, boolean anyTimes) {
             this.target = target;
             this.anyTimes = anyTimes;
-            lockedTo = null;
+            actualTimes = 0;
+            minTimes = anyTimes ? 0 : 1;
         }
 
         /**
          * Test whether the given char matches this token or not.
-         *
-         * Notice that this method has side effect: if this token wraps a '.', after the first time
-         * it is test against a char, it only matches that char in the future. Of course this rule only
-         * matters when this token can match any times.
          */
         public boolean match(char c) {
-            if (this.target == c)
+            if (this.target == c) {
+                ++actualTimes;
                 return true;
+            }
 
-            if (this.target == '.' && (lockedTo == null || lockedTo == c)) {
-                lockedTo = c;
+            if (this.target == '.') {
+                ++actualTimes;
                 return true;
             }
 
@@ -99,50 +170,7 @@ public class Solution {
 
         @Override
         public String toString() {
-            return target + (anyTimes ? "*" : "") + (lockedTo != null ? "->" + lockedTo : "");
-        }
-    }
-
-    /**
-     * A Pattern is a collection of Tokens.
-     */
-    static class Pattern {
-        String p;
-        int i;
-
-        public Pattern(String p) {
-            this.p = p;//preprocessPattern(p);
-            i = 0;
-        }
-
-        public boolean hasNext() {
-            return i < p.length();
-        }
-
-        public Token next() {
-            Token t = new Token(p.charAt(i), i + 1 < p.length() && p.charAt(i + 1) == '*');
-            i += t.anyTimes ? 2 : 1;
-            return t;
-        }
-
-        static String preprocessPattern(String p) {
-            // preprocess the pattern, replacing "x*x" with "x*".
-            char[] chars = new char[p.length()];
-            int idx = 0;
-            for (int i = 0; i < p.length();) {
-                if (p.charAt(i) != '.'
-                        && i + 2 < p.length()
-                        && p.charAt(i + 1) == '*'
-                        && p.charAt(i) == p.charAt(i + 2)) {
-                    // ignore [i+2]
-                    chars[idx++] = p.charAt(i++);
-                    chars[idx++] = p.charAt(i++);
-                    ++i;
-                } else {
-                    chars[idx++] = p.charAt(i++);
-                }
-            }
-            return new String(chars, 0, idx);
+            return target + (anyTimes ? "*" : "");
         }
     }
 }
