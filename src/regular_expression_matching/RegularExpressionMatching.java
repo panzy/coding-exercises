@@ -116,4 +116,9 @@ public class RegularExpressionMatching {
     void example21() {
         Assertions.assertTrue(solution.isMatch("bbbba", ".*a*a"));
     }
+
+    @Test
+    void example22() {
+        Assertions.assertTrue(solution.isMatch("ab", ".*..c*"));
+    }
 }
