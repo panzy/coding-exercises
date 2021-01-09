@@ -5,6 +5,8 @@ import java.util.ArrayList;
 /**
  * Adapted from {@link regular_expression_matching.Solution}.
  *
+ * TODO clean the code.
+ *
  * Created by Zhiyong Pan on 2021-01-08.
  */
 public class Solution {
@@ -17,28 +19,32 @@ public class Solution {
         if (tokens.length == 0)
             return s.isEmpty();
 
-        if (!tokens[0].anyTimes) {
-            return s.length() > 0 &&
-                    tokens[0].match(s.charAt(0)) &&
-                    isMatch(s.substring(1),
-                            copyTokensWithoutState(tokens, 1, tokens.length));
+        if (tokens[0].isPlain()) {
+            int i = tokens[0].match(s, 0);
+            if (i == -1)
+                return false;
+            else
+                return isMatch(s.substring(i), copyTokensWithoutState(tokens, 1, tokens.length));
         }
 
-        if (!tokens[tokens.length - 1].anyTimes) {
-            return s.length() > 0 &&
-                    tokens[tokens.length - 1].match(s.charAt(s.length() - 1)) &&
-                    isMatch(s.substring(0, s.length() - 1),
-                            copyTokensWithoutState(tokens, 0, tokens.length - 1));
+        if (tokens[tokens.length - 1].isPlain()) {
+            int tlen = tokens[tokens.length - 1].target.length();
+            int i = tokens[tokens.length - 1].match(s, s.length() - tlen);
+            if (i == -1)
+                return false;
+            else
+                return isMatch(s.substring(0, s.length() - tlen),
+                        copyTokensWithoutState(tokens, 0, tokens.length - 1));
         }
 
         int ti = -1;
 
-        // find the first plain text token
+        // find the longest plain text token
         for (int i = 0; i < tokens.length; ++i) {
-            if (!tokens[i].anyTimes && tokens[i].target != '?') {
-                if (ti == -1) {
+            if (tokens[i].isPlain()) {
+                if (ti == -1 ||
+                        (tokens[ti].target.length() < tokens[i].target.length())) {
                     ti = i;
-                    break;
                 }
             }
         }
@@ -69,29 +75,14 @@ public class Solution {
         int i = 0;
         while (i < s.length() && ti < tokens.length) {
             Token token = tokens[ti];
-            char c = s.charAt(i);
+            int j = token.match(s, i);
 
-            if (token.match(c)) {
-                ++i;
-                if (!token.anyTimes) {
-                    ++ti;
-                }
-            } else if (token.anyTimes) {
-                do {
-                    ++ti;
-
-                    // let the prev token eat this one
-                    if (ti < tokens.length && tokens[ti].target != '?'
-                            && tokens[ti].target == tokens[ti - 1].target && tokens[ti - 1].anyTimes)
-                        continue;
-                    else
-                        break;
-                } while (true);
-            } else if (ti > 0 && tokens[ti - 1].target == c && tokens[ti - 1].anyTimes) {
-                // drop this token (and don't touch the previous token)
+            if (j != -1) {
+                token.capturedChars += j - i;
+                i = j;
                 ++ti;
             } else {
-                return false;
+                break;
             }
         }
 
@@ -99,30 +90,48 @@ public class Solution {
             return false;
 
         while (ti < tokens.length) {
-            Token t = tokens[ti];
-            if (t.actualTimes < t.minTimes) {
-                // it's still fine if there is a previous token with a compliant target having extra actual match times.
-
-                int tj = ti - 1;
-                while (tj >= 0 &&
-                        !(
-                                (tokens[tj].target == t.target || tokens[tj].target == '?' || t.target == '?') &&
-                                        tokens[tj].actualTimes > tokens[tj].minTimes
-                        )
-                ) {
-                    --tj;
-                }
-
-                if (tj < 0)
-                    return false;
-
-                // move the match from [tj] to [ti].
-                --tokens[tj].actualTimes;
-            }
-            ++ti;
+            if (tokens[ti].anyTimes || borrow(tokens, ti, ti - 1))
+                ++ti;
+            else
+                break;
         }
 
-        return true;
+        return ti == tokens.length;
+    }
+
+    static boolean borrow(Token[] tokens, int i, int j) {
+
+        Token curr = tokens[i];
+
+        // Only "?" need to borrow:
+        // "*" does not need to borrow;
+        // plain text should have been used to divide the string.
+        assert curr.target.equals("?");
+
+        if (i == 0)
+            return false;
+
+        Token prev = tokens[j];
+
+        // recursively borrow for prev
+        if (prev.capturedChars == 0) {
+            if (prev.anyTimes) {
+                return j > 0 ? borrow(tokens, i, j - 1) : false;
+            } else {
+                if (j == 0 || !borrow(tokens, j, j - 1))
+                    return false;
+            }
+        }
+
+        // borrow from prev
+        ++curr.capturedChars;
+        --prev.capturedChars;
+
+        if (prev.capturedChars < prev.minTimes) {
+            return borrow(tokens, j, j - 1);
+        } else {
+            return true;
+        }
     }
 
     private Token[] copyTokensWithoutState(Token[] tokens, int begin, int end) {
@@ -137,7 +146,8 @@ public class Solution {
         if (!isMatch(s.substring(0, i), copyTokensWithoutState(tokens, 0, ti)))
             return false;
 
-        if (!isMatch(s.substring(i + 1), copyTokensWithoutState(tokens, ti + 1, tokens.length)))
+        if (!isMatch(s.substring(i + tokens[ti].target.length()),
+                copyTokensWithoutState(tokens, ti + 1, tokens.length)))
             return false;
 
         return true;
@@ -146,11 +156,21 @@ public class Solution {
     static Token[] parsePattern(String p) {
         ArrayList<Token> tokens = new ArrayList<>();
         for (int i = 0; i < p.length(); ++i) {
-            if (i > 0 && p.charAt(i) == '*' && p.charAt(i - 1) == '*')
-                continue;
-            Token t = new Token(p.charAt(i));
-            t.position = i;
-            tokens.add(t);
+            if (p.charAt(i) == '?') {
+                tokens.add(new Token(p.charAt(i)));
+            } else if (p.charAt(i) == '*') {
+                int j = i + 1;
+                while (j < p.length() && p.charAt(j) == '*')
+                    ++j;
+                tokens.add(new Token("*"));
+                i = j - 1;
+            } else {
+                int j = i + 1;
+                while (j < p.length() && p.charAt(j) != '?' && p.charAt(j) != '*')
+                    ++j;
+                tokens.add(new Token(p.substring(i, j)));
+                i = j - 1;
+            }
         }
         return tokens.toArray(new Token[tokens.size()]);
     }
@@ -162,41 +182,46 @@ public class Solution {
         /**
          * The char to match. '?' means any char.
          */
-        char target;
+        String target;
         /**
          * Does this token match any (including zero) times or exactly one time?
          */
         boolean anyTimes;
 
         /**
-         * Actual matched times.
+         * Record how many chars were captured by this token.
          */
-        int actualTimes;
+        int capturedChars;
 
         int minTimes;
 
-        /**
-         * Position in the regexp. This is for debug purpose.
-         */
-        int position;
-
-        public Token(char target) {
+        public Token(String target) {
             this.target = target;
-            this.anyTimes = target == '*';
-            actualTimes = 0;
+            this.anyTimes = target.equals("*");
+            capturedChars = 0;
             minTimes = anyTimes ? 0 : 1;
         }
 
-        /**
-         * Test whether the given char matches this token or not.
-         */
-        public boolean match(char c) {
-            if (this.target == c || this.target == '?' || this.target == '*') {
-                ++actualTimes;
-                return true;
-            }
+        public Token(char c) {
+            this("" + c);
+        }
 
-            return false;
+        public int match(String s, int begin) {
+            if (target.equals("?")) {
+                if (begin < s.length())
+                    return begin + 1;
+                else
+                    return -1;
+            } else if (target.equals("*")) {
+                return s.length();
+            } else if (s.startsWith(target, begin)) {
+                return begin + target.length();
+            }
+            return -1;
+        }
+
+        public boolean isPlain() {
+            return !target.equals("*") && !target.equals("?");
         }
 
         @Override

@@ -154,9 +154,33 @@ public class WildcardMatching {
     }
 
     @Test
+    void example25() {
+        String s = "abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb";
+        String p = "**bab****babbaabab*****bbabbbabbba***a*ababa****baba********babaabbbbbb****bababbb*****ba*bbbbababababbaabbaaba****bbababab***bbaaab****abaaaabbababbb****abaa*bababbb***babbbabaaaaa*aab*bbbaa*aaa*aba*aabb";
+        Assertions.assertTrue(solution.isMatch(s, p));
+    }
+
+    @Test
+    void test6() {
+        String s = "mississippi";
+        String p = "m??*ss*?i*pi";
+        Assertions.assertFalse(solution.isMatch(s, p));
+    }
+
+    @Test
     void test1710() {
         String s = "abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb";
         String p = "**aa*****ba*a*bb**aa*ab****a*aaaaaa***a*aaaa**bbabb*b*b**aaaaaaaaa*a********ba*bbb***a*ba*bb*bb**a*b*bb";
-//        Assertions.assertTrue(solution.isMatch(s, p));
+        Assertions.assertFalse(solution.isMatch(s, p));
+    }
+
+    @Test
+    void test1778() {
+        // "mississippi"
+        // "m??*ss*?i*pi"
+        // false
+        String s = "mississippi";
+        String p = "m??*ss*?i*pi";
+        Assertions.assertFalse(solution.isMatch(s, p));
     }
 }
