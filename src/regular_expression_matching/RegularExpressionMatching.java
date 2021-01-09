@@ -30,11 +30,32 @@ public class RegularExpressionMatching {
     }
 
     @Test
-    void example5() {
+    void example5_A() {
         Assertions.assertTrue(solution.isMatch("aaaaab", "a*ab"));
-        Assertions.assertTrue(solution.isMatch("aaaaa", "a*a"));
-        Assertions.assertTrue(solution.isMatch("aaabc!", "a*abc!"));
+    }
+    @Test
+    void example5_B() {
+        Assertions.assertTrue(solution.isMatch("aaaaab", "a*aab"));
+    }
+    @Test
+    void example5_C() {
+        Assertions.assertTrue(solution.isMatch("aaaaab", "a*aaaaab"));
+    }
+    @Test
+    void example5_D() {
+        Assertions.assertFalse(solution.isMatch("aaaaab", "a*aaaaaab"));
+    }
+    @Test
+    void example5_E() {
         Assertions.assertTrue(solution.isMatch("aaabc!", "a*aabc!"));
+    }
+    @Test
+    void example5_F() {
+        Assertions.assertTrue(solution.isMatch("aaaaa", "a*a"));
+    }
+    @Test
+    void example5_G() {
+        Assertions.assertTrue(solution.isMatch("aaabc!", "a*abc!"));
     }
 
     @Test
@@ -120,5 +141,15 @@ public class RegularExpressionMatching {
     @Test
     void example22() {
         Assertions.assertTrue(solution.isMatch("ab", ".*..c*"));
+    }
+
+    @Test
+    void example23() {
+        Assertions.assertTrue(solution.isMatch("aaa", "ab*a*c*a"));
+    }
+
+    @Test
+    void example24() {
+        Assertions.assertTrue(solution.isMatch("aasdfasdfasdfasdfas", "aasdf.*asdf.*asdf.*asdf.*s"));
     }
 }

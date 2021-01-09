@@ -16,3 +16,7 @@ I was somewhat prepared for wrong-answer rejections, but didn't expect
 I had to submit 7 times to finally get accepted.
 
 The hard thing about this problem is that for each '*', how greedy should it be?
+
+## TODO
+
+My solution is too complicated.
