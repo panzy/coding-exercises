@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Created by Zhiyong Pan on 2021-01-09.
  */
 public class WordLadder {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
