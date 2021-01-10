@@ -6,6 +6,7 @@ import java.util.Arrays;
  * This solution should be correct. But it's too slow to accept.
  *
  * The reason of slowness should be that it simulates the creating of the array.
+ * It effectively conducts an insertion sort on an array.
  *
  * Created by Zhiyong Pan on 2021-01-10.
  */
