@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by Zhiyong Pan on 2021-01-10.
  */
 public class CreateSortedArray {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
