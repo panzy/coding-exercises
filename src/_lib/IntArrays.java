@@ -84,6 +84,14 @@ public abstract class IntArrays {
         return join(arr, 0, arr.length, ",");
     }
 
+    public static int[] loadFromJsonFile(String filename) throws IOException, ParseException {
+        return loadFromJson(new FileReader(filename));
+    }
+
+    public static int[] loadFromJson(String text) throws IOException, ParseException {
+        return loadFromJson(new StringReader(text));
+    }
+
     public static int[][] load2DFromJsonFile(String filename) throws IOException, ParseException {
         return load2DFromJson(new FileReader(filename));
     }
@@ -106,6 +114,19 @@ public abstract class IntArrays {
             for (int j = 0; j < nn; ++j)
                 aa[j] = Integer.parseInt(jaa.get(j).toString());
             a[i] = aa;
+        }
+        return a;
+    }
+
+    private static int[] loadFromJson(Reader fileReader) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(fileReader);
+        // A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
+        JSONArray ja = (JSONArray) obj;
+        int n = ja.size();
+        int[] a = new int[n];
+        for (int i = 0; i < n; ++i) {
+            a[i] = Integer.parseInt(ja.get(i).toString());
         }
         return a;
     }
