@@ -130,6 +130,23 @@ public abstract class IntArrays {
         }
         return a;
     }
+
+    public static boolean isSorted(int[] arr, int begin, int end) {
+        int order = 0;
+        for (int i = begin; i + 1 < end; ++i) {
+            if (arr[i] < arr[i + 1]) {
+                if (order == 1)
+                    return false;
+                order = -1;
+            } else if (arr[i] > arr[i + 1]) {
+                if (order == -1)
+                    return false;
+                order = 1;
+            }
+        }
+
+        return true;
+    }
 }
 
 class IntArrayTest {
