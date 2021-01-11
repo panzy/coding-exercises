@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Created by Zhiyong Pan on 2021-01-09.
  */
 public class WordLadder {
-    Solution2 solution = new Solution2();
+    Solution3 solution = new Solution3();
 
     @Test
     void example1() {
@@ -57,4 +57,10 @@ public class WordLadder {
                         Arrays.asList(wordList)));
     }
 
+    @Test
+    void example5() {
+        Assertions.assertEquals(4, solution.ladderLength(
+                "red", "tax",
+                Arrays.asList("ted","tex","red","tax","tad","den","rex","pee")));
+    }
 }
