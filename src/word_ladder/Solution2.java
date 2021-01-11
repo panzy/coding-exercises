@@ -1,16 +1,14 @@
 package word_ladder;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
  * Rewrite the previous solution, replacing functional stream operations with for-loops.
  *
- * LeetCode runtime reduced from 2043ms to 947ms.
+ * LeetCode runtime reduced from 2043ms to 776ms.
  *
  * Created by Zhiyong Pan on 2021-01-09.
  */
@@ -46,11 +44,6 @@ public class Solution2 {
 
             // removed visited words from word list
             wordList = wordList.stream().filter(w -> !visited.contains(w)).collect(Collectors.toList());
-            for (Iterator<String> i = wordList.listIterator(); i.hasNext(); ) {
-                String w = i.next();
-                if (visited.contains(w))
-                    i.remove();
-            }
         }
 
         return found ? seqLen : 0;
