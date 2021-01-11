@@ -5,6 +5,8 @@ import java.util.Arrays;
 /**
  * Compared with the previous solution, the insertion here is costless, but the counting becomes expensive.
  *
+ * It's still too slow to accept.
+ *
  * Created by Zhiyong Pan on 2021-01-10.
  */
 public class Solution2 {

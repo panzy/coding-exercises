@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by Zhiyong Pan on 2021-01-10.
  */
 public class CreateSortedArray {
-    Solution2 solution = new Solution2();
+    Solution2B solution = new Solution2B();
 
     @Test
     void example1() {
@@ -81,6 +81,11 @@ public class CreateSortedArray {
     @Test
     void example8() {
         Assertions.assertEquals(0, solution.createSortedArray(new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1}));
+    }
+
+    @Test
+    void example9() {
+        Assertions.assertEquals(0, solution.createSortedArray(new int[]{9, 100_000, 8, 7, 5, 4, 3, 2, 1}));
     }
 
     @Test
