@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Created by Zhiyong Pan on 2021-01-09.
  */
 public class WordLadder {
-    Solution3 solution = new Solution3();
+    Solution4 solution = new Solution4();
 
     @Test
     void example1() {
@@ -55,6 +55,10 @@ public class WordLadder {
                 solution.ladderLength(
                         wordList[0], nonExistEndWord,
                         Arrays.asList(wordList)));
+
+        solution.ladderLength(
+                wordList[0], wordList[1],
+                Arrays.asList(wordList));
     }
 
     @Test
