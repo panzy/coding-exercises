@@ -10,7 +10,7 @@
  */
 package balanced_binary_tree;
 
-import _lib.btree.TreeNode;
+import _lib.bintree.TreeNode;
 
 /**
  * Definition for a binary tree node.

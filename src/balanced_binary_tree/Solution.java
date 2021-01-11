@@ -9,7 +9,7 @@
  */
 package balanced_binary_tree;
 
-import _lib.btree.TreeNode;
+import _lib.bintree.TreeNode;
 
 import java.util.LinkedList;
 

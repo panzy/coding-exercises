@@ -1,7 +1,7 @@
 package pseduo_palindromic_paths_in_a_binary_tree;
 
-import _lib.btree.TreeFactory;
-import _lib.btree.TreeNode;
+import _lib.bintree.TreeFactory;
+import _lib.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

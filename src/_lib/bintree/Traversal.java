@@ -1,4 +1,4 @@
-package _lib.btree;
+package _lib.bintree;
 
 import _lib.Pair;
 import org.junit.jupiter.api.Assertions;

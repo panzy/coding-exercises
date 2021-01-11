@@ -1,6 +1,6 @@
 package house_robber_iii;
 
-import _lib.btree.TreeNode;
+import _lib.bintree.TreeNode;
 
 /**
  * Improvement on the previous solution.

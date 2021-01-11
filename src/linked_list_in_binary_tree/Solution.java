@@ -1,6 +1,6 @@
 package linked_list_in_binary_tree;
 
-import _lib.btree.TreeNode;
+import _lib.bintree.TreeNode;
 import _lib.singly_linked_list.ListNode;
 
 /**
