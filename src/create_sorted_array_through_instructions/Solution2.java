@@ -5,7 +5,14 @@ import java.util.Arrays;
 /**
  * Compared with the previous solution, the insertion here is costless, but the counting becomes expensive.
  *
- * It's still too slow to accept.
+ * What this version of solution has accomplished was modeling the problem in a new way. It's still too slow
+ * to accept for now, but the following versions will be built on this.
+ *
+ * Basically, I used an array A as a map: A[i] represents the occurrence times of number i. So executing an
+ * instruction is as simple as ++A[x].
+ *
+ * Then, the original problem becomes: how can we quickly find out sum of A[0:x]? We don't have to sum(A[x:n])
+ * directly because that value can be obtained by subtracting the count of executed instructions by A[0:x].
  *
  * Created by Zhiyong Pan on 2021-01-10.
  */

@@ -6,22 +6,40 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 /**
- * Based on the previous solution, I turned the sparse array into an implicit full tree:
+ * Based on the previous solution, I turned the array into an implicit full tree:
  *
- * - The range [0, 100_000) is the original array, each element represents a number's occurrence times.
+ * - The range [0, N) is the original array, each element represents a number's occurrence times.
  *   It's also the bottom layer of the tree.
- * - The range [100_000, 100_000 + 1000) is the 2nd layer from the bottom. Each element is the sum of 100
+ * - The range [N, N + n1) is the 2nd layer from the bottom. Each element is the sum of 100
  *   numbers' occurrence times.
- * - The range [101_000, 101_000 + 100) is the 3rd layer from the bottom, Each element is the sum of 1000
+ * - The range [N + n1, N + n1 + n2) is the 3rd layer from the bottom, Each element is the sum of 1000
  *   numbers' occurrence times.
  * - And so on.
+ *
+ * This solution has a not-bad speed, beating 43% of Java submissions.
+ *
+ * Then, I learnt that Binary Indexed Tree or Fenwick Tree is designed exactly for this task.
  *
  * Created by Zhiyong Pan on 2021-01-10.
  */
 public class Solution2B {
-    int count;
-    int splits;
-    int minNodeSize;
+    /**
+     * The original array's size.
+     *
+     * Since 1 <= instructions[i] <= 100_000, N should be no less than 100_000 - 1 + 1 = 100_000.
+     */
+    int N;
+    /**
+     * Tree node's degree.
+     */
+    int degree;
+    /**
+     * How many numbers does a leaf node represents?
+     */
+    int leafNodeSize;
+    /**
+     * [0, N) is the original array. The following is the tree.
+     */
     int[] index;
 
     public int createSortedArray(int[] instructions) {
@@ -53,17 +71,17 @@ public class Solution2B {
 
     /**
      * Allocate the implicit tree.
-     * @param count total number of numbers. It has to be a power of the |splits|.
-     * @param splits how many children does a tree node have?
-     * @param minNodeSize
+     * @param n total number of numbers. It has to be a power of the |degree|.
+     * @param degree how many children does a tree node have?
+     * @param leafNodeSize how many numbers does a leaf node represents?
      */
-    private void initIndex(int count, int splits, int minNodeSize) {
-        this.count = count;
-        this.splits = splits;
-        int totalNodes = count;
-        for (int layerNodes = splits; count / layerNodes >= minNodeSize; layerNodes *= splits) {
+    private void initIndex(int n, int degree, int leafNodeSize) {
+        this.N = n;
+        this.degree = degree;
+        int totalNodes = n;
+        for (int layerNodes = degree; n / layerNodes >= leafNodeSize; layerNodes *= degree) {
             totalNodes += layerNodes;
-            this.minNodeSize = count / layerNodes;
+            this.leafNodeSize = n / layerNodes;
         }
 
         // a implicit tree
@@ -73,12 +91,12 @@ public class Solution2B {
     void increaseCounter(int num) {
         ++index[num];
 
-        int offset = count;
-        int nodeSize = minNodeSize;
-        while (nodeSize < count) {
+        int offset = N;
+        int nodeSize = leafNodeSize;
+        while (nodeSize < N) {
             ++index[offset + num / nodeSize];
-            offset += count / nodeSize;
-            nodeSize *= splits;
+            offset += N / nodeSize;
+            nodeSize *= degree;
         }
     }
 
@@ -86,15 +104,15 @@ public class Solution2B {
         int cost = 0;
 
         // find the appropriate node size
-        int nodeSize = count / splits;
+        int nodeSize = N / degree;
         while (beginNum + nodeSize > endNum) {
-            nodeSize /= splits;
+            nodeSize /= degree;
         }
 
-        if (nodeSize >= minNodeSize) {
-            int nodePos = count;
-            for (int nodeSize2 = minNodeSize; nodeSize2 < nodeSize; nodeSize2 *= splits) {
-                nodePos += count / nodeSize2;
+        if (nodeSize >= leafNodeSize) {
+            int nodePos = N;
+            for (int nodeSize2 = leafNodeSize; nodeSize2 < nodeSize; nodeSize2 *= degree) {
+                nodePos += N / nodeSize2;
             }
             nodePos += beginNum / nodeSize;
 
