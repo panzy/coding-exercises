@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by Zhiyong Pan on 2021-01-10.
  */
 public class CreateSortedArray {
-    Solution2B solution = new Solution2B();
+    Solution2C_FenwickTree solution = new Solution2C_FenwickTree();
 
     @Test
     void example1() {
