@@ -6,7 +6,7 @@ import java.util.LinkedList;
  * Created by Zhiyong Pan on 2021-01-05.
  */
 public class ListFactory {
-    public static ListNode fromArray(int[] arr) {
+    public static ListNode fromArray(int... arr) {
         ListNode dummyHead = new ListNode(), tail = dummyHead;
         for (int i : arr) {
             tail.next = new ListNode(i);
