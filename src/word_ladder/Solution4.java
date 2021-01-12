@@ -1,7 +1,6 @@
 package word_ladder;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Based on the previous solution, instead of iterating the word list to find connected graph nodes,
@@ -34,6 +33,7 @@ import java.util.stream.Collectors;
  * Created by Zhiyong Pan on 2021-01-11.
  */
 public class Solution4 {
+    int L; // word length. all words are of the same length.
     HashMap<String, List<String>> wordConnections;
 
     private static HashMap<String, List<String>> buildWordConnections(List<String> wordList) {
@@ -52,12 +52,50 @@ public class Solution4 {
         return map;
     }
 
+    /**
+     * Expand a whole layer of words (from the view of BFS) to the next layer.
+     *
+     * @param layer This layer. will be cleared and filled with next layer's words.
+     * @param visited Record words that have been visited by this direction's BFS.
+     * @param otherVisited Record words that have been visited by the other direction's BFS.
+     * @return whether the two BFS meet after this expansion.
+     */
+    private boolean expandLayer(List<String> layer, HashSet<String> visited, HashSet<String> otherVisited) {
+        List<String> nextLayer = new LinkedList<>();
+        boolean found = false;
+
+        for (String w : layer) {
+            for (int i = 0; i < L; ++i) {
+                String key = w.substring(0, i) + '*' + w.substring(i + 1, L);
+                for (String w2 : wordConnections.getOrDefault(key, new ArrayList<>())) {
+                    if (!visited.contains(w2)) {
+                        visited.add(w2);
+                        if (otherVisited.contains(w2)) {
+                            found = true;
+                            break;
+                        }
+                        nextLayer.add(w2);
+                    }
+                }
+                if (found)
+                    break;
+            }
+
+            if (found)
+                break;
+        }
+
+        layer.clear();
+        layer.addAll(nextLayer);
+
+        return found;
+    }
+
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         if (!wordList.contains(endWord))
             return 0;
 
-        // Since all words are of the same length.
-        final int L = beginWord.length();
+        L = beginWord.length();
 
         wordConnections = buildWordConnections(wordList);
 
@@ -76,56 +114,12 @@ public class Solution4 {
         while (!found && !layerA.isEmpty()) {
             // expand layer A
             ++seqLen;
-            List<String> layerA2 = new LinkedList<>();
-            for (String w : layerA) {
-                for (int i = 0; i < L; ++i) {
-                    String key = w.substring(0, i) + '*' + w.substring(i + 1, L);
-                    for (String w2 : wordConnections.getOrDefault(key, new ArrayList<>())) {
-                        if (!visitedA.contains(w2)) {
-                            visitedA.add(w2);
-                            if (visitedB.contains(w2)) {
-                                found = true;
-                                break;
-                            }
-                            layerA2.add(w2);
-                        }
-                    }
-                    if (found)
-                        break;
-                }
-
-                if (found)
-                    break;
-
-                layerA = layerA2;
-            }
+            found = expandLayer(layerA, visitedA, visitedB);
 
             // expand layer B
             if (!found) {
                 ++seqLen;
-                List<String> layerB2 = new LinkedList<>();
-                for (String w : layerB) {
-                    for (int i = 0; i < L; ++i) {
-                        String key = w.substring(0, i) + '*' + w.substring(i + 1, L);
-                        for (String w2 : wordConnections.getOrDefault(key, new ArrayList<>())) {
-                            if (!visitedB.contains(w2)) {
-                                visitedB.add(w2);
-                                if (visitedA.contains(w2)) {
-                                    found = true;
-                                    break;
-                                }
-                                layerB2.add(w2);
-                            }
-                        }
-                        if (found)
-                            break;
-                    }
-
-                    if (found)
-                        break;
-
-                    layerB = layerB2;
-                }
+                found = expandLayer(layerB, visitedB, visitedA);
             }
         }
 
