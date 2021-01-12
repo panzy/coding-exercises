@@ -95,12 +95,4 @@ public class CreateSortedArray {
                 "./src/create_sorted_array_through_instructions/test-case-100000.json");
         Assertions.assertEquals(188426454, solution.createSortedArray(instructions));
     }
-
-    @Test
-    void test_largeN_B() throws IOException, ParseException {
-        // N = 10^5
-        int[] instructions = IntArrays.loadFromJsonFile(
-                "./src/create_sorted_array_through_instructions/test-case-100000B.json");
-        Assertions.assertEquals(188426454, solution.createSortedArray(instructions));
-    }
 }
