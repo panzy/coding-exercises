@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
  * Created by Zhiyong Pan on 2021-01-12.
  */
 public class ThreeEqualParts {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
@@ -69,5 +69,11 @@ public class ThreeEqualParts {
                 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1
         };
         Assertions.assertArrayEquals(new int[]{9, 21}, solution.threeEqualParts(a));
+    }
+
+    @Test
+    void example8() {
+        int[] a = {0, 0, 0, 0, 0};
+        Assertions.assertArrayEquals(new int[]{0, 4}, solution.threeEqualParts(a));
     }
 }
