@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -146,6 +147,13 @@ public abstract class IntArrays {
         }
 
         return true;
+    }
+
+    public static int[] fromList(List<Integer> list) {
+        int[] a = new int[list.size()];
+        int i = 0;
+        for (int e : list) a[i++] = e;
+        return a;
     }
 }
 
