@@ -1,29 +1,46 @@
 package minimum_operations_to_reduce_x_to_zero;
 
 /**
+ * Learned a thing from problem 927. Three Equal Parts, which I did two days ago.
+ *
+ * Assume [0, i) and [j, n) are the two ranges holding minimum operations, what
+ * properties do i and j have?
+ *
  * Created by Zhiyong Pan on 2021-01-14.
  */
 public class Solution {
     public int minOperations(int[] nums, int x) {
-        return minOperations(nums, x, 0, nums.length - 1);
-    }
+        int n = nums.length;
+        int sum = 0;
+        for (int i = 0; i < n; ++i)
+            sum += nums[i];
 
-    private int minOperations(int[] nums, int x, int first, int last) {
-        if (x == 0)
-            return 0;
-        if (x < 0)
+        if (sum < x)
             return -1;
+        else if (sum == x)
+            return n;
 
-        int a = first < nums.length ? minOperations(nums, x - nums[first], first + 1, last) : -1;
-        int b = last >= 0 ? minOperations(nums, x - nums[last], first, last - 1) : -1;
+        // Search all range [i, j) that has a desired sum.
+        int desiredSum = sum - x;
+        int rangeSum = nums[0];
+        int i = 0, j = 1;
+        int ans = n;
 
-        if (a < 0 && b < 0)
-            return -1;
-        else if (a < 0)
-            return 1 + b;
-        else if (b < 0)
-            return 1 + a;
-        else
-            return 1 + Math.min(a, b);
+        while (true) {
+            if (rangeSum < desiredSum) {
+                if (j == n)
+                    break;
+                rangeSum += nums[j++];
+            } else if (rangeSum > desiredSum) {
+                rangeSum -= nums[i++];
+                // It's ok if i reaches j, in that case the range collapses and
+                // will try to expand in next iteration.
+            } else if (rangeSum == desiredSum) {
+                ans = Math.min(ans, n - (j - i));
+                rangeSum -= nums[i++];
+            }
+        }
+
+        return ans < n ? ans : -1;
     }
 }
