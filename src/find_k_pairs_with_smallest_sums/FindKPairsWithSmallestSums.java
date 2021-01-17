@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * Created by Zhiyong Pan on 2021-01-16.
  */
 public class FindKPairsWithSmallestSums {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() {
@@ -63,5 +63,26 @@ public class FindKPairsWithSmallestSums {
         Assertions.assertTrue(line.indexOf("[100, 2]") != -1);
         Assertions.assertTrue(line.indexOf("[100, 3]") != -1);
         Assertions.assertTrue(line.indexOf("[101, 2]") != -1);
+    }
+
+    @Test
+    void example5() {
+        int[] nums1 = {};
+        int[] nums2 = {2, 3, 4};
+        int k = 3;
+        List<List<Integer>> output = solution.kSmallestPairs(nums1, nums2, k);
+        Assertions.assertEquals(0, output.size());
+    }
+
+    @Test
+    void example6() {
+        int[] nums1 = {1, 1, 2};
+        int[] nums2 = {1, 2, 3};
+        int k = 10;
+        List<List<Integer>> output = solution.kSmallestPairs(nums1, nums2, k);
+        Assertions.assertEquals(9, output.size());
+
+        String line = output.stream().map(l -> l.toString()).collect(Collectors.joining(","));
+        Assertions.assertTrue(line.indexOf("[1, 1],[1, 1]") != -1);
     }
 }
