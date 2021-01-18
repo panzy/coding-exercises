@@ -30,11 +30,11 @@ public class Solution2 {
     int N;
 
     // key = a person's index (1-based)
-    HashMap<Integer, Node> graph;
+    Node[] graph;
 
     public boolean possibleBipartition(int N, int[][] dislikes) {
         this.N = N;
-        graph = buildFromEdges(dislikes);
+        graph = buildFromEdges(1 + N, dislikes);
 
         for (int i = 1; i <= N; ++i) {
             if (!bipartition(i))
@@ -48,7 +48,7 @@ public class Solution2 {
      * Bi-partition a whole isolated graph component.
      */
     boolean bipartition(int seed) {
-        Node seedNode = graph.get(seed);
+        Node seedNode = graph[seed];
 
         if (seedNode == null) // This person is an isolate node, he can go to either group.
             return true;
@@ -57,7 +57,7 @@ public class Solution2 {
         if (seedNode.color != -1)
             return true;
 
-        Queue<Node> queue = new ArrayDeque<>();
+        Queue<Node> queue = new LinkedList<>();
 
         // Since seed is the first person in his isolated graph component,
         // either group is ok for him. We choose group A.
@@ -70,7 +70,7 @@ public class Solution2 {
         while (!failed && !queue.isEmpty()) {
             Node i = queue.poll();
             for (int j2 : i.neighbours) {
-                Node j = graph.get(j2);
+                Node j = graph[j2];
                 if (j.color == -1) {
                     // Put j to the other side.
                     j.color = 1 - i.color;
@@ -90,23 +90,23 @@ public class Solution2 {
         return !failed;
     }
 
-    static HashMap<Integer, Node> buildFromEdges(int[][] edges) {
-        HashMap<Integer, Node> graph = new HashMap<>();
+    static Node[] buildFromEdges(int n, int[][] edges) {
+        Node[] graph = new Node[n];
 
         // collect graph graph
         for (int[] pair : edges) {
             // Append j to i's list.
             {
-                Node a = graph.getOrDefault(pair[0], new Node());
-                a.neighbours.add(pair[1]);
-                graph.put(pair[0], a);
+                if (graph[pair[0]] == null)
+                    graph[pair[0]] = new Node();
+                graph[pair[0]].neighbours.add(pair[1]);
             }
 
             // Append i to j's list.
             {
-                Node b = graph.getOrDefault(pair[1], new Node());
-                b.neighbours.add(pair[0]);
-                graph.put(pair[1], b);
+                if (graph[pair[1]] == null)
+                    graph[pair[1]] = new Node();
+                graph[pair[1]].neighbours.add(pair[0]);
             }
         }
 
