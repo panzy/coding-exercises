@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by Zhiyong Pan on 2021-01-18.
  */
 class MaxNumberOfKSumPairs {
-    Solution solution = new Solution();
+    Solution2 solution = new Solution2();
 
     @Test
     void example1() throws IOException, ParseException {
