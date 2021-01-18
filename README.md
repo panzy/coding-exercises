@@ -42,3 +42,12 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [395. Longest Substring with At Least K Repeating Characters](./src/longest_substring_with_at_least_k_repeating_characters)
 - [560. Subarray Sum Equals K](./src/subarray_sum_equals_k_560)
 - [992. Subarrays with K Different Integers](./src/subarrays_with_k_different_integers)
+
+### relationship
+
+The presence of some kind of relationship hints there is a graph.
+
+- [886. Possible Bipartition](./src/possible_bipartition_886)
+- [127. Word Ladder](./src/word_ladder)
+- [126. Word Ladder II](./src/word_ladder_ii)
+- [1345. Jump Game IV](./src/jump_game_iv)
