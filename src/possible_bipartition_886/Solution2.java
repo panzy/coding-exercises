@@ -21,10 +21,6 @@ public class Solution2 {
          * 1 = The 2nd color.
          */
         int color = -1;
-        /**
-         * For traverse.
-         */
-        boolean visited = false;
     }
 
     int N;
@@ -62,7 +58,6 @@ public class Solution2 {
         // Since seed is the first person in his isolated graph component,
         // either group is ok for him. We choose group A.
         queue.add(seedNode);
-        seedNode.visited = true;
         seedNode.color = 0;
 
         boolean failed = false;
@@ -71,19 +66,15 @@ public class Solution2 {
             Node i = queue.poll();
             for (int j2 : i.neighbours) {
                 Node j = graph[j2];
-                if (j.color == -1) {
+                if (j.color == -1) { // j has not been visited.
                     // Put j to the other side.
                     j.color = 1 - i.color;
+                    queue.add(j);
                 } else if (j.color == i.color) {
                     // Conflict detected.
                     failed = true;
                     break;
-                }
-
-                if (!j.visited) {
-                    j.visited = true;
-                    queue.add(j);
-                }
+                } // else: j has been visited and its color is so far so good.
             }
         }
 
