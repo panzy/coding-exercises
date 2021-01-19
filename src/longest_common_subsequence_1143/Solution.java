@@ -21,6 +21,13 @@ public class Solution {
         return dp(s1.length() - 1, s2.length() - 1);
     }
 
+    /**
+     * Return the length of the longest common subsequence of s1[0:i] and s2[0:j].
+     *
+     * @param i end of the first string, inclusive.
+     * @param j end of the second string, inclusive.
+     * @return
+     */
     private int dp(int i, int j) {
         if (i < 0 || j < 0)
             return 0;
