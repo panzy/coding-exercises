@@ -50,6 +50,8 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 "In mathematics, a subsequence is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements." -
 [Wikipedia](https://en.wikipedia.org/wiki/Subsequence)
 
+- [1143. Longest Common Subsequence](./src/longest_common_subsequence_1143)
+
 ### relationship
 
 The presence of some kind of relationship hints there is a graph.
