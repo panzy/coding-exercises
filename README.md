@@ -36,7 +36,7 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [Perfect Rectangle](./src/perfect_rectangle)
 - [223. Rectangle Area](./src/rectangle_area_223)
 
-### continuous sub sequence
+### substring
 
 - [3. Longest Substring Without Repeating Characters](./src/longest_substring_without_repeating_characters)
 - [395. Longest Substring with At Least K Repeating Characters](./src/longest_substring_with_at_least_k_repeating_characters)
@@ -44,6 +44,11 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [992. Subarrays with K Different Integers](./src/subarrays_with_k_different_integers)
 - [5. Longest Palindromic Substring](./src/longest_palindromic_substring_5)
 - [647. Palindromic Substrings](./src/palindromic_substrings_647)
+
+### subsequence
+
+"In mathematics, a subsequence is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements." -
+[Wikipedia](https://en.wikipedia.org/wiki/Subsequence)
 
 ### relationship
 
