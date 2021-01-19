@@ -43,6 +43,7 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [560. Subarray Sum Equals K](./src/subarray_sum_equals_k_560)
 - [992. Subarrays with K Different Integers](./src/subarrays_with_k_different_integers)
 - [5. Longest Palindromic Substring](./src/longest_palindromic_substring_5)
+- [647. Palindromic Substrings](./src/palindromic_substrings_647)
 
 ### relationship
 
