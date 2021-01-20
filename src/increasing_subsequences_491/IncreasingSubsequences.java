@@ -11,7 +11,7 @@ import java.util.*;
 public class IncreasingSubsequences {
 
     public List<List<Integer>> findSubsequences(int[] nums) {
-        return new Solution2().findSubsequences(nums);
+        return new Solution3_graph().findSubsequences(nums);
     }
 
     @Test

@@ -65,3 +65,4 @@ The presence of some kind of relationship hints there is a graph.
 - [127. Word Ladder](./src/word_ladder)
 - [126. Word Ladder II](./src/word_ladder_ii)
 - [1345. Jump Game IV](./src/jump_game_iv)
+- [491. Increasing Subsequences](./src/increasing_subsequences_491)
