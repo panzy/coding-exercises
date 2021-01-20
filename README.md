@@ -51,6 +51,7 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 [Wikipedia](https://en.wikipedia.org/wiki/Subsequence)
 
 - [1143. Longest Common Subsequence](./src/longest_common_subsequence_1143)
+- [300. Longest Increasing Subsequence](./src/longest_increasing_subsequence_300)
 - [516. Longest Palindromic Subsequence](./src/longest_palindromic_subsequence_516)
 
 ### relationship
