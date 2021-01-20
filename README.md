@@ -55,6 +55,7 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [516. Longest Palindromic Subsequence](./src/longest_palindromic_subsequence_516)
 - [646. Maximum Length of Pair Chain](./src/maximum_length_of_pair_chain_646)
 - [354. Russian Doll Envelopes](./src/russian_doll_envelopes_354)
+- [491. Increasing Subsequences](./src/increasing_subsequences_491)
 
 ### relationship
 
