@@ -36,7 +36,7 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [Perfect Rectangle](./src/perfect_rectangle)
 - [223. Rectangle Area](./src/rectangle_area_223)
 
-### substring
+### substring (continuous subsequence)
 
 - [3. Longest Substring Without Repeating Characters](./src/longest_substring_without_repeating_characters)
 - [395. Longest Substring with At Least K Repeating Characters](./src/longest_substring_with_at_least_k_repeating_characters)
@@ -52,10 +52,11 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 
 - [1143. Longest Common Subsequence](./src/longest_common_subsequence_1143)
 - [300. Longest Increasing Subsequence](./src/longest_increasing_subsequence_300)
+- [673. Number of Longest Increasing Subsequence](./src/number_of_longest_increasing_subsequence_673)
+- [491. Increasing Subsequences](./src/increasing_subsequences_491)
 - [516. Longest Palindromic Subsequence](./src/longest_palindromic_subsequence_516)
 - [646. Maximum Length of Pair Chain](./src/maximum_length_of_pair_chain_646)
 - [354. Russian Doll Envelopes](./src/russian_doll_envelopes_354)
-- [491. Increasing Subsequences](./src/increasing_subsequences_491)
 
 ### relationship
 
