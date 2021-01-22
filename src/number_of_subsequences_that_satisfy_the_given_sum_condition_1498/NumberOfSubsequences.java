@@ -6,14 +6,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Created by Zhiyong Pan on 2021-01-22.
  */
 public class NumberOfSubsequences {
     public int numSubseq(int[] nums, int target) {
-        return new Solution0().numSubseq(nums, target);
+        return new Solution1().numSubseq(nums, target);
     }
 
     @Test

@@ -3,11 +3,11 @@ package number_of_subsequences_that_satisfy_the_given_sum_condition_1498;
 import java.util.Arrays;
 
 /**
- * This solution is correct, but time limit exceeded. Will be improved in next solution.
+ * Optimized based on the previous solution.
  *
  * Created by Zhiyong Pan on 2021-01-22.
  */
-public class Solution0 {
+public class Solution1 {
     final static int mod = (int) (1e9 + 7);
 
     private static class Node {
@@ -62,35 +62,34 @@ public class Solution0 {
 
         for (Node i = list.next; i != null; i = i.next) {
 
-            // Find a pair (i,j) that i+j<=target.
-            // NOTE: can be optimized, see next solution.
-            for (Node j = i; j != null; j = j.next) {
-                if (i.num + j.num > target)
-                    break;
+            if (i.num + i.num > target)
+                break;
 
-                // Got a pair of minimum and maximum.
+            // Find the largest range (i,j) that i+j<=target.
+            Node j = i;
+            while (j.next != null && i.num + j.next.num <= target)
+                j = j.next;
 
-                if (i.num == j.num) {
-                    // The subsequence contains one or more of this value and no other values.
-                    ans = (ans + bigPow(2, i.freq) - 1) % mod;
-                } else {
-                    // How many elements are greater than a and less than b?
-                    int optionalElementCount = j.pos - (i.pos + i.freq);
+            // Got a pair of minimum and maximum.
 
-                    // Formula:
-                    // count =
-                    //         // the minimum appears at least once
-                    //         (2^i - 1) *
-                    //         // the maximum appears at least once
-                    //         (2^j - 1) *
-                    //         // other numbers are free to appear or not
-                    //         2^optionalElementCount
-                    ans = (ans
-                            + bigPow(2, i.freq + j.freq + optionalElementCount)
-                            - bigPow(2, i.freq + optionalElementCount)
-                            - bigPow(2, j.freq + optionalElementCount)
-                            + bigPow(2, optionalElementCount)) % mod;
-                }
+            if (i.num == j.num) {
+                // The subsequence contains one or more of this value and no other values.
+                ans = (ans + bigPow(2, i.freq) - 1) % mod;
+            } else {
+                // How many elements are greater than a and less than b?
+                int optionalElementCount = j.pos - (i.pos + i.freq);
+
+                // Formula:
+                // count =
+                //         // the minimum appears at least once
+                //         (2^i - 1) *
+                //         // the maximum appears zero or more times
+                //         2^j *
+                //         // other numbers are free to appear or not
+                //         2^optionalElementCount
+                ans = (ans
+                        + bigPow(2, i.freq + j.freq + optionalElementCount)
+                        - bigPow(2, j.freq + optionalElementCount)) % mod;
             }
         }
 
