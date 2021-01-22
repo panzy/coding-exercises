@@ -6,16 +6,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
  * Created by Zhiyong Pan on 2021-01-22.
  */
 public class Solution {
-    final static BigInteger mod = BigInteger.valueOf((long) (1e9 + 7));
-    final static BigInteger ONE = BigInteger.ONE;
-    final static BigInteger TWO = BigInteger.TWO;
+    final static int mod = (int) (1e9 + 7);
 
     static class Node {
         int num;
@@ -65,7 +62,7 @@ public class Solution {
         }
 
         // Number of valid subsequences.
-        BigInteger ans = BigInteger.valueOf(0);
+        int ans = 0;
 
         for (Node i = list.next; i != null; i = i.next) {
 
@@ -78,26 +75,39 @@ public class Solution {
 
                 if (i.num == j.num) {
                     // The subsequence contains one or more of this value and no other values.
-                    ans = ans
-                            .add(TWO.modPow(BigInteger.valueOf(i.freq), mod))
-                            .subtract(ONE);
+                    ans = (ans + bigPow(2, i.freq) - 1) % mod;
                 } else {
                     // How many elements are greater than a and less than b?
                     int optionalElementCount = j.pos - (i.pos + i.freq);
 
-                    ans = ans.add(
-                            // the minimum appears at least once
-                            TWO.modPow(BigInteger.valueOf(i.freq), mod).subtract(ONE)
-                                    // the maximum appears at least once
-                                    .multiply(TWO.modPow(BigInteger.valueOf(j.freq), mod).subtract(ONE))
-                                    // other numbers are free to appear or not
-                                    .multiply(TWO.modPow(BigInteger.valueOf(optionalElementCount), mod))
-                    );
+                    // Formula:
+                    // count =
+                    //         // the minimum appears at least once
+                    //         (2^i - 1) *
+                    //         // the maximum appears at least once
+                    //         (2^j - 1) *
+                    //         // other numbers are free to appear or not
+                    //         2^optionalElementCount
+                    ans = (ans
+                            + bigPow(2, i.freq + j.freq + optionalElementCount)
+                            - bigPow(2, i.freq + optionalElementCount)
+                            - bigPow(2, j.freq + optionalElementCount)
+                            + bigPow(2, optionalElementCount)) % mod;
                 }
             }
         }
 
-        return ans.mod(mod).intValue();
+        while (ans < 0)
+            ans += mod;
+        return ans;
+    }
+
+    // https://leetcode.com/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/discuss/1005857/C%2B%2B-short-solution
+    static int bigPow(int v, int p) {
+        if(p == 0) return 1;
+        if(p == 1) return v;
+        int h = bigPow(v, p>>1), f = (int)(((long)h * h) % mod);
+        return ((p&1) == 1) ? (f * v) % mod : f;
     }
 
     @Test
