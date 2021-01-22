@@ -59,6 +59,7 @@ Rectangles are composed of cells in a grid or determined by coordinates.
 - [354. Russian Doll Envelopes](./src/russian_doll_envelopes_354)
 - [1673. Find the Most Competitive Subsequence](./src/find_the_most_competitive_subsequence_1673)
 - [376. Wiggle Subsequence](./src/wiggle_subsequence_376)
+- [1498. Number of Subsequences That Satisfy the Given Sum Condition](./src/number_of_subsequences_that_satisfy_the_given_sum_condition_1498)
 
 ### relationship
 
