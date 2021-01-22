@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
+ * This solution is correct, but time limit exceeded. Will be improved in next solution.
+ *
  * Created by Zhiyong Pan on 2021-01-22.
  */
-public class Solution {
+public class Solution0 {
     final static int mod = (int) (1e9 + 7);
 
-    static class Node {
+    private static class Node {
         int num;
         int freq;
         int pos;
