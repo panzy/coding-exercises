@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class NumberOfSubsequences {
     public int numSubseq(int[] nums, int target) {
-        return new Solution1().numSubseq(nums, target);
+        return new Solution2().numSubseq(nums, target);
     }
 
     @Test

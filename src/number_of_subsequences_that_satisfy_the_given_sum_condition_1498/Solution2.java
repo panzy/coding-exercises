@@ -3,11 +3,13 @@ package number_of_subsequences_that_satisfy_the_given_sum_condition_1498;
 import java.util.Arrays;
 
 /**
- * Optimized based on the previous solution. Still time limit exceeded.
+ * Optimized based on the previous solution.
+ *
+ * Barely accepted.
  *
  * Created by Zhiyong Pan on 2021-01-22.
  */
-public class Solution1 {
+public class Solution2 {
     final static int mod = (int) (1e9 + 7);
 
     private static class Node {
@@ -60,15 +62,22 @@ public class Solution1 {
         // Number of valid subsequences.
         int ans = 0;
 
+        Node j = null;
+
         for (Node i = list.next; i != null; i = i.next) {
 
             if (i.num + i.num > target)
                 break;
 
             // Find the largest range (i,j) that i+j<=target.
-            Node j = i;
-            while (j.next != null && i.num + j.next.num <= target)
-                j = j.next;
+            if (j == null) {
+                j = i;
+                while (j.next != null && i.num + j.next.num <= target)
+                    j = j.next;
+            } else {
+                while (i != j && i.num + j.num > target)
+                    j = j.prev;
+            }
 
             // Got a pair of minimum and maximum.
 
