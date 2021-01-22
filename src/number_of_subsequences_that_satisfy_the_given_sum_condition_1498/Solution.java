@@ -64,28 +64,28 @@ public class Solution {
             }
         }
 
-        // Number of invalid subsequences.
-        BigInteger invalidCnt = BigInteger.valueOf(0);
+        // Number of valid subsequences.
+        BigInteger ans = BigInteger.valueOf(0);
 
         for (Node i = list.next; i != null; i = i.next) {
 
-            // Find a pair (i,j) that i+j>target.
-            for (Node j = tail; j.num >= i.num; j = j.prev) {
-                if (i.num + j.num <= target)
+            // Find a pair (i,j) that i+j<=target.
+            for (Node j = i; j != null; j = j.next) {
+                if (i.num + j.num > target)
                     break;
 
                 // Got a pair of minimum and maximum.
 
                 if (i.num == j.num) {
                     // The subsequence contains one or more of this value and no other values.
-                    invalidCnt = invalidCnt
+                    ans = ans
                             .add(TWO.modPow(BigInteger.valueOf(i.freq), mod))
                             .subtract(ONE);
                 } else {
                     // How many elements are greater than a and less than b?
                     int optionalElementCount = j.pos - (i.pos + i.freq);
 
-                    invalidCnt = invalidCnt.add(
+                    ans = ans.add(
                             // the minimum appears at least once
                             TWO.modPow(BigInteger.valueOf(i.freq), mod).subtract(ONE)
                                     // the maximum appears at least once
@@ -97,7 +97,7 @@ public class Solution {
             }
         }
 
-        return TWO.pow(n).subtract(ONE).subtract(invalidCnt).mod(mod).intValue();
+        return ans.mod(mod).intValue();
     }
 
     @Test
