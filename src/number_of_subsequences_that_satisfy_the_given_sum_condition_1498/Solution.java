@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Created by Zhiyong Pan on 2021-01-22.
@@ -19,65 +17,82 @@ public class Solution {
     final static BigInteger ONE = BigInteger.ONE;
     final static BigInteger TWO = BigInteger.TWO;
 
+    static class Node {
+        int num;
+        int freq;
+        int pos;
+
+        Node next;
+        Node prev;
+
+        void connect(Node tail) {
+            next = tail;
+            tail.prev = this;
+        }
+    }
+
     public int numSubseq(int[] nums, int target) {
-        Arrays.sort(nums);
         int n = nums.length;
-        HashMap<Integer, Integer> prefix = new HashMap<>();
-        HashMap<Integer, Integer> freq = new HashMap<>();
 
-        for (int i = 0; i < n; ++i) {
-            freq.put(nums[i], freq.getOrDefault(nums[i], 0) + 1);
+        Node list = new Node(); // dummy head
+        Node tail = list;
+        int distinctCnt = 0; // for debug purpose
 
-            if (!prefix.containsKey(nums[i])) {
-                int p = 0;
-                for (int j = 0; j < n; ++j) {
-                    if (nums[i] > nums[j]) {
-                        ++p;
-                    }
+        Arrays.sort(nums);
+
+        if (n > 0) {
+            Node curr = new Node();
+            curr.num = nums[0];
+            curr.pos = 0;
+            curr.freq = 0;
+            tail.connect(curr);
+            tail = curr;
+            distinctCnt = 1;
+
+            for (int i = 0; i < n; ++i) {
+                if (nums[i] == curr.num) {
+                    ++curr.freq;
+                } else {
+                    curr = new Node();
+                    curr.num = nums[i];
+                    curr.pos = i;
+                    curr.freq = 1;
+                    tail.connect(curr);
+                    tail = curr;
+                    ++distinctCnt;
                 }
-                prefix.put(nums[i], p);
             }
         }
 
         // Number of invalid subsequences.
         BigInteger invalidCnt = BigInteger.valueOf(0);
 
-        // Record whether a pair of minimum and maximum (no matter where they are)
-        // have been counted.
-        HashSet<Integer> usedPairs = new HashSet<>();
+        for (Node i = list.next; i != null; i = i.next) {
 
-        for (int i = 0; i < n; ++i) {
-            for (int j = i; j < n; ++j) {
-                if (nums[i] + nums[j] > target) {
-                    // Got a pair of minimum and maximum.
+            // Find a pair (i,j) that i+j>target.
+            for (Node j = tail; j.num >= i.num; j = j.prev) {
+                if (i.num + j.num <= target)
+                    break;
 
-                    int a = Math.min(nums[i], nums[j]);
-                    int b = Math.max(nums[i], nums[j]);
+                // Got a pair of minimum and maximum.
 
-                    // Avoid repeated pairs.
-                    int key = (a << 16) + b;
-                    if (usedPairs.contains(key))
-                        continue;
-                    usedPairs.add(key);
+                if (i.num == j.num) {
+                    // The subsequence contains one or more of this value and no other values.
+                    invalidCnt = invalidCnt
+                            .add(TWO.modPow(BigInteger.valueOf(i.freq), mod))
+                            .subtract(ONE);
+                } else {
+                    // How many elements are greater than a and less than b?
+                    int optionalElementCount = j.pos - (i.pos + i.freq);
 
-                    if (a == b) {
-//                        // The subsequence contains one or more of this value and no other values.
-                        invalidCnt = invalidCnt
-                                .add(TWO.modPow(BigInteger.valueOf(freq.get(a)), mod))
-                                .subtract(ONE);
-                    } else {
-                        // How many elements are greater than a and less than b?
-                        int optionalElementCount = prefix.get(b) - prefix.getOrDefault(a, 0) - freq.get(a);
-
-                        invalidCnt = invalidCnt.add(
-                                // the minimum appears at least once
-                                TWO.modPow(BigInteger.valueOf(freq.get(a)), mod).subtract(ONE)
-                                        // the maximum appears at least once
-                                        .multiply(TWO.modPow(BigInteger.valueOf(freq.get(b)), mod).subtract(ONE))
-                                        // other numbers are free to appear or not
-                                        .multiply(TWO.modPow(BigInteger.valueOf(optionalElementCount), mod))
-                        );
-                    }
+                    invalidCnt = invalidCnt.add(
+                            // the minimum appears at least once
+                            TWO.modPow(BigInteger.valueOf(i.freq), mod).subtract(ONE)
+                                    // the maximum appears at least once
+                                    .multiply(TWO.modPow(BigInteger.valueOf(j.freq), mod).subtract(ONE))
+                                    // other numbers are free to appear or not
+                                    .multiply(TWO.modPow(BigInteger.valueOf(optionalElementCount), mod))
+                    );
                 }
             }
         }
