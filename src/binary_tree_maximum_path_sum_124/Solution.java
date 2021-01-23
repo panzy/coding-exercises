@@ -5,13 +5,24 @@ import _lib.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 /**
  * Created by Zhiyong Pan on 2021-01-23.
  */
 public class Solution {
+    // For the recursion function maxPathSum().
+    HashMap<TreeNode, Integer> memo = new HashMap<>();
+
+    // For the recursion function maxPathSumStartFrom().
+    HashMap<TreeNode, Integer> memo2 = new HashMap<>();
+
     public int maxPathSum(TreeNode root) {
         if (root == null)
             return 0;
+
+        if (memo.containsKey(root))
+            return memo.get(root);
 
         // Because the path can't be empty, and Node.val can be negative,
         // we can't init the ans to zero.
@@ -41,11 +52,15 @@ public class Solution {
         if (leftSum > 0 && rightSum > 0)
             ans = Math.max(ans, leftSum + root.val + rightSum);
 
+        memo.put(root, ans);
         return ans;
     }
 
     private int maxPathSumStartFrom(TreeNode root) {
         assert root != null;
+
+        if (memo2.containsKey(root))
+            return memo2.get(root);
 
         int ans = root.val;
 
@@ -54,6 +69,7 @@ public class Solution {
         if (root.right != null)
             ans = Math.max(ans, root.val + maxPathSumStartFrom(root.right));
 
+        memo2.put(root, ans);
         return ans;
     }
 
