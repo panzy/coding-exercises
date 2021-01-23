@@ -11,6 +11,7 @@ import java.math.BigInteger;
  */
 public class Solution {
     static final int mod = 1337;
+    static int[][] memo;
 
     public int superPow(int a, int[] b) {
         /* answer
@@ -19,6 +20,9 @@ public class Solution {
 
            Then we define function pow(a,b,w) = (b[i] * 10^(n-1-i)))
          */
+
+        memo = new int[10][b.length];
+
         int ans = 1;
         for (int i = 0, n = b.length; i < n; ++i) {
             if (b[i] != 0)
@@ -32,8 +36,12 @@ public class Solution {
      */
     static int pow(int a, int b, int w) {
         assert w >= 0;
+        assert w <= 2000;
         assert 0 < b;
         assert b < 10;
+
+        if (memo[b][w] != 0)
+            return memo[b][w];
 
         if (w == 0) {
             // ans = a^b
@@ -45,6 +53,7 @@ public class Solution {
                 ans = (ans * a) % mod;
             }
             // assert ans == BigInteger.valueOf(a).modPow(BigInteger.valueOf(b), BigInteger.valueOf(mod)).intValue();
+            memo[b][w] = ans;
             return ans;
         } else {
             // ans = a1^10
@@ -54,12 +63,14 @@ public class Solution {
             for (int i = 0; i < 10; ++i) {
                 ans = (ans * a1) % mod;
             }
+            memo[b][w] = ans;
             return ans;
         }
     }
 
     @Test
     void testPow() {
+        memo = new int[10][100]; // clear memo
         // 2^1
         Assertions.assertEquals(2, pow(2, 1, 0));
         // 2^10
@@ -70,6 +81,7 @@ public class Solution {
         Assertions.assertEquals(Math.pow(2, 30) % mod, pow(2, 3, 1));
 
         // 2147483647^2
+        memo = new int[10][100]; // clear memo
         Assertions.assertEquals(
                 BigInteger.valueOf(2147483647).modPow(BigInteger.valueOf(2), BigInteger.valueOf(mod)).intValue(),
                 pow(2147483647, 2, 0));
