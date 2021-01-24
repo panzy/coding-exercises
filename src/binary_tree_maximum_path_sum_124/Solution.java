@@ -5,72 +5,52 @@ import _lib.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-
 /**
  * Created by Zhiyong Pan on 2021-01-23.
  */
 public class Solution {
-    // For the recursion function maxPathSum().
-    HashMap<TreeNode, Integer> memo = new HashMap<>();
-
-    // For the recursion function maxPathSumStartFrom().
-    HashMap<TreeNode, Integer> memo2 = new HashMap<>();
 
     public int maxPathSum(TreeNode root) {
-        if (root == null)
-            return 0;
+        int[] ans = helper(root);
+        return ans[0];
+    }
 
-        if (memo.containsKey(root))
-            return memo.get(root);
+    /**
+     * Returns two values:
+     * [0] is the primary answer.
+     * [1] is an auxiliary answer. It's the sum of a path with the root being one of its end.
+     */
+    public int[] helper(TreeNode root) {
+        assert root != null;
 
+        // The primary answer.
         // Because the path can't be empty, and Node.val can be negative,
         // we can't init the ans to zero.
         int ans = root.val;
 
-        // We have constraint -1000 <= Node.val <= 1000
-        // Don't init them to MIN_VALUE, otherwise overflow would happen if we add negative values to them.
-        int leftSum = -1000;
-        int rightSum = -1000;
+        // One of the following will be the auxiliary answer.
+        int leftSum = root.val;
+        int rightSum = root.val;
 
         if (root.left != null) {
-            // A path reside in the left tree.
-            ans = Math.max(ans, maxPathSum(root.left));
-            // A path starting from the left child and going down.
-            leftSum = maxPathSumStartFrom(root.left);
-            // A path starting from root and going left.
-            ans = Math.max(ans, leftSum + (root.val > 0 ? root.val : 0));
+            int[] left = helper(root.left);
+            // Update the answer with the max path reside in the left tree.
+            ans = Math.max(ans, left[0]);
+            if (left[1] > 0)
+                leftSum += left[1];
         }
 
         if (root.right != null) {
-            ans = Math.max(ans, maxPathSum(root.right));
-            rightSum = maxPathSumStartFrom(root.right);
-            ans = Math.max(ans, rightSum + (root.val > 0 ? root.val : 0));
+            int[] right = helper(root.right);
+            ans = Math.max(ans, right[0]);
+            if (right[1] > 0)
+                rightSum += right[1];
         }
 
-        // A path pass the root node.
-        if (leftSum > 0 && rightSum > 0)
-            ans = Math.max(ans, leftSum + root.val + rightSum);
+        // Update the answer with the max path passing the root node.
+        ans = Math.max(ans, leftSum + rightSum - root.val);
 
-        memo.put(root, ans);
-        return ans;
-    }
-
-    private int maxPathSumStartFrom(TreeNode root) {
-        assert root != null;
-
-        if (memo2.containsKey(root))
-            return memo2.get(root);
-
-        int ans = root.val;
-
-        if (root.left != null)
-            ans = Math.max(ans, root.val + maxPathSumStartFrom(root.left));
-        if (root.right != null)
-            ans = Math.max(ans, root.val + maxPathSumStartFrom(root.right));
-
-        memo2.put(root, ans);
-        return ans;
+        return new int[]{ans, Math.max(leftSum, rightSum)};
     }
 
     @Test
