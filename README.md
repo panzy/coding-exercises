@@ -70,3 +70,11 @@ The presence of some kind of relationship hints there is a graph.
 - [126. Word Ladder II](./src/word_ladder_ii)
 - [1345. Jump Game IV](./src/jump_game_iv)
 - [491. Increasing Subsequences](./src/increasing_subsequences_491)
+
+### binary tree
+
+- [110. Balanced Binary Tree](./src/balanced_binary_tree)
+- [124. Binary Tree Maximum Path Sum](./src/binary_tree_maximum_path_sum_124)
+- [1379. Find a Corresponding Node of a Binary Tree in a Clone of That Tree](./src/find_a_corresponding_node_of_a_binary_tree_in_a_clone_of_that_tree)
+- [1457. Pseudo-Palindromic Paths in a Binary Tree](./src/pseduo_palindromic_paths_in_a_binary_tree)
+- [1367. Linked List in Binary Tree](./src/linked_list_in_binary_tree)
