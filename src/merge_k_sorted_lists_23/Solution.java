@@ -16,9 +16,12 @@ public class Solution {
         while (true) {
             // Find the minimal head of the k lists.
             int minPos = -1;
+            int exhausted = 0;
             for (int i = 0; i < lists.length; ++i) {
-                if (lists[i] == null)
+                if (lists[i] == null) {
+                    ++exhausted;
                     continue;
+                }
                 if (minPos == -1 || lists[minPos].val > lists[i].val)
                     minPos = i;
             }
@@ -31,6 +34,9 @@ public class Solution {
 
             // Consume the minimal head.
             lists[minPos] = lists[minPos].next;
+
+            if (exhausted + 1 == lists.length)
+                break;
         }
 
         return head.next;
@@ -62,6 +68,14 @@ public class Solution {
                         ListFactory.fromArray(new int[]{1, 4, 5}),
                         ListFactory.fromArray(new int[]{1, 3, 4}),
                         ListFactory.fromArray(new int[]{2, 6}),
+                }))
+        );
+        Assertions.assertArrayEquals(
+                new int[]{1, 1, 2, 3, 4, 4, 5, 6},
+                ListFactory.toArray(mergeKLists(new ListNode[]{
+                        ListFactory.fromArray(new int[]{1, 3, 4, 4, 5, 6}),
+                        ListFactory.fromArray(new int[]{1}),
+                        ListFactory.fromArray(new int[]{2}),
                 }))
         );
     }
