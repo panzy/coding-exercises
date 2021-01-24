@@ -1,6 +1,6 @@
-# LeetCode Solutions & Tests
+# LeetCode Workspace
 
-Record my solutions to LeetCode algorithm problems.
+My workspace for exercising LeetCode algorithm problems.
 
 All solutions come with unit tests, and optionally some thoughts and illustrations.
 
