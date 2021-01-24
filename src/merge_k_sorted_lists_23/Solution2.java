@@ -5,40 +5,33 @@ import _lib.singly_linked_list.ListNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.PriorityQueue;
+
 /**
- * Pick the smallest head of the k lists and append it to the merged list.
+ * Same as the previous solution, except that a min heap
+ * is used to speedup finding the smallest head among the k lists.
  *
  * Created by Zhiyong Pan on 2021-01-24.
  */
-public class Solution {
+public class Solution2 {
     public ListNode mergeKLists(ListNode[] lists) {
         ListNode head = new ListNode(0); // dummy
         ListNode tail = head;
 
-        while (true) {
-            // Find the minimal head of the k lists.
-            int minPos = -1;
-            int exhausted = 0;
-            for (int i = 0; i < lists.length; ++i) {
-                if (lists[i] == null) {
-                    ++exhausted;
-                    continue;
-                }
-                if (minPos == -1 || lists[minPos].val > lists[i].val)
-                    minPos = i;
-            }
+        PriorityQueue<ListNode> heap = new PriorityQueue<>((l1, l2) -> l1.val - l2.val);
+        for (ListNode l : lists)
+            if (l != null)
+                heap.add(l);
 
-            if (minPos == -1) // done
-                break;
+        while (!heap.isEmpty()) {
+            ListNode minHead = heap.poll();
 
             // Append the minimal head to the merged list.
-            tail = tail.next = lists[minPos];
+            tail = tail.next = minHead;
 
-            // Consume the minimal head.
-            lists[minPos] = lists[minPos].next;
-
-            if (exhausted + 1 == lists.length)
-                break;
+            // Put the rest of the selected list back to the heap.
+            if (minHead.next != null)
+                heap.add(minHead.next);
         }
 
         return head.next;
