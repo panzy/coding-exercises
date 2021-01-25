@@ -1,4 +1,4 @@
-package valid_pefect_square_367;
+package valid_perfect_square_367;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
