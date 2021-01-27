@@ -1,13 +1,17 @@
 package path_with_minimum_effort_1631;
 
+import _lib.IntArrays;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 /**
  * Created by Zhiyong Pan on 2021-01-26.
  */
 public class PathWithMinimumEffort {
-    Solution2 solution = new Solution2();
+    Solution3 solution = new Solution3();
 
     @Test
     void example1() {
@@ -130,5 +134,11 @@ public class PathWithMinimumEffort {
                 {841756,522264,684972,551510,930136,342493,705129,621517,16379,430758,617290,153318,359154,704400,320368,605146,902580,102033,599500,293241,390385,593865,26208,830140,7834,841053,81678,78027,223900,205741,351318,328798,655149,510091,99670,369618,990420,462718,569177,482353,517762,704758,611777,649272,990376,68138,953808,266475,821020,420212,233385,612888,917800,366254},
                 {222369,72450,592482,751655,741573,810246,621882,869167,931162,580800,688680,761940,44730,36962,290388,798816,952094,662641,872083,609870,787085,459998,663407,581065,251381,668271,316127,388094,893675,960065,433627,200557,590584,812276,277863,235555,66556,767828,245458,574933,226584,627023,813180,966862,27630,247363,480588,137711,909997,154785,999163,368092,645557,681207}
         }));
+    }
+
+    @Test
+    void test45() throws IOException, ParseException {
+        Assertions.assertEquals(381458, solution.minimumEffortPath(IntArrays.load2DFromJsonFile(
+                "./src/path_with_minimum_effort_1631/test-case-45.json")));
     }
 }
