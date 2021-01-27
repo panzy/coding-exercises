@@ -1,4 +1,4 @@
-package two_sum_iv_input_is_a_bst_653.two_sum_ii_input_array_is_sorted_167;
+package two_sum_iv_input_is_a_bst_653;
 
 import _lib.bintree.TreeFactory;
 import _lib.bintree.TreeNode;
