@@ -6,50 +6,65 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
+ * A mountain consists of an increasing and a decreasing subsequence.
+ *
+ * The minimum removals to make an array range into an increasing or a decreasing subsequence
+ * can be obtained by subtracting the length of LIS/LDS from the array range length.
+ *
+ * Building a table of LIS/LDS requires O(N^2) time.
+ *
  * Created by Zhiyong Pan on 2021-01-27.
  */
 public class Solution {
     public int minimumMountainRemovals(int[] nums) {
         int n = nums.length;
+
+        // LIS[i] = length of longest increasing subsequence in range [0, i].
+        int[] LIS = new int[n];
+        // LDS[i] = length of longest decreasing subsequence in range [i, n).
+        int[] LDS = new int[n];
+
+        LIS[0] = 1;
+        for (int i = 1; i < n; ++i) {
+            int max = 1;
+            for (int j = 0; j < i; ++j) {
+                if (nums[j] < nums[i] && max < LIS[j] + 1) {
+                    max = LIS[j] + 1;
+                }
+            }
+            LIS[i] = max;
+        }
+
+        LDS[n - 1] = 1;
+        for (int i = n - 2; i >= 0; --i) {
+            int max = 1;
+            for (int j = i + 1; j < n; ++j) {
+                if (nums[j] < nums[i] && max < LDS[j] + 1) {
+                    max = LDS[j] + 1;
+                }
+            }
+            LDS[i] = max;
+        }
+
         int ans = n;
+
         for (int i = 1; i + 1 < n; ++i) {
-            int costLeft = (i + 1) - lengthOfLIS(nums, 0, i + 1, false);
+            // If [i] is the mountain peak, what's the cost?
+
+            int costLeft = (i + 1) - LIS[i];
             if (costLeft == i) // you can't remove the whole left part!
                 continue;
-            int costRight = (n - i) - lengthOfLIS(nums, i, n, true);
+
+            int costRight = (n - i) - LDS[i];
             if (costRight == n - i - 1) // you can't remove the whole right part!
                 continue;
+
             ans = Math.min(ans, costLeft + costRight);
         }
 
         return ans;
-    }
-
-    int lengthOfLIS(int[] nums, int from, int to, boolean descent) {
-        int n = to - from;
-
-        // [i] = how many numbers before nums[i] are less than nums[i]?
-        int[] cnts = new int[n];
-        Arrays.fill(cnts, 0);
-
-        for (int i = 1; i < n; ++i) {
-            for (int j = 0; j < i; ++j) {
-                if ((descent && nums[from + j] > nums[from + i]) ||
-                        (!descent && nums[from + j] < nums[from + i])) {
-                    cnts[i] = Math.max(cnts[i], 1 + cnts[j]);
-                }
-            }
-        }
-
-        int ans = 0;
-        for (int i = 1; i < n; ++i) {
-            ans = Math.max(ans, cnts[i]);
-        }
-
-        return ans + 1;
     }
 
     @Test
