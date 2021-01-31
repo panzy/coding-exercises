@@ -1,12 +1,16 @@
 package palindrome_partitioning_iv_1745;
 
 /**
- * Build a palindrome query table in O(N^2).
- * Then enumerate all partitioning plans in another O(N^2).
+ * Another way to build the palindrome query table.
+ *
+ * It's no better than the previous one. Just different.
+ * In fact, it's slightly slower, because when it evaluates a table[i][j],
+ * the result might be false, while in the previous solution, never will
+ * a computation be done for false cells.
  *
  * Created by Zhiyong Pan on 2021-01-31.
  */
-public class Solution {
+public class Solution2 {
     char[] chars;
 
     // [i][j] = whether range [i,j] (inclusive) is palindromic.
@@ -18,12 +22,11 @@ public class Solution {
         table = new boolean[n][n];
 
         // Build the table.
-        for (int i = 0; i < n; ++i) {
-            for (int j = i, k = i; j >= 0 && k < n && chars[j] == chars[k]; --j, ++k) {
-                table[j][k] = true;
-            }
-            for (int j = i, k = i + 1; j >= 0 && k < n && chars[j] == chars[k]; --j, ++k) {
-                table[j][k] = true;
+        for (int j = 0; j < n; ++j) {
+            for (int i = 0; i <= j; ++i) {
+                if (chars[i] == chars[j]) {
+                    table[i][j] = i + 1 <= j - 1 ? table[i + 1][j - 1] : true;
+                }
             }
         }
 
