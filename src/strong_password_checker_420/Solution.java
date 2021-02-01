@@ -17,7 +17,7 @@ public class Solution {
         bestAnswer = Integer.MAX_VALUE;
 
         return check(password,
-                true, true, true,
+                true, true, true, 0,
                 0, "", 0);
     }
 
@@ -26,6 +26,7 @@ public class Solution {
                       boolean requireLowercase,
                       boolean requireUppercase,
                       int dynamicChars,
+                      int prevLen,
                       String prev,
                       int prevCost) {
 
@@ -56,23 +57,23 @@ public class Solution {
             int appendCost = 0;
             if (requireDigit) {
                 assert dynamicChars == 0;
-                prev += "?";
+                ++prevLen;
                 ++appendCost;
             }
             if (requireLowercase) {
                 assert dynamicChars == 0;
-                prev += "?";
+                ++prevLen;
                 ++appendCost;
             }
             if (requireUppercase) {
                 assert dynamicChars == 0;
-                prev += "?";
+                ++prevLen;
                 ++appendCost;
             }
 
             bestAnswer = Math.min(bestAnswer, prevCost + appendCost +
-                    Math.max(0, minLen - prev.length()) +
-                    Math.max(0, prev.length() - maxLen));
+                    Math.max(0, minLen - prevLen) +
+                    Math.max(0, prevLen - maxLen));
             return bestAnswer;
         }
 
@@ -83,15 +84,15 @@ public class Solution {
         if (prev.endsWith(password.charAt(0) + "" + password.charAt(0))) {
             // What if we insert a char before this char?
             cost = Math.min(cost, check(password,
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prev + "?", prevCost + 1));
+                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prevLen + 1, prev + "?", prevCost + 1));
 
             // What if we remove this char?
             cost = Math.min(cost, check(password.substring(1),
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars, prev, prevCost + 1));
+                    requireDigit, requireLowercase, requireUppercase, dynamicChars, prevLen, prev, prevCost + 1));
 
             // What if we change this char?
             cost = Math.min(cost, check(password.substring(1),
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prev + "?", prevCost + 1));
+                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prevLen + 1, prev + "?", prevCost + 1));
         } else {
             // Can the current char fulfil a certain type of requirement?
             boolean fulfillDigit = requireDigit && !Character.isDigit(password.charAt(0));
@@ -104,6 +105,7 @@ public class Solution {
                     fulfilLowercase,
                     fulfilUppercase,
                     dynamicChars,
+                    prevLen + 1,
                     prev + password.charAt(0),
                     prevCost));
 
@@ -111,7 +113,7 @@ public class Solution {
             // (Only makes sense when some type of char is required.)
             if (fulfillDigit || fulfilLowercase || fulfilUppercase) {
                 cost = Math.min(cost, check(password.substring(1),
-                        requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prev + "?", prevCost + 1));
+                        requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prevLen + 1, prev + "?", prevCost + 1));
             }
 
             // We don't bother removing a char at this moment.
@@ -130,30 +132,30 @@ public class Solution {
     @Test
     void testRecursion() {
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(0, check("abcAB0123", true, true, true, 0, "", 0));
+        Assertions.assertEquals(0, check("abcAB0123", true, true, true, 0, 0, "", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(1, check("B", false, false, false, 0, "aa0BB", 0));
+        Assertions.assertEquals(1, check("B", false, false, false, 0, 5, "aa0BB", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(3, check("a", true, false, true, 0, "aa", 0));
+        Assertions.assertEquals(3, check("a", true, false, true, 0, 2, "aa", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(0, check("", false, false, false, 0, "aa0BB?", 0));
+        Assertions.assertEquals(0, check("", false, false, false, 0, 6, "aa0BB?", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(1, check("BB", false, false, false, 0, "aa0B", 0));
+        Assertions.assertEquals(1, check("BB", false, false, false, 0, 4, "aa0B", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(1, check("BBB", false, false, true, 0, "aa0", 0));
+        Assertions.assertEquals(1, check("BBB", false, false, true, 0, 3, "aa0", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(2, check("aBBB", true, false, true, 0, "aa", 0));
+        Assertions.assertEquals(2, check("aBBB", true, false, true, 0, 2, "aa", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(2, check("aaBBB", true, false, true, 0, "a", 0));
+        Assertions.assertEquals(2, check("aaBBB", true, false, true, 0, 1, "a", 0));
 
         bestAnswer = Integer.MAX_VALUE;
-        Assertions.assertEquals(2, check("aaaBBB", true, true, true, 0, "", 0));
+        Assertions.assertEquals(2, check("aaaBBB", true, true, true, 0, 0, "", 0));
     }
 }
