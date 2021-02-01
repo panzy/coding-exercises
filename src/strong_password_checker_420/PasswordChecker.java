@@ -14,6 +14,7 @@ public class PasswordChecker {
 
     @Test
     void testPassword() {
+        Assertions.assertEquals(23, strongPasswordChecker("FFFFFFFFFFFFFFF11111111111111111111AAA"));
         // aaaabbbbccccddeeddeeddeedd n=26
         // aa?abb?bcc?cddeeddeeddeedd
         //       ?bcc?cddeeddeeddeedd +6

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Barely accepted.
+ *
  * Created by Zhiyong Pan on 2021-01-31.
  */
 public class Solution {
@@ -87,10 +89,13 @@ public class Solution {
         // (Only makes sense if concatenating prev and password will result in an AAA.
         if (prevB == prevC && prevC == A[offset]) {
             // What if we insert a char before this char?
-            cost = Math.min(cost, check(offset,
-                    requireDigit, requireLowercase, requireUppercase,
-                    dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
-            ));
+            // Only makes sense if the curr len is not enough.
+            if (prevLen < minLen) {
+                cost = Math.min(cost, check(offset,
+                        requireDigit, requireLowercase, requireUppercase,
+                        dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
+                ));
+            }
 
             // What if we remove this char?
             cost = Math.min(cost, check(offset + 1,
@@ -99,9 +104,11 @@ public class Solution {
             ));
 
             // What if we change this char?
-            cost = Math.min(cost, check(offset + 1, requireDigit, requireLowercase, requireUppercase,
-                    dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
-            ));
+            if (prevLen < maxLen) {
+                cost = Math.min(cost, check(offset + 1, requireDigit, requireLowercase, requireUppercase,
+                        dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
+                ));
+            }
         } else {
             // Can the current char fulfil a certain type of requirement?
             boolean fulfillDigit = requireDigit && !Character.isDigit(A[offset]);
