@@ -32,7 +32,7 @@ public class Solution {
 //        System.out.println(prev + " + " + password + " (" + requireDigit + "," + requireLowercase + "," + requireUppercase + ")");
 
         // Invalid password. Abort.
-        if (indexOfAAA(prev) != -1)
+        if (endsWithAAA(prev))
             return Integer.MAX_VALUE;
 
         if (prevCost >= bestAnswer)
@@ -120,14 +120,11 @@ public class Solution {
         return cost;
     }
 
-    private int indexOfAAA(String s) {
+    private boolean endsWithAAA(String s) {
         int n = s.length();
-        for (int i = 0; i + 2 < n; ++i) {
-            if (s.charAt(i) == s.charAt(i + 1) && s.charAt(i) == s.charAt(i + 2)) {
-                return i;
-            }
-        }
-        return -1;
+        if (n < 3)
+            return false;
+        return  s.charAt(n - 3) == s.charAt(n - 1) && s.charAt(n - 2) == s.charAt(n - 1);
     }
 
     @Test
