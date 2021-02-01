@@ -103,26 +103,33 @@ public class Solution {
             // What if we remove this char?
             cost = Math.min(cost, check(password.substring(1),
                     requireDigit, requireLowercase, requireUppercase, dynamicChars, prev, prevCost + 1));
+
+            // What if we change this char?
+            cost = Math.min(cost, check(password.substring(1),
+                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prev + "?", prevCost + 1));
         } else {
+            // Can the current char fulfil a certain type of requirement?
+            boolean fulfillDigit = requireDigit && !Character.isDigit(password.charAt(0));
+            boolean fulfilLowercase = requireLowercase && !Character.isLowerCase(password.charAt(0));
+            boolean fulfilUppercase = requireUppercase && !Character.isUpperCase(password.charAt(0));
+
             // What if we reserve this char?
             cost = Math.min(cost, check(password.substring(1),
-                    requireDigit && !Character.isDigit(password.charAt(0)),
-                    requireLowercase && !Character.isLowerCase(password.charAt(0)),
-                    requireUppercase && !Character.isUpperCase(password.charAt(0)),
+                    fulfillDigit,
+                    fulfilLowercase,
+                    fulfilUppercase,
                     dynamicChars,
                     prev + password.charAt(0),
                     prevCost));
-        }
 
-        // What if we change this char?
-        // (Only makes sense when we don't need this char.)
-        if ((prev + password).length() > minLen &&
-                (!requireDigit || !Character.isDigit(password.charAt(0))) &&
-                (!requireLowercase || !Character.isLowerCase(password.charAt(0))) &&
-                (!requireUppercase || !Character.isUpperCase(password.charAt(0)))
-        ) {
-            cost = Math.min(cost, check(password.substring(1),
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prev + "?", prevCost + 1));
+            // What if we change this char?
+            // (Only makes sense when some type of char is required.)
+            if (fulfillDigit || fulfilLowercase || fulfilUppercase) {
+                cost = Math.min(cost, check(password.substring(1),
+                        requireDigit, requireLowercase, requireUppercase, dynamicChars + 1, prev + "?", prevCost + 1));
+            }
+
+            // We don't bother removing a char at this moment.
         }
 
         return cost;
