@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 
 /**
- * Brute force with memo. Barely accepted.
+ * DFS with memo. Barely accepted.
  *
  * Created by Zhiyong Pan on 2021-02-01.
  */
