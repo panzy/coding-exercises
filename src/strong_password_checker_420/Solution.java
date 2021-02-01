@@ -20,9 +20,7 @@ public class Solution {
         n = password.length();
         A = password.toCharArray();
 
-        return check(0,
-                true, true, true, 0,
-                0, '?', '?', '?', 0);
+        return check(0, true, true, true, 0, 0, 0, '?', '?', '?');
     }
 
     private int check(int offset,
@@ -31,10 +29,9 @@ public class Solution {
                       boolean requireUppercase,
                       int dynamicChars,
                       int prevLen,
-                      char prevA,
+                      int prevCost, char prevA,
                       char prevB,
-                      char prevC,
-                      int prevCost) {
+                      char prevC) {
 
         // Invalid password. Abort.
         if (prevA != '?' && prevA == prevB && prevB == prevC)
@@ -88,21 +85,20 @@ public class Solution {
         if (prevB == prevC && prevC == A[offset]) {
             // What if we insert a char before this char?
             cost = Math.min(cost, check(offset,
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1,
-                    prevLen + 1, prevB, prevC, '?',
-                    prevCost + 1));
+                    requireDigit, requireLowercase, requireUppercase,
+                    dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
+            ));
 
             // What if we remove this char?
             cost = Math.min(cost, check(offset + 1,
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars,
-                    prevLen, prevA, prevB, prevC,
-                    prevCost + 1));
+                    requireDigit, requireLowercase, requireUppercase,
+                    dynamicChars, prevLen, prevCost + 1, prevA, prevB, prevC
+            ));
 
             // What if we change this char?
-            cost = Math.min(cost, check(offset + 1,
-                    requireDigit, requireLowercase, requireUppercase, dynamicChars + 1,
-                    prevLen + 1, prevB, prevC, '?',
-                    prevCost + 1));
+            cost = Math.min(cost, check(offset + 1, requireDigit, requireLowercase, requireUppercase,
+                    dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
+            ));
         } else {
             // Can the current char fulfil a certain type of requirement?
             boolean fulfillDigit = requireDigit && !Character.isDigit(A[offset]);
@@ -110,18 +106,16 @@ public class Solution {
             boolean fulfilUppercase = requireUppercase && !Character.isUpperCase(A[offset]);
 
             // What if we reserve this char?
-            cost = Math.min(cost, check(offset + 1,
-                    fulfillDigit, fulfilLowercase, fulfilUppercase, dynamicChars,
-                    prevLen + 1, prevB, prevC, A[offset],
-                    prevCost));
+            cost = Math.min(cost, check(offset + 1, fulfillDigit, fulfilLowercase, fulfilUppercase,
+                    dynamicChars, prevLen + 1, prevCost, prevB, prevC, A[offset]
+            ));
 
             // What if we change this char?
             // (Only makes sense when some type of char is required.)
             if (fulfillDigit || fulfilLowercase || fulfilUppercase) {
-                cost = Math.min(cost, check(offset + 1,
-                        requireDigit, requireLowercase, requireUppercase, dynamicChars + 1,
-                        prevLen + 1, prevB, prevC, '?',
-                        prevCost + 1));
+                cost = Math.min(cost, check(offset + 1, requireDigit, requireLowercase, requireUppercase,
+                        dynamicChars + 1, prevLen + 1, prevCost + 1, prevB, prevC, '?'
+                ));
             }
 
             // We don't bother removing a char at this moment.
@@ -130,58 +124,51 @@ public class Solution {
         return cost;
     }
 
-    private boolean endsWithAAA(String s) {
-        int n = s.length();
-        if (n < 3)
-            return false;
-        return  s.charAt(n - 3) == s.charAt(n - 1) && s.charAt(n - 2) == s.charAt(n - 1);
-    }
-
     @Test
     void testRecursion() {
         bestAnswer = Integer.MAX_VALUE;
         A = "abcAB0123".toCharArray();
         n = A.length;
-        Assertions.assertEquals(0, check(0, true, true, true, 0, 0, '?', '?', '?', 0));
+        Assertions.assertEquals(0, check(0, true, true, true, 0, 0, 0, '?', '?', '?'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "B".toCharArray();
         n = A.length;
-        Assertions.assertEquals(1, check(0, false, false, false, 0, 5, '0', 'B', 'B', 0));
+        Assertions.assertEquals(1, check(0, false, false, false, 0, 5, 0, '0', 'B', 'B'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "a".toCharArray();
         n = A.length;
-        Assertions.assertEquals(3, check(0, true, false, true, 0, 2, '?', 'a', 'a', 0));
+        Assertions.assertEquals(3, check(0, true, false, true, 0, 2, 0, '?', 'a', 'a'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "".toCharArray();
         n = A.length;
-        Assertions.assertEquals(0, check(0, false, false, false, 0, 6, 'B', 'B', '?', 0));
+        Assertions.assertEquals(0, check(0, false, false, false, 0, 6, 0, 'B', 'B', '?'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "BB".toCharArray();
         n = A.length;
-        Assertions.assertEquals(1, check(0, false, false, false, 0, 4, 'a', '0', 'B', 0));
+        Assertions.assertEquals(1, check(0, false, false, false, 0, 4, 0, 'a', '0', 'B'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "BBB".toCharArray();
         n = A.length;
-        Assertions.assertEquals(1, check(0, false, false, true, 0, 3, 'a', 'a', '0', 0));
+        Assertions.assertEquals(1, check(0, false, false, true, 0, 3, 0, 'a', 'a', '0'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "aBBB".toCharArray();
         n = A.length;
-        Assertions.assertEquals(2, check(0, true, false, true, 0, 2, '?', 'a', 'a', 0));
+        Assertions.assertEquals(2, check(0, true, false, true, 0, 2, 0, '?', 'a', 'a'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "aaBBB".toCharArray();
         n = A.length;
-        Assertions.assertEquals(2, check(0, true, false, true, 0, 1, '?', 'a', 'a', 0));
+        Assertions.assertEquals(2, check(0, true, false, true, 0, 1, 0, '?', 'a', 'a'));
 
         bestAnswer = Integer.MAX_VALUE;
         A = "aaaBBB".toCharArray();
         n = A.length;
-        Assertions.assertEquals(2, check(0, true, true, true, 0, 0, '?', '?', '?', 0));
+        Assertions.assertEquals(2, check(0, true, true, true, 0, 0, 0, '?', '?', '?'));
     }
 }
