@@ -76,22 +76,7 @@ public class Solution {
             return bestAnswer;
         }
 
-        if (!requireDigit && !requireLowercase && !requireUppercase && indexOfAAA(prev + password) == -1) {
-            int ans;
-            int n = (prev + password).length();
-            if (n > maxLen)
-                ans = prevCost + n - maxLen;
-            else if (n < minLen)
-                ans = prevCost + minLen - n;
-            else
-                ans = prevCost;
-
-            bestAnswer = Math.min(bestAnswer, ans);
-            return bestAnswer;
-        }
-
         int cost = Integer.MAX_VALUE;
-
 
         // What if we insert a char before this char or remove this car?
         // (Only makes sense if concatenating prev and password will result in an AAA.
