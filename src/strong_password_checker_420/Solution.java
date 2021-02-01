@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Barely accepted.
  *
+ * TODO: This solution is too complicated and inefficient.
+ *
  * Created by Zhiyong Pan on 2021-01-31.
  */
 public class Solution {
@@ -23,6 +25,20 @@ public class Solution {
         return check(0, true, true, true, 0, 0, 0, '?', '?', '?');
     }
 
+    /**
+     * @param offset index of the current char of the original password being checked.
+     * @param requireDigit true if we still haven't secure a digit char.
+     * @param requireLowercase
+     * @param requireUppercase
+     * @param dynamicChars how many non-finalized replacement have done before? A replaced char can be any
+     *                     others (except the original char) before it's finalized.
+     * @param prevLen how long is the processed part, including inserted chars?
+     * @param prevCost total cost so far.
+     * @param prevA [prevA, prevB, prevC] is the ending of the processed password. '?' means dynamic or empty.
+     * @param prevB
+     * @param prevC
+     * @return total cost.
+     */
     private int check(int offset,
                       boolean requireDigit,
                       boolean requireLowercase,
