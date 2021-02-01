@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 
 /**
- * Brute force. Time limit exceeded.
+ * Brute force with memo. Barely accepted.
  *
  * Created by Zhiyong Pan on 2021-02-01.
  */
@@ -49,15 +49,7 @@ public class Solution {
                 }
             }
 
-            for (int j = offsetB + 1; j < b.length; ++j) {
-                if (b[j] == a[offsetA]) {
-                    // swap b[offsetB] and b[j]
-                    ans = Math.min(ans, help(
-                            a, offsetA + 1,
-                            swap(b, offsetB, j), 0,
-                            steps + 1));
-                }
-            }
+            // We don't have to swap in b, as the result will be the same.
 
             memo.put(key, ans - steps);
             return ans;
