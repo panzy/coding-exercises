@@ -25,8 +25,7 @@ public class Solution {
 
         assert offsetB < b.length;
 
-        String key = new String(a, offsetA, a.length - offsetA) + ":" +
-                new String(b, offsetB, b.length - offsetB);
+        String key = new String(a, offsetA, a.length - offsetA);
         if (memo.containsKey(key))
             return steps + memo.get(key);
 
