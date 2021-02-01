@@ -38,6 +38,20 @@ public class Solution {
         if (prevCost >= bestAnswer)
             return bestAnswer;
 
+        // Fulfill the requirements of particular types of char if there are dynamic chars available.
+        if (dynamicChars > 0 && requireDigit) {
+            requireDigit = false;
+            --dynamicChars;
+        }
+        if (dynamicChars > 0 && requireLowercase) {
+            requireLowercase = false;
+            --dynamicChars;
+        }
+        if (dynamicChars > 0 && requireUppercase) {
+            requireUppercase = false;
+            --dynamicChars;
+        }
+
         if (password.length() == 0) {
             int appendCost = 0;
             if (requireDigit) {
