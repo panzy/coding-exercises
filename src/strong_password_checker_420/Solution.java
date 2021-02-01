@@ -55,28 +55,19 @@ public class Solution {
         if (password.length() == 0) {
             int appendCost = 0;
             if (requireDigit) {
-                if (dynamicChars > 0) {
-                    --dynamicChars;
-                } else {
-                    prev += "?";
-                    ++appendCost;
-                }
+                assert dynamicChars == 0;
+                prev += "?";
+                ++appendCost;
             }
             if (requireLowercase) {
-                if (dynamicChars > 0) {
-                    --dynamicChars;
-                } else {
-                    prev += "?";
-                    ++appendCost;
-                }
+                assert dynamicChars == 0;
+                prev += "?";
+                ++appendCost;
             }
             if (requireUppercase) {
-                if (dynamicChars > 0) {
-                    --dynamicChars;
-                } else {
-                    prev += "?";
-                    ++appendCost;
-                }
+                assert dynamicChars == 0;
+                prev += "?";
+                ++appendCost;
             }
 
             bestAnswer = Math.min(bestAnswer, prevCost + appendCost +
