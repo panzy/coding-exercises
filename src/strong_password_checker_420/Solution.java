@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Seems to be correct, but very slow.
- *
  * Created by Zhiyong Pan on 2021-01-31.
  */
 public class Solution {
@@ -41,35 +39,40 @@ public class Solution {
             return bestAnswer;
 
         // Fulfill the requirements of particular types of char if there are dynamic chars available.
-        if (dynamicChars > 0 && requireDigit) {
+        // Only perform this when we can fulfill them all, otherwise the logic is not correct.
+        int requirements = (requireDigit ? 1 : 0) + (requireLowercase ? 1 : 0) + (requireUppercase ? 1 : 0);
+        if (dynamicChars >= requirements) {
             requireDigit = false;
-            --dynamicChars;
-        }
-        if (dynamicChars > 0 && requireLowercase) {
             requireLowercase = false;
-            --dynamicChars;
-        }
-        if (dynamicChars > 0 && requireUppercase) {
             requireUppercase = false;
-            --dynamicChars;
+            dynamicChars -= requirements;
         }
 
         if (offset == n) {
             int appendCost = 0;
             if (requireDigit) {
-                assert dynamicChars == 0;
-                ++prevLen;
-                ++appendCost;
+                if (dynamicChars > 0) {
+                    --dynamicChars;
+                } else {
+                    ++prevLen;
+                    ++appendCost;
+                }
             }
             if (requireLowercase) {
-                assert dynamicChars == 0;
-                ++prevLen;
-                ++appendCost;
+                if (dynamicChars > 0) {
+                    --dynamicChars;
+                } else {
+                    ++prevLen;
+                    ++appendCost;
+                }
             }
             if (requireUppercase) {
-                assert dynamicChars == 0;
-                ++prevLen;
-                ++appendCost;
+                if (dynamicChars > 0) {
+                    --dynamicChars;
+                } else {
+                    ++prevLen;
+                    ++appendCost;
+                }
             }
 
             bestAnswer = Math.min(bestAnswer, prevCost + appendCost +
@@ -126,6 +129,11 @@ public class Solution {
 
     @Test
     void testRecursion() {
+        bestAnswer = Integer.MAX_VALUE;
+        A = "aaa123".toCharArray();
+        n = A.length;
+        Assertions.assertEquals(1, check(0, true, true, true, 0, 0, 0, '?', '?', '?'));
+
         bestAnswer = Integer.MAX_VALUE;
         A = "abcAB0123".toCharArray();
         n = A.length;

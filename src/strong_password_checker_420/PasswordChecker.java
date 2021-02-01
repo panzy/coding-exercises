@@ -29,6 +29,7 @@ public class PasswordChecker {
         Assertions.assertEquals(3, strongPasswordChecker("!!!"));
         Assertions.assertEquals(3, strongPasswordChecker("aBc"));
         Assertions.assertEquals(3, strongPasswordChecker("aB5"));
+        Assertions.assertEquals(1, strongPasswordChecker("aaa123"));
         Assertions.assertEquals(2, strongPasswordChecker("aaabbb"));
         Assertions.assertEquals(3, strongPasswordChecker("1111111111"));
         Assertions.assertEquals(1, strongPasswordChecker("000aA"));
