@@ -10,15 +10,15 @@ import java.util.Arrays;
  */
 class Solution {
     public String reverseWords(String s) {
-        // Prepending a sentinel white space will make the program much simpler.
-        char[] A = (' ' + s).toCharArray();
+        char[] A = s.toCharArray();
         int n = A.length;
         StringBuilder sb = new StringBuilder(n);
         int wend = n;
         boolean added = false;
 
-        for (int i = n - 1; i >= 0; --i) {
-            if (A[i] == ' ') {
+        // Consider A[-1] a sentinel whitespace.
+        for (int i = n - 1; i >= -1; --i) {
+            if (i == -1 || A[i] == ' ') {
                 if (i + 1 < wend) {
                     if (added) {
                         sb.append(' ');
