@@ -15,11 +15,17 @@ import java.util.HashSet;
  */
 public class Solution2 {
     public boolean hasCycle(ListNode head) {
-        if (head == null) return false;
-        if (head.next == head) return true;
+        ListNode L = new ListNode(); // sentinel
+        L.next = head;
 
-        for (ListNode f = head.next, s = head; f != null && f.next != null; f = f.next.next, s = s.next) {
-            if (f == s) return true;
+        ListNode p = L;
+        ListNode q = L;
+
+        while (q != null && q.next != null) {
+            q = q.next.next;
+            p = p.next;
+            if (p == q)
+                return true;
         }
 
         return false;
