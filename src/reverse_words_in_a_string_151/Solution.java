@@ -14,22 +14,19 @@ class Solution {
         int n = A.length;
         StringBuilder sb = new StringBuilder(n);
         int wend = n;
-        boolean added = false;
 
         // Consider A[-1] a sentinel whitespace.
         for (int i = n - 1; i >= -1; --i) {
             if (i == -1 || A[i] == ' ') {
                 if (i + 1 < wend) {
-                    if (added) {
-                        sb.append(' ');
-                    } else {
-                        added = true;
-                    }
-                    sb.append(Arrays.copyOfRange(A, i + 1, wend));
+                    sb.append(Arrays.copyOfRange(A, i + 1, wend)).append(' ');
                 }
                 wend = i;
             }
         }
+
+        // Delete the tailing whitespace.
+        sb.deleteCharAt(sb.length() - 1);
 
         return sb.toString();
     }
