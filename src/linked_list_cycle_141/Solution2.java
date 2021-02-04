@@ -15,13 +15,10 @@ import java.util.HashSet;
  */
 public class Solution2 {
     public boolean hasCycle(ListNode head) {
-        ListNode L = new ListNode(); // sentinel
-        L.next = head;
+        ListNode p = head;
+        ListNode q = p;
 
-        ListNode p = L;
-        ListNode q = L;
-
-        while (q != null && q.next != null) {
+        while (q != null && q != null && q.next != null) {
             q = q.next.next;
             p = p.next;
             if (p == q)
