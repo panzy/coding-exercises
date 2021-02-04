@@ -16,7 +16,8 @@ import java.util.TreeSet;
  *  (1) remember each lake's last filled day;
  *  (2) remember all unused non-raining days.
  *
- * For a given raining day, we have to find the first non-raining day after it.
+ * For a given raining day, we have to find the first dry day after the corresponding lake was
+ * previously filled.
  *
  * Created by Zhiyong Pan on 2021-02-02.
  */
