@@ -3,7 +3,6 @@ package _lib.bintree;
 import _lib.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pseduo_palindromic_paths_in_a_binary_tree.Solution_backtracking_api;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,8 +11,6 @@ import java.util.stream.Collectors;
  * Implement a binary-tree traversal API with various algorithms: DFS(with 3 orders), BFS and Backtracking.
  *
  * Some of the traversal methods have an generic API and are designed to be able to solve problems. See
- * {@link pseduo_palindromic_paths_in_a_binary_tree.Solution_dfs_preorder_api} and
- * {@link Solution_backtracking_api} for examples.
  * --
  * Zhiyong Pan, 2020-12-30
  */
