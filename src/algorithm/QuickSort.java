@@ -1,4 +1,4 @@
-package _exercise;
+package algorithm;
 
 import _lib.IntArrays;
 import org.junit.jupiter.api.Assertions;
