@@ -11,4 +11,10 @@ public class Snippets {
         int n = A.length;
         int[] anchors = IntStream.range(0, n).filter(i -> A[i] == 'c').toArray();
     }
+
+    private static void swap(int[] a, int i, int j) {
+        int t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
 }
