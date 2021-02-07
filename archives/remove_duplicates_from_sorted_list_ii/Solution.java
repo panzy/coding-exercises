@@ -1,7 +1,7 @@
 package remove_duplicates_from_sorted_list_ii;
 
-import _lib.singly_linked_list.ListFactory;
-import _lib.singly_linked_list.ListNode;
+import util.singly_linked_list.ListFactory;
+import util.singly_linked_list.ListNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

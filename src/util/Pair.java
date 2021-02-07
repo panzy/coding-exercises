@@ -23,7 +23,7 @@
  * questions.
  */
 
-package _lib;
+package util;
 
 import java.io.Serializable;
 

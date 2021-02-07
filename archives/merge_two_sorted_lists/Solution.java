@@ -1,6 +1,6 @@
 package merge_two_sorted_lists;
 
-import _lib.singly_linked_list.ListNode;
+import util.singly_linked_list.ListNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

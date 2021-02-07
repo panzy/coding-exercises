@@ -1,8 +1,8 @@
 package pseduo_palindromic_paths_in_a_binary_tree;
 
-import _lib.bintree.Traversal;
-import _lib.bintree.TreeFactory;
-import _lib.bintree.TreeNode;
+import util.bintree.Traversal;
+import util.bintree.TreeFactory;
+import util.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

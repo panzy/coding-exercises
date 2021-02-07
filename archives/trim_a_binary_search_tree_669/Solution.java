@@ -1,6 +1,6 @@
 package trim_a_binary_search_tree_669;
 
-import _lib.bintree.TreeNode;
+import util.bintree.TreeNode;
 
 /**
  * Created by Zhiyong Pan on 2021-02-02.

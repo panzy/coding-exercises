@@ -1,4 +1,4 @@
-package _lib.bintree;
+package util.bintree;
 
  public class TreeNode {
      public int val;

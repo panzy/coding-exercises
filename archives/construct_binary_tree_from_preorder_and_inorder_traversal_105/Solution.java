@@ -1,7 +1,7 @@
 package construct_binary_tree_from_preorder_and_inorder_traversal_105;
 
 import _lib.IntArrays;
-import _lib.bintree.TreeNode;
+import util.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

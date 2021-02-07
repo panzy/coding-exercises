@@ -1,8 +1,8 @@
 package find_a_corresponding_node_of_a_binary_tree_in_a_clone_of_that_tree;
 
-import _lib.bintree.Traversal;
-import _lib.bintree.TreeFactory;
-import _lib.bintree.TreeNode;
+import util.bintree.Traversal;
+import util.bintree.TreeFactory;
+import util.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

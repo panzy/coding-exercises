@@ -1,4 +1,4 @@
-package _lib.singly_linked_list;
+package util.singly_linked_list;
 
 import java.util.LinkedList;
 

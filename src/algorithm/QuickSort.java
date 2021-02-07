@@ -1,6 +1,6 @@
 package algorithm;
 
-import _lib.IntArrays;
+import util.IntArrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

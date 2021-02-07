@@ -1,6 +1,6 @@
 package binary_tree_inorder_traversal_94;
 
-import _lib.bintree.TreeNode;
+import util.bintree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package _lib;
+package util;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;

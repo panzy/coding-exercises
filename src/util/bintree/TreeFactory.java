@@ -1,7 +1,7 @@
 /**
  * Zhiyong Pan, 2020-12-22.
  */
-package _lib.bintree;
+package util.bintree;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

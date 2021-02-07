@@ -1,7 +1,7 @@
 package linked_list_in_binary_tree;
 
-import _lib.bintree.TreeNode;
-import _lib.singly_linked_list.ListNode;
+import util.bintree.TreeNode;
+import util.singly_linked_list.ListNode;
 
 /**
  * Created by Zhiyong Pan on 2021-01-05.

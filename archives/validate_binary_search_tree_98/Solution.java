@@ -1,7 +1,7 @@
 package validate_binary_search_tree_98;
 
-import _lib.bintree.TreeFactory;
-import _lib.bintree.TreeNode;
+import util.bintree.TreeFactory;
+import util.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
-package _lib.bintree;
+package util.bintree;
 
-import _lib.Pair;
+import util.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

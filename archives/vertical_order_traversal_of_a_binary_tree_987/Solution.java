@@ -1,7 +1,7 @@
 package vertical_order_traversal_of_a_binary_tree_987;
 
-import _lib.bintree.TreeFactory;
-import _lib.bintree.TreeNode;
+import util.bintree.TreeFactory;
+import util.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

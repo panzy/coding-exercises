@@ -1,9 +1,9 @@
 package linked_list_in_binary_tree;
 
-import _lib.bintree.TreeFactory;
-import _lib.bintree.TreeNode;
-import _lib.singly_linked_list.ListFactory;
-import _lib.singly_linked_list.ListNode;
+import util.bintree.TreeFactory;
+import util.bintree.TreeNode;
+import util.singly_linked_list.ListFactory;
+import util.singly_linked_list.ListNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

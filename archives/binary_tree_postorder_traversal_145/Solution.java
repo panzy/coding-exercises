@@ -1,7 +1,7 @@
 package binary_tree_postorder_traversal_145;
 
-import _lib.bintree.TreeFactory;
-import _lib.bintree.TreeNode;
+import util.bintree.TreeFactory;
+import util.bintree.TreeNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package house_robber_iii;
 
-import _lib.bintree.TreeNode;
+import util.bintree.TreeNode;
 
 import java.util.HashMap;
 

@@ -1,6 +1,6 @@
 package linked_list_cycle_ii_142;
 
-import _lib.singly_linked_list.ListNode;
+import util.singly_linked_list.ListNode;
 
 /**
  * Credit goes to https://github.com/labuladong/fucking-algorithm/blob/master/%E7%AE%97%E6%B3%95%E6%80%9D%E7%BB%B4%E7%B3%BB%E5%88%97/%E5%8F%8C%E6%8C%87%E9%92%88%E6%8A%80%E5%B7%A7.md

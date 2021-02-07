@@ -1,6 +1,6 @@
 package add_two_numbers;
 
-import _lib.singly_linked_list.ListNode;
+import util.singly_linked_list.ListNode;
 
 /**
  * Created by Zhiyong Pan on 2021-01-12.
