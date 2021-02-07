@@ -10,75 +10,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A time limit exceeded solution.
- *
- * The difficulty is that for a potential k, although it's easy to know how many i and j are there before
- * it respectively, not all (i,j) pairs are good, that is, i appears before j.
- *
- * It's a desperate decision to store number indices, rather than their frequency, in a hash map.
- *
- * See Solution2 for a clever approach.
- *
  * Created by Zhiyong Pan on 2021-02-05.
  */
-class Solution {
-    // key = a number
-    // value = its indices.
-    private static HashMap<Long, ArrayList<Integer>> dict = new HashMap<>();
-
+class Solution2 {
     static long countTriplets(List<Long> arr, long r) {
-        if (r == 1)
-            return countTriplets(arr);
-        dict.clear();
+        // any number -> its frequency so far.
+        HashMap<Long, Long> freqI = new HashMap<>();
+
+        // any potential j of a triplet -> number of valid (i, j) pairs so far.
+        HashMap<Long, Long> freqJ = new HashMap<>();
+
         long triplets = 0;
         long r2 = r * r;
-        int k = 0;
         for (Long num : arr) {
+
+            // Assume this num is a k of a triplet.
             if (num % r2 == 0) {
-                // num could be the 3rd of a triplet.
-
-                // Previous j indices.
-                ArrayList<Integer> jIndices = dict.computeIfAbsent(num / r, t -> new ArrayList<>());
-                ArrayList<Integer> iIndices = dict.computeIfAbsent(num / r2, t -> new ArrayList<>());
-
-                if (jIndices.size() > 0 && iIndices.size() > 0) {
-                    for (int jj = jIndices.size() - 1; jj >= 0; --jj) {
-                        int j = jIndices.get(jj);
-                        if (j <= iIndices.get(0))
-                            break;
-                        for (int i : iIndices) {
-                            if (i < j) {
-                                ++triplets;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
+                triplets += freqJ.getOrDefault(num / r, 0L);
             }
 
-            dict.computeIfAbsent(num, t -> new ArrayList<>()).add(k);
-            ++k;
+            // Assume this num is a j of a triplet.
+            if (num % r == 0) {
+                freqJ.put(num, freqI.getOrDefault(num / r, 0L) + freqJ.getOrDefault(num, 0L));
+            }
+
+            // Assume this num is an i of a triplet.
+            freqI.put(num, freqI.getOrDefault(num, 0L) + 1);
         }
 
         return triplets;
-    }
-
-    static long countTriplets(List<Long> arr) {
-        HashMap<Long, Integer> freq = new HashMap<>();
-        for (Long num : arr) {
-            freq.put(num, freq.getOrDefault(num, 0) + 1);
-        }
-
-        long ans = 0;
-        for (int n : freq.values()) {
-            if (n >= 3) {
-                // To overcome overflow, have to divide by 6 early.
-                // Then to keep correct, have to convert to double.
-                ans += n / 6.0  * (n - 1) * (n - 2);
-            }
-        }
-        return ans;
     }
 
     @Test
