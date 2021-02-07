@@ -1,37 +1,52 @@
-package util;
+package triple_sum;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.stream.IntStream;
 
 /**
+ * Solved HackerRank problem: Triple Sum
+ * https://www.hackerrank.com/challenges/triple-sum/problem
+ *
  * Created by Zhiyong Pan on 2021-02-07.
  */
-public class Snippets {
-    void streamWithIndices() {
-        char[] A = "abcdefg".toCharArray();
-        int n = A.length;
-        int[] anchors = IntStream.range(0, n).filter(i -> A[i] == 'c').toArray();
+public class Solution {
+    static long triplets(int[] a, int[] b, int[] c) {
+        a = deduplicate(a);
+        c = deduplicate(c);
+
+        Arrays.sort(a);
+        Arrays.sort(c);
+
+        HashSet<Integer> visitedQ = new HashSet<>();
+
+        long ans = 0;
+        for (int q : b) {
+            if (visitedQ.contains(q))
+                continue;
+            visitedQ.add(q);
+
+            long cntP = countLessThan(a, q + 1);
+            if (cntP > 0) {
+                long cntR = countLessThan(c, q + 1);
+                ans += cntP * cntR;
+            }
+        }
+
+        return ans;
     }
 
-    private static void swap(int[] a, int i, int j) {
-        int t = a[i];
-        a[i] = a[j];
-        a[j] = t;
+    private static int countLessThan(int[] a, int v) {
+        int i = Arrays.binarySearch(a, v);
+        return i >= 0 ? i : -(i + 1);
     }
 
     private static int[] deduplicate(int[] a) {
         HashSet<Integer> set = new HashSet<>();
         for (int i : a) set.add(i);
         return set.stream().mapToInt(v -> v).toArray();
-    }
-
-    private static int countLessThan(int[] a, int v) {
-        int i = Arrays.binarySearch(a, v);
-        return i >= 0 ? i : -(i + 1);
     }
 
     @Test
@@ -54,5 +69,12 @@ public class Snippets {
         Assertions.assertEquals(4, countLessThan(new int[]{0, 2, 4, 6, 8}, 7));
         Assertions.assertEquals(4, countLessThan(new int[]{0, 2, 4, 6, 8}, 8));
         Assertions.assertEquals(5, countLessThan(new int[]{0, 2, 4, 6, 8}, 9));
+    }
+
+    @Test
+    void example1() {
+        Assertions.assertEquals(4, triplets(new int[]{3, 5, 7}, new int[]{3, 6}, new int[]{4, 6, 9}));
+        Assertions.assertEquals(5, triplets(new int[]{1, 4, 5}, new int[]{2, 3, 3}, new int[]{1, 2, 3}));
+        Assertions.assertEquals(4, triplets(new int[]{1, 2}, new int[]{4}, new int[]{1, 2}));
     }
 }
