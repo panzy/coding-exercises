@@ -2,6 +2,11 @@ package data_structure;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import util.Pair;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * This program demonstrates how to manipulate an implicit binary tree, that is, a binary tree represented by an array.
@@ -10,20 +15,88 @@ import org.junit.jupiter.api.Test;
  *  - performs in-order traversal.
  *  - swap children of some nodes as instructed by given rules.
  *
- *  The tree is presented as a 2-D array, indexes.
+ * There are two format of arrays representing a binary tree:
  *
- *  indexes[i] = {index of the (i + 1)-th node's left child, index of the i-th node's right child}.
+ *  A. a 2-D array, int[][] indexes.
+ *
+ *      indexes[i] = {index of the (i + 1)-th node's left child, index of the i-th node's right child}.
  *               Node index starts from 1. So for the root node, its index is 1, and its two children are
  *               indexes[0].
  *
- * The array doesn't hold node values (something like TreeNode.val), it just defines the shape of the binary tree. Each
- * tree node is denoted by its index, with the root's index being 1.
+ *      The array doesn't hold node values (something like TreeNode.val), it just defines the shape of the binary tree.
+ *      Each tree node is denoted by its index, with the root's index being 1. But, of course, node values can be
+ *      stored separately in a hash map, as this program does.
  *
- * See unit test comments below for examples.
+ *  B. serialized node values, Integer[] values.
+ *
+ *      values[i] == null denotes an absent node.
+ *
+ *      This is how LeetCode describes a tree.
+ *
+ *      I don't know how to perform recursions on this kind of array, but have long ago build an explicit tree from
+ *      this array, see also {@link util.bintree.TreeFactory#fromArray(Integer[])}.
+ *
+ *      Also, {@link #buildIndexesFromValueArray(Integer[])} was developed to convert this array to the first kind.
+ *
+ * See unit test comments below for examples of both formats.
  *
  * Created by Zhiyong Pan on 2021-02-08.
  */
 public class ImplicitBinaryTree {
+    /**
+     * In-order traversal.
+     * @param indexes
+     * @param rootIndex 1 == root
+     * @param output should be of the same length as indexes.
+     * @param outputProgress start from 0.
+     * @return updated outputProgress.
+     */
+    public static int inorder(int[][] indexes, int rootIndex, int[] output, int outputProgress) {
+        int[] children = indexes[rootIndex - 1];
+        if (children[0] != -1) {
+            outputProgress = inorder(indexes, children[0], output, outputProgress);
+        }
+
+        output[outputProgress++] = rootIndex;
+
+        if (children[1] != -1) {
+            outputProgress = inorder(indexes, children[1], output, outputProgress);
+        }
+
+        return outputProgress;
+    }
+
+    /**
+     * Given a tree presented by its serialized node values, generates the followings:
+     *  1. the indexes array which exactly describe the tree's shape, and
+     *  2. a hash map mapping node indexes to their values.
+     *
+     * @param nodeValues
+     * @return
+     */
+    public static Pair<int[][], HashMap<Integer, Integer>> buildIndexesFromValueArray(Integer[] nodeValues) {
+        LinkedList<int[]> indexes = new LinkedList<>();
+        HashMap<Integer, Integer> values = new HashMap<>();
+        int nodeIdx = 1;
+
+        // Put root value
+        values.put(1, nodeValues[0]);
+
+        for (int i = 1; i < nodeValues.length; i += 2) {
+            int leftChildIdx = -1, rightChildIdx = -1;
+            if (nodeValues[i] != null) {
+                leftChildIdx = ++nodeIdx;
+                values.put(leftChildIdx, nodeValues[i]);
+            }
+            if (nodeValues[i + 1] != null) {
+                rightChildIdx = ++nodeIdx;
+                values.put(rightChildIdx, nodeValues[i + 1]);
+            }
+            indexes.add(new int[]{leftChildIdx, rightChildIdx});
+        }
+        return new Pair<>(indexes.toArray(new int[indexes.size()][]), values);
+    }
+
     /**
      * Solved this HackerRank problem:
      *      Swap Nodes [Algo]
@@ -61,21 +134,6 @@ public class ImplicitBinaryTree {
         }
     }
 
-    private static int inorder(int[][] indexes, int rootIndex, int[] output, int outputProgress) {
-        int[] children = indexes[rootIndex - 1];
-        if (children[0] != -1) {
-            outputProgress = inorder(indexes, children[0], output, outputProgress);
-        }
-
-        output[outputProgress++] = rootIndex;
-
-        if (children[1] != -1) {
-            outputProgress = inorder(indexes, children[1], output, outputProgress);
-        }
-
-        return outputProgress;
-    }
-
     @Test
     void testInorder() {
         /* The int[][] indexes below represent a tree like this:
@@ -110,6 +168,27 @@ public class ImplicitBinaryTree {
         int[] output = new int[indexes.length];
         inorder(indexes, 1, output, 0);
         Assertions.assertArrayEquals(new int[]{6, 9, 4, 2, 1, 7, 5, 10, 8, 11, 3}, output);
+    }
+
+    @Test
+    void testBuildIndexesFromValueArray() {
+        Pair<int[][], HashMap<Integer, Integer>> res = buildIndexesFromValueArray(new Integer[]{
+                101, 102, 103, 104, null, 105, null, 106, null, 107, 108, null, 109, null, null, 110, 111,
+                null, null, null, null, null, null
+        });
+
+        int[][] indexes = res.getKey();
+        HashMap<Integer, Integer> values = res.getValue();
+
+        int[] output = new int[indexes.length];
+        inorder(indexes, 1, output, 0);
+
+        // check traversal
+        Assertions.assertArrayEquals(new int[]{6, 9, 4, 2, 1, 7, 5, 10, 8, 11, 3}, output);
+
+        // check index->value map
+        Assertions.assertArrayEquals(new int[]{106, 109, 104, 102, 101, 107, 105, 110, 108, 111, 103},
+                Arrays.stream(output).map(nodeIdx -> values.get(nodeIdx)).toArray());
     }
 
     @Test
