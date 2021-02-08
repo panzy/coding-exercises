@@ -17,6 +17,12 @@ public class Snippets {
         int[] anchors = IntStream.range(0, n).filter(i -> A[i] == 'c').toArray();
     }
 
+    private static void reverse(int[] a) {
+        for (int i = 0, j = a.length - 1; i < j; ++i, --j) {
+            swap(a, i, j);
+        }
+    }
+
     private static void swap(int[] a, int i, int j) {
         int t = a[i];
         a[i] = a[j];
