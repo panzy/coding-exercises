@@ -1,4 +1,4 @@
-package algorithm;
+package data_structure;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
