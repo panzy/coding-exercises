@@ -40,6 +40,7 @@ public class GraphBFS {
         boolean onNode(int currNode, int prevNode, int originNode, int currLayerIdx);
     }
 
+
     private int originNode;
     private DataProvider dataProvider;
     private TraversalListener traversalListener;
@@ -75,6 +76,36 @@ public class GraphBFS {
 
     public boolean ended() {
         return currLayer.isEmpty();
+    }
+}
+
+class GridDataProvider implements GraphBFS.DataProvider {
+    final static int[][] delta = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+    int[][] grid;
+    int m, n;
+    int validCellValue;
+
+    public GridDataProvider(int[][] grid, int validCellValue) {
+        this.grid = grid;
+        m = grid.length;
+        n = grid[0].length;
+        this.validCellValue = validCellValue;
+    }
+
+    @Override
+    public List<Integer> getNeighbours(int id) {
+        int r = id >> 16;
+        int c = id & 0xffff;
+        List<Integer> neibs = new ArrayList<>(8);
+
+        for (int[] d : delta) {
+            int r2 = r + d[0];
+            int c2 = c + d[1];
+            if (0 <= r2 && r2 < m && 0 <= c2 && c2 < n && grid[r2][c2] == validCellValue) {
+                neibs.add((r2 << 16) + c2);
+            }
+        }
+        return neibs;
     }
 }
 
@@ -174,7 +205,6 @@ class ConnectedCellInAGrid {
 
     // Complete the maxRegion function below.
     static int maxRegion(int[][] grid) {
-        int[][] delta = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
         int m = grid.length;
         int n = grid[0].length;
 
@@ -190,34 +220,23 @@ class ConnectedCellInAGrid {
                 if (visited[sr][sc] || grid[sr][sc] == 0)
                     continue;
 
-                int start = (sr << 8) + sc;
+                int start = (sr << 16) + sc;
 
                 areas.put(start, 1);
 
-                GraphBFS bfs = new GraphBFS(id -> {
-                    int r = id >> 8;
-                    int c = id & 0xff;
-                    List<Integer> neibs = new ArrayList<>(8);
-
-                    for (int[] d : delta) {
-                        int r2 = r + d[0];
-                        int c2 = c + d[1];
-                        if (0 <= r2 && r2 < m && 0 <= c2 && c2 < n && grid[r2][c2] == 1) {
-                            neibs.add((r2 << 8) + c2);
-                        }
-                    }
-                    return neibs;
-                }, (id, prevNode, originNode, currLayerIdx) -> {
-                    int r = id >> 8;
-                    int c = id & 0xff;
-                    if (visited[r][c]) {
-                        return false;
-                    } else {
-                        visited[r][c] = true;
-                        areas.put(start, areas.get(start) + 1);
-                        return true;
-                    }
-                }, start);
+                GraphBFS bfs = new GraphBFS(
+                        new GridDataProvider(grid, 1),
+                        (id, prevNode, originNode, currLayerIdx) -> {
+                            int r = id >> 16;
+                            int c = id & 0xffff;
+                            if (visited[r][c]) {
+                                return false;
+                            } else {
+                                visited[r][c] = true;
+                                areas.put(start, areas.get(start) + 1);
+                                return true;
+                            }
+                        }, start);
 
                 while (!bfs.ended())
                     bfs.nextLayer();
