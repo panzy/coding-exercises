@@ -26,4 +26,26 @@ public class Graphs {
 
         return graph;
     }
+
+    public static HashMap<Integer, List<Integer>> buildFromEdges(int[] graphFrom, int[] graphTo) {
+        HashMap<Integer, List<Integer>> graph = new HashMap<>();
+
+        // collect graph graph
+        for (int i = 0; i < graphFrom.length; ++i) {
+            int start = graphFrom[i];
+            int end = graphTo[i];
+            // Append j to i's list.
+            List<Integer> lst = graph.getOrDefault(start, new ArrayList());
+            lst.add(end);
+            graph.put(start, lst);
+
+            // Append i to j's list.
+            lst = graph.getOrDefault(end, new ArrayList());
+            lst.add(start);
+            graph.put(end, lst);
+        }
+
+        return graph;
+    }
+
 }
