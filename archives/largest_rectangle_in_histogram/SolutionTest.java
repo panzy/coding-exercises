@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 class SolutionTest {
-    Solution3 solution = new Solution3();
+    Solution4_stack solution = new Solution4_stack();
 
     @Test
     void largestRectangleArea_empty() {
