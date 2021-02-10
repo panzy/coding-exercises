@@ -27,7 +27,6 @@ public class GraphBFS {
 
     public interface TraversalListener {
         /**
-         *
          * @param currNode the new found node's id.
          * @param prevNode from which node does the current node directly reached?
          * @param originNode the origin node from which this traversal was started.
@@ -57,9 +56,12 @@ public class GraphBFS {
         ++currLayerIdx;
 
         for (int a : currLayer) {
-            for (int b : dataProvider.getNeighbours(a)) {
-                if (traversalListener.onNode(b, a, this.originNode, currLayerIdx))
-                    nextLayer.add(b);
+            List<Integer> neighbours = dataProvider.getNeighbours(a);
+            if (neighbours != null) {
+                for (int b : neighbours) {
+                    if (originNode != b && traversalListener.onNode(b, a, this.originNode, currLayerIdx))
+                        nextLayer.add(b);
+                }
             }
         }
 
