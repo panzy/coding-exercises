@@ -3,3 +3,10 @@ out/
 *.iml
 TODO.txt
 src/_tmp*
+
+# Visual C++ project files:
+.vs/
+*.sln
+*.vcxproj*
+Debug
+x64
