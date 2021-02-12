@@ -1,0 +1,17 @@
+input:
+djjcddjggbiigjhfghehhbgdigjicafgjcehhfgifadihiajgciagicdahcbajjbhifjiaajigdgdfhdiijjgaiejgegbbiigida
+
+breakdown:
+ jj   j      j            j     j              j             jj    j   j          jj    j
+          ii            i  i           i   i i    i  i           i  i   i       ii    i       ii i  
+              h  h hh              hh       h            h      h             h                     
+       gg   g   g     g  g     g      g         g   g                    g g        g    g g    g   
+               f              f      f  f                         f          f                      
+                  e               e                                                    e  e         
+d   dd                 d                  d            d                  d d  d                  d 
+   c                        c    c               c    c   c                                         
+         b           b                                     b   b                            bb      
+                             a           a    a    a    a   a        aa              a             a
+
+answer:
+aaaaabccigicgjihidfiejfijgidgbhhehgfhjgiibggjddjjd
