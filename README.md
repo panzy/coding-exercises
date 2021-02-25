@@ -30,7 +30,7 @@ Java source code directory.
 Archived solutions to problems from LeetCode, HackerRank, etc.
 Code is dumped here just for the sake of record.
 
-## Comparison of Java and C++ on Syntax
+## Comparison of Java 8+ and C++ 20 on Syntax
 
 ### Functional programming
 
@@ -101,7 +101,7 @@ where are the first and last occurences.
 Say, you decide to write a `swap(int[] arr, int i, int j)` function.
 Chances are that you may also need to write a one for `char[]`.
 
-### C++ has `auto`
+### C++ has `auto`, and Java 10 has `var`
 
 ### Curly brace initialization
 
@@ -119,7 +119,7 @@ C++: Restricted. The feature is called
 Only works if the structure is known at compile time, such as
 arrays and tuple-likes. Unfortunately, `vector` is not such a structure.
 
-### Output arguments
+### Output params
 
 Java: Wrap primitive values with objects. Such as `AtomicInteger`
 or `int[]` for an `int` value.
