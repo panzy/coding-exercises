@@ -46,12 +46,12 @@ public:
     //
     // It's possible because both m and n <= 10.
     //
-    // The remaining question is, how do you enumerate the 3^m pumatation?
+    // The remaining question is, how do you enumerate the 3^m combination?
     //
     // My choice during the contest is recursion.
     //
     // Then I realized it's just increasing a number from 0 to 3^m-1, and if you view the number in 3-radix,
-    // it's easy to see for a pumatation |p|, the count of the last kind of topping is p%3,
+    // it's easy to see for a combination |p|, the count of the last kind of topping is p%3,
     // the last 2nd is (p/3)%3, and so on.
     int closestCost(const vector<int>& baseCosts, const vector<int>& toppingCosts, int target) {
         this->target = target;
