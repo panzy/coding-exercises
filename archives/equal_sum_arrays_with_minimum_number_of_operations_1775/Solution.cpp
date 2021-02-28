@@ -20,6 +20,8 @@ using namespace std;
 
 class Solution {
     int helper(const vector<int>& nums1, const vector<int>& nums2, int delta) {
+        // XXX since there're only 1..6 possible values, it's not necessary to
+        // use heaps, a frequency array would be enough -- refer to Counting Sort algorithm.
         priority_queue<int, vector<int>, greater<int>> heap1;
         priority_queue<int> heap2;
 
