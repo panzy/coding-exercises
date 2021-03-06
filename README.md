@@ -74,6 +74,20 @@ and they apply everywhere:
 - `std::transform_reduce()`
 - `std::accumulate()`
 
+### C++ references are not objects; can't swap them
+
+Say I'm writing an algorithm taking two vector references,
+nums1 and nums2, as input. I want to swap nums1 and nums2
+if nums1 is longer.
+
+This swapping is nothing special in Java, however in C++,
+I can only think of these ways:
+
+- introduce a helper function and call it in a if-condition,
+  passing ot it either (nums1, nums2) or (nums2, nums1).
+- use `std::ref()` to generate reference wrappers, which are objects.
+- use pointers.
+
 ### Find out minimum and/or maximum element of a collection
 
 Java: `IntStream.max()`, `IntStream.min()`.
