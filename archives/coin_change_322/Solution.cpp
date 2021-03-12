@@ -2,11 +2,13 @@
 322. Coin Change
 https://leetcode.com/problems/coin-change/
 
-Implemented two algorithms, one is backtracking, the other is recursive.
+Implemented four algorithms:
+1. backtracking + pruning with global answer,
+2. recursive + pruning with global answer,
+3. recursive + memo,
+4. dp -- answer[amount] = 1 + min(answer[amount - coins[i]]).
 
-Both of them are essentially DFS. The backtracking approach is an iterative DFS. It runs a little faster then the recursive one.
-
-TODO: DP and recursion + memo.
+Both 1 and 2 are essentially DFS. The backtracking approach is an iterative DFS. It runs a little faster then the recursive one.
 
 --
 Zhiyong
@@ -152,9 +154,71 @@ public:
     }
 };
 
+// Recursion + memo
+// Beats 90.54% of cpp submissions.
+class Solution3 {
+    int memo[10001]; // memo[i] = answer for amount = i.
+public:
+    int helper(vector<int>& coins, int amount) {
+        if (amount == 0)
+            return 0;
+
+        if (memo[amount] != 0)
+            return memo[amount];
+
+        int ans = -1;
+        for (int c : coins) {
+            if (c <= amount) {
+                int ans2 = helper(coins, amount - c);
+                if (ans2 != -1) {
+                    if (ans == -1 || ans > 1 + ans2)
+                        ans = 1 + ans2;
+                }
+            }
+        }
+
+        memo[amount] = ans;
+        return ans;
+    }
+
+    int coinChange(vector<int>& coins, int amount) {
+        fill(memo, memo + amount + 1, 0); // 0 = unknown, -1 and positive = known.
+        return helper(coins, amount);
+    }
+};
+
+// DP approach.
+// answer[amount] = 1 + min(answer[amount - coins[i]]).
+// Beats 97.23% of cpp submissions.
+class Solution4 {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int dp[10001]; // dp[i] = answer for amount = i.
+        fill(dp, dp + amount + 1, -1);
+        dp[0] = 0;
+
+        for (int i = 1; i <= amount; ++i) {
+            // For any non-zero amount, at least one coin has to be picked.
+            // Once the first coin is picked, anwser for the rest amount can be found in the dp array.
+            for (int c : coins) {
+                if (c <= i) {
+                    int ans2 = dp[i - c];
+                    if (ans2 != -1) {
+                        if (dp[i] == -1 || dp[i] > 1 + ans2)
+                            dp[i] = 1 + ans2;
+                    }
+                }
+            }
+        }
+
+        return dp[amount];
+    }
+};
+
 int main() {
     int ans;
     vector<int> coins;
+    using Solution = Solution4;
 
     {
         coins = { 1, 5 };
