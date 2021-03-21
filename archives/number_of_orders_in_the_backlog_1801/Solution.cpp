@@ -31,11 +31,14 @@ class Solution {
 public:
     int getNumberOfBacklogOrders(vector<vector<int>>& orders) {
 
+        const int MOD = 1e9 + 7;
         using Order = pair<int, int>;
 
         // backlog for buy orders
         priority_queue<Order, vector<Order>> buyLog;
         priority_queue<Order, vector<Order>, greater<Order>> sellLog;
+
+        unsigned long long ans = 0;
 
         for (auto&& order : orders) {
             // orders[i] = [pricei, amounti, orderTypei]
@@ -54,6 +57,9 @@ public:
                     auto [p, a] = sellLog.top();
 
                     if (p <= price) {
+
+                        ans -= min(a, amount);
+
                         if (a <= amount) {
                             amount -= a;
                             a = 0;
@@ -79,6 +85,9 @@ public:
                     auto [p, a] = buyLog.top();
 
                     if (p >= price) {
+
+                        ans -= min(a, amount);
+
                         if (a <= amount) {
                             amount -= a;
                             a = 0;
@@ -105,24 +114,10 @@ public:
                 } else {
                     sellLog.push({price, amount});
                 }
+                ans += amount;
             }
         }
 
-        // sum order amounts
-
-        unsigned long long ans = 0;
-        int MOD = (int)(1e9 + 7);
-
-        while (buyLog.size()) {
-            ans = (ans + get<1>(buyLog.top())) % MOD;
-            buyLog.pop();
-        }
-
-        while (sellLog.size()) {
-            ans = (ans + get<1>(sellLog.top())) % MOD;
-            sellLog.pop();
-        }
-
-        return ans;
+        return ans % MOD;
     }
 };
