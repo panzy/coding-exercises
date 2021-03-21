@@ -31,16 +31,11 @@ class Solution {
 public:
     int getNumberOfBacklogOrders(vector<vector<int>>& orders) {
 
-        using Order = tuple<int, int, int>;
+        using Order = pair<int, int>;
 
         // backlog for buy orders
         priority_queue<Order, vector<Order>> buyLog;
-
-        // backlog for sell orders
-        auto orderGreater = [](const Order& a, const Order& b) {
-            return get<0>(a) > get<0>(b);
-        };
-        priority_queue<Order, vector<Order>, decltype(orderGreater)> sellLog(orderGreater);
+        priority_queue<Order, vector<Order>, greater<Order>> sellLog;
 
         for (auto&& order : orders) {
             // orders[i] = [pricei, amounti, orderTypei]
@@ -56,8 +51,7 @@ public:
                         break;
 
                     // order on the heap
-                    int p, a, o;
-                    tie(p, a, o) = sellLog.top();
+                    auto [p, a] = sellLog.top();
 
                     if (p <= price) {
                         if (a <= amount) {
@@ -73,7 +67,7 @@ public:
                         // pq top is constant; we can't modify the order amount in place, so pop and push.
                         sellLog.pop();
                         if (a > 0)
-                            sellLog.push({p, a, o});
+                            sellLog.push({p, a});
                     } else {
                         break;
                     }
@@ -82,8 +76,7 @@ public:
                         break;
 
                     // order on the heap
-                    int p, a, o;
-                    tie(p, a, o) = buyLog.top();
+                    auto [p, a] = buyLog.top();
 
                     if (p >= price) {
                         if (a <= amount) {
@@ -98,7 +91,7 @@ public:
                         // pq top is constant; we can't modify the order amount in place, so pop and push.
                         buyLog.pop();
                         if (a > 0)
-                            buyLog.push({p, a, o});
+                            buyLog.push({p, a});
                     } else {
                         break;
                     }
@@ -108,9 +101,9 @@ public:
             // put remained order amount to backlog
             if (amount > 0) {
                 if (type == 0) {
-                    buyLog.push({price, amount, type});
+                    buyLog.push({price, amount});
                 } else {
-                    sellLog.push({price, amount, type});
+                    sellLog.push({price, amount});
                 }
             }
         }
