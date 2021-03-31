@@ -1,7 +1,9 @@
 /* Down to Zero II
  * https://www.hackerrank.com/challenges/down-to-zero-ii
  *
- * Approach: BFS (timeout).
+ * Approach: BFS (accepted).
+ *
+ * Simliar to the previous version, but somehow goes without maintaining the "seen" set.
  *
  * --
  * Zhiyong 2021-03-30
@@ -10,44 +12,44 @@
 
 using namespace std;
 
-/*
- * Complete the downToZero function below.
- */
-
-void pushNextStops(queue<pair<int, int>>& q, unordered_set<int> seen, int n, int dist) {
-    for (int i = sqrt(n) + 1; i > 1; --i) {
+void pushNextStops(queue<pair<int, int>>& q, int n, int dist) {
+    for (int i = sqrt(n); i >= 2; --i) {
         if (n % i == 0) {
             int j = n / i;
-            if (!seen.count(j))
-                q.push({max(i, j), dist + 1});
+            q.push({j, dist + 1});
         }
     }
-    if (!seen.count(n - 1))
-        q.push({n - 1, dist + 1});  
+    q.push({n - 1, dist + 1});
 }
 
 int downToZero(int n) {
     // BFS
     queue<pair<int, int>> q;
-    unordered_set<int> seen;
-    
+
     q.push({n, 0});
-    
+
     while (q.size()) {
         int val = q.front().first;
         int dist = q.front().second;
         q.pop();
-        
-        if (val == 0)
-            return dist;
-        
-        if (seen.count(val))
-            continue;
-        seen.insert(val);
-        
-        pushNextStops(q, seen, val, dist);
+
+        // To BFS without keeping track of visited neighbour numbers,
+        // it's important to search from numbers > 4.
+        // XXX It should also be okay to include 4, but changing "val <= 4"
+        // to "val < 4" below leads to wrong answers in some cases. Don't know why.
+        if (val <= 4) {
+            switch (val) {
+                case 4:
+                case 3:
+                    return dist + 3;
+                default:
+                    return dist + val;
+            }
+        }
+
+        pushNextStops(q, val, dist);
     }
-    
+
     return n;
 }
 
