@@ -11,12 +11,17 @@ class Solution {
 public:
     string validIPAddress(string IP) {
         string none = "Neither";
-        
+        int n = IP.length();
+
         if (IP.find('.') != -1) {
             // IPv4?
             int numIdx = 0;
             int num = -1; // -1 means empty
-            for (char c : IP) {
+
+            for (int i = 0; i <= n; ++i) {
+                // imagine there is a tailing '.'
+                char c = i < n ? IP[i] : '.';
+
                 if (numIdx == 4) // too many numbers
                     return none;
                 if (num > 255)
@@ -44,16 +49,17 @@ public:
                     return none;
                 }
             }
-            
-            // empty number at the end
-            if (num == -1 || num > 255) return none;
-            
-            return numIdx == 3 ? "IPv4" : none;
+
+            return numIdx == 4 ? "IPv4" : none;
         } else {
             // IPv6?
             int numIdx = 0;
             int numDigits= 0;
-            for (char c : IP) {
+
+            for (int i = 0; i <= n; ++i) {
+                // imagine there is a tailing ':'
+                char c = i < n ? IP[i] : ':';
+
                 if (numIdx == 8) // too many numbers
                     return none;
                 if (numDigits > 4) // too many digits
@@ -69,11 +75,8 @@ public:
                     return none;
                 }
             }
-            
-            // empty number at the end
-            if (!(numDigits >= 1 && numDigits <= 4)) return none;
-                
-            return numIdx == 7 ? "IPv6" : none;
+
+            return numIdx == 8 ? "IPv6" : none;
         }
 
         return none;
