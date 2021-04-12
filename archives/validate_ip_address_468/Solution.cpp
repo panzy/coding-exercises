@@ -8,6 +8,37 @@
  */
 
 class Solution {
+    bool validV4Num(const string& s, int begin, int end) {
+        if (begin >= end) return false; // empty
+        if (end - begin > 3) return false; // too many digits
+        if (s[begin] == '0' && begin + 1 < end) return false; // leading zero
+
+        int num = 0;
+        for (int i = begin; i < end; ++i) {
+            char c = s[i];
+            if ('0' <= c && c <= '9') {
+                num = num * 10 + (c - '0');
+            } else {
+                return false;
+            }
+        }
+
+        return 0 <= num && num < 256;
+    }
+
+    bool validV6Num(const string& s, int begin, int end) {
+        if (begin >= end) return false; // empty
+        if (end - begin > 4) return false; // too many digits
+
+        for (int i = begin; i < end; ++i) {
+            char c = s[i];
+            if (!('0' <= c && c <= '9' || 'a' <= c && c <= 'f' || 'A' <= c && c <= 'F')) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 public:
     string validIPAddress(string IP) {
         string none = "Neither";
@@ -15,68 +46,38 @@ public:
 
         if (IP.find('.') != -1) {
             // IPv4?
-            int numIdx = 0;
-            int num = -1; // -1 means empty
+            int nums = 0;
 
-            for (int i = 0; i <= n; ++i) {
+            for (int i = 0, begin = 0; i <= n; ++i) {
                 // imagine there is a tailing '.'
                 char c = i < n ? IP[i] : '.';
 
-                if (numIdx == 4) // too many numbers
-                    return none;
-                if (num > 255)
-                    return none;
-
                 if (c == '.') {
-                    if (num == -1) // empty number
+                    if (!validV4Num(IP, begin, i))
                         return none;
-                    ++numIdx ;
-                    num = -1;
-                } else if (c == '0') {
-                    if (num == -1)
-                        num = 0;
-                    else if (num == 0) // leading zero
-                        return none;
-                    else
-                        num *= 10;
-                } else if ('1' <= c && c <= '9') {
-                    if (num == -1)
-                        num = 0;
-                    else if (num == 0) // leading zero
-                        return none;
-                    num = num * 10 + (c - '0');
-                } else { // invalid chars
-                    return none;
+                    ++nums ;
+                    begin = i + 1;
                 }
             }
 
-            return numIdx == 4 ? "IPv4" : none;
+            return nums == 4 ? "IPv4" : none;
         } else {
             // IPv6?
-            int numIdx = 0;
-            int numDigits= 0;
+            int nums = 0;
 
-            for (int i = 0; i <= n; ++i) {
+            for (int i = 0, begin = 0; i <= n; ++i) {
                 // imagine there is a tailing ':'
                 char c = i < n ? IP[i] : ':';
 
-                if (numIdx == 8) // too many numbers
-                    return none;
-                if (numDigits > 4) // too many digits
-                    return none;
                 if (c == ':') {
-                    ++numIdx;
-                    if (numDigits == 0) // empty number
+                    if (!validV6Num(IP, begin, i))
                         return none;
-                    numDigits = 0;
-                } else if ('0' <= c && c <= '9' || 'a' <= c && c <= 'f' || 'A' <= c && c <= 'F') {
-                    ++numDigits;
-                } else {
-                    return none;
+                    ++nums ;
+                    begin = i + 1;
                 }
             }
 
-            return numIdx == 8 ? "IPv6" : none;
+            return nums == 8 ? "IPv6" : none;
         }
 
         return none;
