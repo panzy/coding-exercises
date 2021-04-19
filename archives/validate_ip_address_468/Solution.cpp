@@ -53,8 +53,7 @@ public:
                 char c = i < n ? IP[i] : '.';
 
                 if (c == '.') {
-                    if (!validV4Num(IP, begin, i))
-                        return none;
+                    if (!validV4Num(IP, begin, i)) return none;
                     ++nums ;
                     begin = i + 1;
                 }
@@ -70,8 +69,7 @@ public:
                 char c = i < n ? IP[i] : ':';
 
                 if (c == ':') {
-                    if (!validV6Num(IP, begin, i))
-                        return none;
+                    if (!validV6Num(IP, begin, i)) return none;
                     ++nums ;
                     begin = i + 1;
                 }
