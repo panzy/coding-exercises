@@ -11,6 +11,8 @@ src/_tmp*
 Debug
 x64
 
+node_modules/
+
 # This is where I start solving a problem.
 # Once finished, it will be moved to archives/.
 #/Solution.cpp
