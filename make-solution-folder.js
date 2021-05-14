@@ -1,5 +1,7 @@
 /**
  * A CLI script to create solution folders for LeetCode problems.
+ *
+ * It uses LeetCode's graphql API to fetch problem details, like id, title and description.
  */
 
 const fetch = require('node-fetch');
@@ -34,6 +36,10 @@ function main() {
       return r.json().then(j => {
         const { questionFrontendId, title, titleSlug, content } = j.data.question;
         const folder = titleSlug.replace('-', '_') + '_' + questionFrontendId;
+
+        // |content| is the description of the problem in HTML.
+        // It would be nice to output it to a HTML version of readme file,
+        // but for copyright reason, I'm not doing that.
         const readmeContent = `# ${questionFrontendId}. ${title}\n\n` + 
           `[${questionUrl}](${questionUrl})\n`;
 
