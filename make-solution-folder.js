@@ -35,7 +35,7 @@ function main() {
     if (r.ok) {
       return r.json().then(j => {
         const { questionFrontendId, title, titleSlug, content } = j.data.question;
-        const folder = titleSlug.replace('-', '_') + '_' + questionFrontendId;
+        const folder = titleSlug.replace(/-/g, '_') + '_' + questionFrontendId;
 
         // |content| is the description of the problem in HTML.
         // It would be nice to output it to a HTML version of readme file,
