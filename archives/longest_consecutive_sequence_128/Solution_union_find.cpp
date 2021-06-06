@@ -9,11 +9,11 @@
 // --
 // Created by Zhiyong Pan
 // Git commit time:      06/06/2021, 12:06:39
-// LeetCode submit time: 0 minutes ago
+// LeetCode submit time: 0Â minutes ago
 // Submission detail page: https://leetcode.com/submissions/detail/503958435/?from=explore&item_id=3769/
 // Committed with a user script: https://gist.github.com/panzy/c126371311dc166a94e611de8f45e63c
 //
-// Same algorithm as the previous solution Solution_503922458.cpp,
+// Same algorithm as the previous union-find solution,
 // only slightly different in implementaion.
 class Solution {
 public:
