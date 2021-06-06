@@ -9,7 +9,7 @@
 // --
 // Created by Zhiyong Pan
 // Git commit time:      06/06/2021, 10:58:35
-// LeetCode submit time: 0 minutes ago
+// LeetCode submit time: 0Â minutes ago
 // Submission detail page: https://leetcode.com/submissions/detail/503922458/?from=explore&item_id=3769/
 // Committed with a user script: https://gist.github.com/panzy/c126371311dc166a94e611de8f45e63c
 //
