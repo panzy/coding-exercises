@@ -9,56 +9,12 @@
 // --
 // Created by Zhiyong Pan
 // Git commit time:      06/06/2021, 11:00:42
-// LeetCode submit time: 0 minutes ago
+// LeetCode submit time: 0Â minutes ago
 // Submission detail page: https://leetcode.com/submissions/detail/503927807/?from=explore&item_id=3769/
 // Committed with a user script: https://gist.github.com/panzy/c126371311dc166a94e611de8f45e63c
 //
-/* Debug info for input nums = [0,3,7,2,5,8,4,6,0,1]
-0: standalone
-	0 -> 0
-3: standalone
-	0 -> 0
-	3 -> 3
-7: standalone
-	0 -> 0
-	3 -> 3
-	7 -> 7
-2: prepend to [3,3]
-	0 -> 0
-	2 -> 3
-	3 -> 2
-	7 -> 7
-5: standalone
-	0 -> 0
-	2 -> 3
-	3 -> 2
-	5 -> 5
-	7 -> 7
-8: append to [7,7]
-	0 -> 0
-	2 -> 3
-	3 -> 2
-	5 -> 5
-	7 -> 8
-	8 -> 7
-4: combine [2,3] and [5,5]
-	0 -> 0
-	2 -> 5
-	5 -> 2
-	7 -> 8
-	8 -> 7
-6: combine [2,5] and [7,8]
-	0 -> 0
-	2 -> 8
-	8 -> 2
-0: ignore duplicate
-	0 -> 0
-	2 -> 8
-	8 -> 2
-1: combine [0,0] and [2,8]
-	0 -> 8
-	8 -> 0
-*/
+
+// Same algorithm as the previous solution, only slightly different in implementaion.
 class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
