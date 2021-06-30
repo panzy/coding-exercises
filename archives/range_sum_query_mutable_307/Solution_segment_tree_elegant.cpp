@@ -17,11 +17,7 @@
 //
 // Update 2: By allowing n to be not a power of 2, the tree is not always full,
 // and maybe surprisingly, the original numbers are not guaranteed to sit at
-// the bottom layer. Specifically, when n is not a power of 2, the previous
-// solution pads 0s to make it full. Now, we follow this process:
-// step 1. leave those leaf nodes absent,
-// step 2. remove those parent nodes who do not have a single child, and
-// step 3. shift the bottom layer to occupy the holes in the upper layer.
+// the bottom layer. See the README file for a demonstation.
 //
 // Fortunately, the following properties still hold:
 // (1) the first input number is tree[n]
