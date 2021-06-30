@@ -22,10 +22,9 @@ Suppose input array: 1 2 3 4 5, n = 5
 
 A. padding zeros to make the length of input array a power of two
 
-```
-tree size = 2^ceil(log2(n)) - 1 = 15
-implicit tree: 15 10 5 3 7 5 0 1 2 3 5 0 0 0
-```
+    tree size = 2^ceil(log2(n)) - 1 = 15
+    implicit tree: 15 10 5 3 7 5 0 1 2 3 5 0 0 0
+
 
 tree:
 
@@ -39,11 +38,10 @@ tree:
 
 B. no padding
 
-```
-tree size = 2 * n - 1 = 9
-implicit tree: -  15 10 5  9  1  2  3  4  5  (tree[0] is unused)
-idx:           0  1  2  3  4  5  6  7  8  9
-```
+    tree size = 2 * n - 1 = 9
+    implicit tree: -  15 10 5  9  1  2  3  4  5  (tree[0] is unused)
+    idx:           0  1  2  3  4  5  6  7  8  9
+
 
 tree:
 
