@@ -9,7 +9,7 @@
 // --
 // Created by Zhiyong Pan
 // Git commit time:      02/07/2021, 00:34:50
-// LeetCode submit time: 0 minutes ago
+// LeetCode submit time: 0Â minutes ago
 // Submission detail page: https://leetcode.com/submissions/detail/516146863//
 // Committed with a user script: https://gist.github.com/panzy/c126371311dc166a94e611de8f45e63c
 //
@@ -31,6 +31,9 @@ public:
         for (auto p = head; p != nullptr; p = p->next)
             nodes.push(p);
         
+        // For even n's, the last move is redundant, so it might be tempting to
+        // set moves = (n-1)/2, but that would make terminating the list complicated because
+        // after the loops p may or may not point to the tail (depends on whether n is odd).
         int n = nodes.size(), moves = n / 2;
         auto p = head;
         
