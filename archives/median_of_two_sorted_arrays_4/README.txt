@@ -1,3 +1,5 @@
+All the solutions before Solution_754051574_binary_search.cpp are struggling.
+
 Test data
 
 [1,3]
@@ -12,5 +14,15 @@ Test data
 [0,0]
 [0,0]
 []
+[]
+[0,0]
 [0]
 [0]
+[3,4,5,6,7,8]
+[]
+[1,2]
+[-1,3]
+[]
+[1]
+[1]
+[]
