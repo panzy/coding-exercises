@@ -9,7 +9,7 @@
 // --
 // Created by Zhiyong Pan
 // Git commit time:      22/07/2022, 17:35:21
-// LeetCode submit time: 0 minutes ago
+// LeetCode submit time: 0Â minutes ago
 // Submission detail page: https://leetcode.com/submissions/detail/754051574//
 // Committed with a user script: https://gist.github.com/panzy/c126371311dc166a94e611de8f45e63c
 //
@@ -19,6 +19,7 @@ public:
         const int MAX_VAL = 10e6 + 1;
 
         // We are going to do binary search in nums1 so we want it to be the shorter one.
+        // (If it's empty, no need to search at all.)
         if (nums1.size() > nums2.size()) {
             swap(nums1, nums2);
         }
@@ -39,9 +40,9 @@ public:
             auto L = p > 0 ? lower_bound(nums2.begin(), nums2.end(), nums1[p - 1]) : nums2.begin();
             // All items in nums2 before U is not greater than nums1[p], so they MAY go to left.
             auto U = upper_bound(nums2.begin(), nums2.end(), nums1[p]);
-            // Minimum possible count of items in the merged array before nums1[p].
+            // Minimum possible count of items in the merged array that belong to the left part.
             int minLeftSize = p + (L - nums2.begin());
-            // Maximum possible count of items in the merged array before nums1[p].
+            // Maximum possible count of items in the merged array that belong to the left part.
             int maxLeftSize = p + (U - nums2.begin());
 
             // If the possible left size is not acceptable, we have to adjust p.
@@ -58,7 +59,7 @@ public:
             p = (lo + hi) / 2;
         }
 
-        // Since p has been determined, q can be calculated. All nums2 items before q go to left.
+        // For a given p, q can be calculated. All nums2 items before q go to left.
         int q = halfSize - p;
 
         // x1 and x2 are the first two nums1 items starting from p.
